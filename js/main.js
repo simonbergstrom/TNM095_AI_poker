@@ -25,37 +25,32 @@ var light2 = new THREE.PointLight(0xeeeeee, 1, 20);
 light2.position.set(0, 0, 5);
 scene.add(light2);
 
-// Load objects
+//Load objects
 var manager = new THREE.LoadingManager();
 manager.onProgress = function ( item, loaded, total ) {
     console.log( item, loaded, total );
 };
 
-// texture
+//Texture
 var texture = new THREE.Texture();
 
 var loader = new THREE.ImageLoader( manager );
-loader.load( 'obj/policeCar/0000.BMP', function ( image ) {
-
+loader.load('obj/policeCar/0000.BMP', function(image){
     texture.image = image;
     texture.needsUpdate = true;
-} );
+});
 
-// model
+//Model
 var loader = new THREE.OBJLoader( manager );
 
-loader.load( 'obj/policeCar/crown_victoria.obj', function ( object ) {
-
-    object.traverse( function ( child ) {
-
-        if ( child instanceof THREE.Mesh ) {
-
+loader.load('obj/policeCar/crown_victoria.obj', function(object){
+    object.traverse(function(child){
+        if(child instanceof THREE.Mesh){
             child.material.map = texture;
         }
-    } );
-
+    });
     scene.add( object );
-} );
+});
 
 animate();
 
@@ -63,7 +58,7 @@ animate();
 //FUNCTIONS*************
 //**********************
 function animate() {
-    requestAnimationFrame( animate );
+    requestAnimationFrame(animate);
     render();
 }
 
