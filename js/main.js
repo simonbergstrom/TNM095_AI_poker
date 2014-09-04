@@ -1,11 +1,16 @@
 //*********************************
 // SETUP SCENE ********************
 //*********************************
-var height = 300;
-var width = 700;
+var height = 600;
+var width = 800;
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, width/height, 0.1, 1000);
+camera.position.z = 5;
+
+var controls = new THREE.OrbitControls( camera );
+controls.damping = 0.2;
+controls.addEventListener( 'change', render );
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(width, height);
@@ -20,22 +25,52 @@ var light2 = new THREE.PointLight(0xeeeeee, 1, 20);
 light2.position.set(0, 0, 5);
 scene.add(light2);
 
-var geometry = new THREE.BoxGeometry(1, 3, 2);
-var material = new THREE.MeshPhongMaterial( { color: 0x00ff00 } );
-var cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+// Load objects
+var manager = new THREE.LoadingManager();
+manager.onProgress = function ( item, loaded, total ) {
+    console.log( item, loaded, total );
+};
 
-camera.position.z = 5;
+// texture
+var texture = new THREE.Texture();
 
+var loader = new THREE.ImageLoader( manager );
+loader.load( 'obj/policeCar/0000.BMP', function ( image ) {
+
+    texture.image = image;
+    texture.needsUpdate = true;
+} );
+
+// model
+var loader = new THREE.OBJLoader( manager );
+
+loader.load( 'obj/policeCar/crown_victoria.obj', function ( object ) {
+
+    object.traverse( function ( child ) {
+
+        if ( child instanceof THREE.Mesh ) {
+
+            child.material.map = texture;
+        }
+    } );
+
+    //object.position.y = - 80;
+    //object.scale.set(100,100,100);
+    scene.add( object );
+} );
+
+animate();
 
 //**********************
 //FUNCTIONS*************
 //**********************
+function animate() {
+    requestAnimationFrame( animate );
+    render();
+}
 
 function render() {
-    requestAnimationFrame(render);
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
     renderer.render(scene, camera);
 }
+
 render();
