@@ -32,3 +32,21 @@ canvas{
   border-bottom: 1px solid #000;
   margin-bottom: 20px;
 }
+
+a{
+  text-decoration:none;
+  color: #428bca;
+  display:inline-block;
+}
+
+#topBar a{
+  color:white;
+}
+
+#topBar a:hover{
+  color: #ddd;
+}
+
+h1{
+  display:inline-block;
+}

@@ -8,9 +8,9 @@ var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, width/height, 0.1, 1000);
 camera.position.z = 5;
 
-var controls = new THREE.OrbitControls( camera );
+var controls = new THREE.OrbitControls(camera);
 controls.damping = 0.2;
-controls.addEventListener( 'change', render );
+controls.addEventListener('change', render);
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(width, height);
