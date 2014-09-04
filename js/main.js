@@ -6,7 +6,9 @@ var width = 980;
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, width/height, 0.1, 1000);
-camera.position.z = 5;
+camera.position.z = 4.5;
+camera.position.x = -4.95;
+camera.position.y = 4.59;
 
 var controls = new THREE.OrbitControls(camera);
 controls.damping = 0.2;
@@ -17,15 +19,15 @@ renderer.setSize(width, height);
 renderer.setClearColor( 0xffffff, 1 );
 document.getElementById("container").appendChild(renderer.domElement);
 
-var light = new THREE.PointLight(0xffffff, 1, 30);
+var light = new THREE.PointLight(0xffffff, 1, 0);
 light.position.set(0, 10, 0);
 scene.add(light);
 
-var light2 = new THREE.PointLight(0xeeeeee, 1, 20);
+var light2 = new THREE.PointLight(0xeeeeee, 1, 0);
 light2.position.set(0, 0, 5);
 scene.add(light2);
 
-//Load objects
+//Load car
 var manager = new THREE.LoadingManager();
 manager.onProgress = function ( item, loaded, total ) {
     console.log( item, loaded, total );
@@ -50,10 +52,43 @@ loader.load('obj/policeCar/crown_victoria.obj', function(object){
         }
     });
 
-    //object.position.y = - 80;
-    //object.scale.set(100,100,100);
+    object.rotation.y -= 47*(Math.PI/180);
+    object.scale.set(1.6,1.6,1.6);
     scene.add(object);
 });
+
+
+//Load Track
+var manager = new THREE.LoadingManager();
+manager.onProgress = function ( item, loaded, total ) {
+    console.log( item, loaded, total );
+};
+
+//Texture
+var trackTexture = new THREE.Texture();
+
+var loader = new THREE.ImageLoader( manager );
+loader.load('obj/RaceTrack/Main.png', function(image){
+    trackTexture.image = image;
+    trackTexture.needsUpdate = true;
+});
+
+//Model
+var loader = new THREE.OBJLoader( manager );
+
+loader.load('obj/RaceTrack/FullTrack.obj', function(object){
+    object.traverse(function(child){
+        if(child instanceof THREE.Mesh){
+            child.material.map = trackTexture;
+        }
+    });
+
+    object.position.y = -18.4;
+    object.position.z = 30;
+    object.scale.set(90,90,90);
+    scene.add(object);
+});
+
 
 animate();
 
