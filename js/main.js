@@ -1,8 +1,8 @@
 //*********************************
 // SETUP SCENE ********************
 //*********************************
-var height = 600;
-var width = 800;
+var height = 500;
+var width = 980;
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, width/height, 0.1, 1000);
