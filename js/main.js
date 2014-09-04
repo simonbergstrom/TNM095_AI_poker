@@ -54,8 +54,6 @@ loader.load( 'obj/policeCar/crown_victoria.obj', function ( object ) {
         }
     } );
 
-    //object.position.y = - 80;
-    //object.scale.set(100,100,100);
     scene.add( object );
 } );
 
