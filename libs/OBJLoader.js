@@ -152,7 +152,7 @@ THREE.OBJLoader.prototype = {
 		if ( /^o /gm.test( text ) === false ) {
 
 			geometry = new THREE.Geometry();
-			material = new THREE.MeshPhongMaterial( {
+			material = new THREE.MeshLambertMaterial( {
 					color: 0xFFFFFF,
 			    ambient: 0xFFFFFF, // should generally match color
 			    specular: 0x111111,
@@ -284,7 +284,7 @@ THREE.OBJLoader.prototype = {
 			} else if ( /^o /.test( line ) ) {
 
 				geometry = new THREE.Geometry();
-				material = new THREE.MeshPhongMaterial( {
+				material = new THREE.MeshLambertMaterial( {
 						color: 0xFFFFFF,
 						ambient: 0xFFFFFF, // should generally match color
 						specular: 0x111111,

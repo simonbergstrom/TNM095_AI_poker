@@ -16,18 +16,36 @@ controls.addEventListener('change', render);
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(width, height);
-renderer.setClearColor( 0xffffff, 1 );
+renderer.setClearColor( 0x99ccff, 1);
 document.getElementById("container").appendChild(renderer.domElement);
 
+//Add lights
 var light = new THREE.PointLight(0xffffff, 1, 0);
-light.position.set(0, 100, 0);
+light.position.set(0, 200, 0);
 scene.add(light);
+
+/*var ambientLight = new THREE.AmbientLight(0xaaaaaa); // soft white light
+scene.add(ambientLight);*/
 
 //Load car
 var manager = new THREE.LoadingManager();
-manager.onProgress = function ( item, loaded, total ) {
-    console.log( item, loaded, total );
+manager.onProgress = function (item, loaded, total) {
+    console.log(item, loaded, total);
 };
+
+// plane
+var grassTexture = THREE.ImageUtils.loadTexture("texture/grass_texture.jpg");
+grassTexture.wrapS = THREE.RepeatWrapping;
+grassTexture.wrapT = THREE.RepeatWrapping;
+
+//Set repeat how many times
+grassTexture.repeat.set(4,4);
+
+var plane = new THREE.Mesh(new THREE.PlaneGeometry(700,700, 50, 50), new THREE.MeshLambertMaterial({map : grassTexture}));
+//plane.rotation.z += 45*(Math.PI/180);
+plane.rotation.x -= 90*(Math.PI/180);
+plane.position.y = -5;
+scene.add(plane);
 
 //Texture
 var texture = new THREE.Texture();
@@ -50,6 +68,7 @@ loader.load('obj/policeCar/crown_victoria.obj', function(object){
 
     object.rotation.y -= 47*(Math.PI/180);
     object.scale.set(1.6,1.6,1.6);
+    object.castShadow = true;
     scene.add(object);
 });
 
@@ -82,6 +101,7 @@ loader.load('obj/RaceTrack/FullTrack.obj', function(object){
     object.position.y = -18.4;
     object.position.z = 30;
     object.scale.set(90,90,90);
+    object.castShadow = true;
     scene.add(object);
 });
 
