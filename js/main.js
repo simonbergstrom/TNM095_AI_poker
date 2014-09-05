@@ -20,12 +20,8 @@ renderer.setClearColor( 0xffffff, 1 );
 document.getElementById("container").appendChild(renderer.domElement);
 
 var light = new THREE.PointLight(0xffffff, 1, 0);
-light.position.set(0, 10, 0);
+light.position.set(0, 100, 0);
 scene.add(light);
-
-var light2 = new THREE.PointLight(0xeeeeee, 1, 0);
-light2.position.set(0, 0, 5);
-scene.add(light2);
 
 //Load car
 var manager = new THREE.LoadingManager();

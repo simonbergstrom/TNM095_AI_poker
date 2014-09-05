@@ -155,8 +155,8 @@ THREE.OBJLoader.prototype = {
 			material = new THREE.MeshPhongMaterial( {
 					color: 0xFFFFFF,
 			    ambient: 0xFFFFFF, // should generally match color
-			    specular: 0x444444,
-			    shininess: 100,
+			    specular: 0x111111,
+			    shininess: 40,
 			});
 			mesh = new THREE.Mesh( geometry, material );
 			object.add( mesh );
@@ -285,10 +285,10 @@ THREE.OBJLoader.prototype = {
 
 				geometry = new THREE.Geometry();
 				material = new THREE.MeshPhongMaterial( {
-						color: 0x996633,
-						ambient: 0x996633, // should generally match color
-						specular: 0x050505,
-						shininess: 100
+						color: 0xFFFFFF,
+						ambient: 0xFFFFFF, // should generally match color
+						specular: 0x111111,
+						shininess: 10
 				});
 
 				mesh = new THREE.Mesh( geometry, material );
