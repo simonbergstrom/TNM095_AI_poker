@@ -13,50 +13,61 @@ function Cards() {
 Cards.prototype.whichCard = function(card){
 	var number=card%13;
 
+	if(number === 0)
+		number = 13;
+
+	var res;
+
 	if(card <14){ // Spades
-		console.log("Spades nr: ",number);
+		res = {"suit":"Spades", "number":number};
+		//console.log("Spades nr: ",number);
 	}
 	else if(card<27){ //Hearts
-		console.log("Heart nr: ",number);
+		res = {"suit":"Hearts", "number":number};
+		//console.log("Heart nr: ",number);
 	}
 	else if(card<40){ // Diamonds
-		console.log("Diamonds nr: ",number);
+		res = {"suit":"Diamonds", "number":number};
+		//console.log("Diamonds nr: ",number);
 	}
 	else { //Clubs
-		console.log("Clubs nr: ",number);
+		res = {"suit":"Club", "number":number};
+		//console.log("Clubs nr: ",number);
 	}
+
+	return res;
 };
 
 
 // Method for shuffle the cards and start a new round
 Cards.prototype.shuffle = function() {
   for(var j, x, i = this.cards.length; i; j = Math.floor(Math.random() * i), x = this.cards[--i], this.cards[i] = this.cards[j], this.cards[j] = x);
-    counter=0;	
-    console.log("SHUFFLE: ",this.cards);	
+    counter=0;
+    console.log("SHUFFLE: ",this.cards);
 };
 
 // Method for pop the Flop and reveal three cards
 Cards.prototype.getFlop = function() {
 	var i = this.cards.length-1-counter;
-	var res = [this.cards[i],this.cards[i-1],this.cards[i-2]];
+	var res = {"card1": this.whichCard(this.cards[i]), "card2": this.whichCard(this.cards[i-1]), "card3": this.whichCard(this.cards[i-2])};
 	counter=counter+3;
-	console.log("GET Flop: ",res);
-
+	return res;
 };
-// Method for 
+
+// Method for
 Cards.prototype.getPocket = function(){
 	var i = this.cards.length-1-counter;
-	var res = [this.cards[i],this.cards[i-1]];
+	var res = {"card1": this.whichCard(this.cards[i]),"card2": this.whichCard(this.cards[i-1])};
 	counter=counter+2;
 	console.log("Your Hand: ",res);
+	return res;
 
 };
 
 Cards.prototype.getOneCard = function(){
-	var res = this.cards[this.cards.length-counter-1];
+	var res = this.whichCard(this.cards[this.cards.length-counter-1]);
 	counter = counter+1;
 	console.log("Pop one card: ", res);
 
 	return res;
-
 }

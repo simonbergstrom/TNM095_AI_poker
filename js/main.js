@@ -1,9 +1,10 @@
 //*********************************
 // SETUP SCENE ********************
 //*********************************
-var cards = new Cards();
+//var cards = new Cards();
 
 var gameLogic = new Game();
+gameLogic.playRound();
 
 // TEST : Shuffle .. two players get cards and Flop i out..
 
