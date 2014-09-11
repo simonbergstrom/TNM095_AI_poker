@@ -17,8 +17,13 @@ cards.getPocket();
 cards.getFlop();
 
 // Reveal one card and then one again ("the river")
-cards.getOneCard();
-cards.getOneCard();
+var x1 = cards.getOneCard();
+var x2 = cards.getOneCard();
+cards.whichCard(x1);
+cards.whichCard(x2);
+//cards.whichCard(card);
+
+
 
 console.log("NEEW GAAAMMMEE!!!!!!!");
 // TEST 2 restart game and same test..
