@@ -3,8 +3,31 @@
 //*********************************
 var cards = new Cards();
 
+
+// TEST : Shuffle .. two players get cards and Flop i out..
+
+// Shuffle card game/ new round
 cards.shuffle();
-cards.getRiver();
+
+// Two players get there two cards.. pop from deck
+cards.getPocket();
+cards.getPocket();
+
+// The flop gets out three cards from deck
+cards.getFlop();
+
+// Reveal one card and then one again ("the river")
+cards.getOneCard();
+cards.getOneCard();
+
+console.log("NEEW GAAAMMMEE!!!!!!!");
+// TEST 2 restart game and same test..
+cards.shuffle();
+cards.getPocket();
+cards.getPocket();
+cards.getFlop();
+cards.getOneCard();
+cards.getOneCard();
 
 var height = 500;
 var width = 880;
