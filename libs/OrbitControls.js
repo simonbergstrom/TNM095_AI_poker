@@ -353,8 +353,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		}
 
-		document.getElementById("container").addEventListener( 'mousemove', onMouseMove, false );
-		document.getElementById("container").addEventListener( 'mouseup', onMouseUp, false );
+		document.getElementById("canvasContainer").addEventListener( 'mousemove', onMouseMove, false );
+		document.getElementById("canvasContainer").addEventListener( 'mouseup', onMouseUp, false );
 		scope.dispatchEvent( startEvent );
 
 	}
@@ -422,8 +422,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		if ( scope.enabled === false ) return;
 
-		document.getElementById("container").removeEventListener( 'mousemove', onMouseMove, false );
-		document.getElementById("container").removeEventListener( 'mouseup', onMouseUp, false );
+		document.getElementById("canvasContainer").removeEventListener( 'mousemove', onMouseMove, false );
+		document.getElementById("canvasContainer").removeEventListener( 'mouseup', onMouseUp, false );
 		scope.dispatchEvent( endEvent );
 		state = STATE.NONE;
 
@@ -628,14 +628,14 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	}
 
-	document.getElementById("container").addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
-	document.getElementById("container").addEventListener( 'mousedown', onMouseDown, false );
-	document.getElementById("container").addEventListener( 'mousewheel', onMouseWheel, false );
-	document.getElementById("container").addEventListener( 'DOMMouseScroll', onMouseWheel, false ); // firefox
+	document.getElementById("canvasContainer").addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
+	document.getElementById("canvasContainer").addEventListener( 'mousedown', onMouseDown, false );
+	document.getElementById("canvasContainer").addEventListener( 'mousewheel', onMouseWheel, false );
+	document.getElementById("canvasContainer").addEventListener( 'DOMMouseScroll', onMouseWheel, false ); // firefox
 
-	document.getElementById("container").addEventListener( 'touchstart', touchstart, false );
-	document.getElementById("container").addEventListener( 'touchend', touchend, false );
-	document.getElementById("container").addEventListener( 'touchmove', touchmove, false );
+	document.getElementById("canvasContainer").addEventListener( 'touchstart', touchstart, false );
+	document.getElementById("canvasContainer").addEventListener( 'touchend', touchend, false );
+	document.getElementById("canvasContainer").addEventListener( 'touchmove', touchmove, false );
 
 	window.addEventListener( 'keydown', onKeyDown, false );
 
