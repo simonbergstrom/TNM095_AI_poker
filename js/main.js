@@ -87,6 +87,9 @@ loader.load('obj/RaceTrack/FullTrack.obj', function(object){
     object.position.z = 30;
     object.scale.set(90,90,90);
     scene.add(object);
+
+
+    console.log(object);
 });
 
 
