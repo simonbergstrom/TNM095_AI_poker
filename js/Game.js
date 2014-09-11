@@ -23,6 +23,6 @@ function Game(){
 }
 
 
-Game.prototype.playRound = funtion(){
-  
+Game.prototype.playRound = function(){
+
 };
