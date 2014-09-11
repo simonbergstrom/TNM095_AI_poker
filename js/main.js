@@ -24,28 +24,46 @@ var light = new THREE.PointLight(0xffffff, 1, 0);
 light.position.set(0, 200, 0);
 scene.add(light);
 
+//Add lights
+var light2 = new THREE.PointLight(0xffffff, 1, 0);
+light2.position.set(0, -200, 0);
+scene.add(light2);
+
 /*var ambientLight = new THREE.AmbientLight(0xaaaaaa); // soft white light
 scene.add(ambientLight);*/
 
-//Load car
-var manager = new THREE.LoadingManager();
-manager.onProgress = function (item, loaded, total) {
-    console.log(item, loaded, total);
-};
-
 // plane
-var grassTexture = THREE.ImageUtils.loadTexture("texture/grass_texture.jpg");
+var grassTexture = THREE.ImageUtils.loadTexture("css/img/pokertablefelt.jpg");
 grassTexture.wrapS = THREE.RepeatWrapping;
 grassTexture.wrapT = THREE.RepeatWrapping;
 
 //Set repeat how many times
-grassTexture.repeat.set(4,4);
+//grassTexture.repeat.set(4,4);
 
-var plane = new THREE.Mesh(new THREE.PlaneGeometry(700,700, 50, 50), new THREE.MeshLambertMaterial({map : grassTexture}));
+var plane = new THREE.Mesh(new THREE.PlaneGeometry(700,700, 5, 5), new THREE.MeshLambertMaterial({map : grassTexture}));
+
 //plane.rotation.z += 45*(Math.PI/180);
 plane.rotation.x -= 90*(Math.PI/180);
 plane.position.y = -5;
 scene.add(plane);
+
+    var materials = [
+       new THREE.MeshLambertMaterial({color: 0xffffff}),
+       new THREE.MeshLambertMaterial({color: 0xffffff}),
+       new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('texture/cards/h_07.png')}), // Top
+       new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('texture/cards/backside.png')}), // Bottom
+       new THREE.MeshLambertMaterial({color: 0xffffff}),
+       new THREE.MeshLambertMaterial({color: 0xffffff})
+    ];
+
+    var card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(materials));
+    scene.add(card);
+
+/*
+var manager = new THREE.LoadingManager();
+manager.onProgress = function (item, loaded, total) {
+    console.log(item, loaded, total);
+};
 
 //Texture
 var texture = new THREE.Texture();
@@ -65,46 +83,8 @@ loader.load('obj/policeCar/crown_victoria.obj', function(object){
             child.material.map = texture;
         }
     });
-
-    object.rotation.y -= 47*(Math.PI/180);
-    object.scale.set(1.6,1.6,1.6);
-    object.castShadow = true;
     scene.add(object);
-});
-
-
-//Load Track
-var manager = new THREE.LoadingManager();
-manager.onProgress = function ( item, loaded, total ) {
-    console.log( item, loaded, total );
-};
-
-//Texture
-var trackTexture = new THREE.Texture();
-
-var loader = new THREE.ImageLoader( manager );
-loader.load('obj/RaceTrack/Main.png', function(image){
-    trackTexture.image = image;
-    trackTexture.needsUpdate = true;
-});
-
-//Model
-var loader = new THREE.OBJLoader( manager );
-
-loader.load('obj/RaceTrack/FullTrack.obj', function(object){
-    object.traverse(function(child){
-        if(child instanceof THREE.Mesh){
-            child.material.map = trackTexture;
-        }
-    });
-
-    object.position.y = -18.4;
-    object.position.z = 30;
-    object.scale.set(90,90,90);
-    object.castShadow = true;
-    scene.add(object);
-});
-
+});*/
 
 animate();
 
