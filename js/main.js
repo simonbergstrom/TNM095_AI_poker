@@ -69,19 +69,29 @@ var card_materials = [
    new THREE.MeshLambertMaterial({color: 0xbbbbbb})
 ];
 
-var card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
+var card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+card.position.x = 160;
+card.name = "dealer_card1";
 scene.add(card);
+
 card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
 card.position.x = 80;
+card.name = "dealer_card2";
 scene.add(card);
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
-card.position.x = 160;
+
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
+card.position.x = 0;
+card.name = "dealer_card3";
 scene.add(card);
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
 card.position.x = -80;
+card.name = "dealer_card4";
 scene.add(card);
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
 card.position.x = -160;
+card.name = "dealer_card5";
 scene.add(card);
 
 // Player 1 card pos
@@ -91,6 +101,7 @@ card.position.x = 40;
 card.position.y = 40;
 card.rotation.x = 45*(Math.PI/180);
 card.rotation.z = 20*(Math.PI/180);
+card.name = "player1_card1";
 scene.add(card);
 
 card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
@@ -99,6 +110,7 @@ card.position.x = -40;
 card.position.y = 40;
 card.rotation.x = 45*(Math.PI/180);
 card.rotation.z = -20*(Math.PI/180);
+card.name = "player1_card2";
 scene.add(card);
 
 // Player 2 card pos
@@ -108,6 +120,7 @@ card.position.x = 40;
 card.position.y = 40;
 card.rotation.x = -45*(Math.PI/180);
 card.rotation.z = 20*(Math.PI/180);
+card.name = "player2_card1";
 scene.add(card);
 
 card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
@@ -116,6 +129,7 @@ card.position.x = -40;
 card.position.y = 40;
 card.rotation.x = -45*(Math.PI/180);
 card.rotation.z = -20*(Math.PI/180);
+card.name = "player2_card2";
 scene.add(card);
 
 // Deck
@@ -132,7 +146,10 @@ card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 30, 88), new THREE.MeshFaceMat
 
 card.position.x = 280;
 card.position.y = 15;
+card.name = "deck";
 scene.add(card);
+
+//scene.remove(scene.getObjectByName("deck"));
 
 animate();
 
