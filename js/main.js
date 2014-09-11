@@ -57,11 +57,27 @@ var light = new THREE.PointLight(0xffffff, 1, 0);
 light.position.set(0, 200, 0);
 scene.add(light);
 
+var light2 = new THREE.PointLight(0xffffff, 1, 0);
+light2.position.set(0, -200, 0);
+scene.add(light2);
+
 var plane = new THREE.Mesh(new THREE.PlaneGeometry(700,700, 50, 50), new THREE.MeshLambertMaterial({color: 0xffffff}));
-//plane.rotation.z += 45*(Math.PI/180);
 plane.rotation.x -= 90*(Math.PI/180);
 plane.position.y = -5;
 scene.add(plane);
+
+
+var card_materials = [
+   new THREE.MeshLambertMaterial({color: 0xffffff}),
+   new THREE.MeshLambertMaterial({color: 0xffffff}),
+   new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('texture/cards/h_07.png')}), // Top
+   new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('texture/cards/backside.png')}), // Bottom
+   new THREE.MeshLambertMaterial({color: 0xffffff}),
+   new THREE.MeshLambertMaterial({color: 0xffffff})
+];
+
+var card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
+scene.add(card);
 
 animate();
 
