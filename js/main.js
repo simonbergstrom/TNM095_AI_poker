@@ -1,6 +1,11 @@
 //*********************************
 // SETUP SCENE ********************
 //*********************************
+var cards = new Cards();
+
+cards.shuffle();
+cards.getRiver();
+
 var height = 500;
 var width = 980;
 
