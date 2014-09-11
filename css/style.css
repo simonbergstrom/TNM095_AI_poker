@@ -93,7 +93,7 @@ button{
   border: none;
   background-color: white;
   font-family: inherit;
-  
+
   font-size: 14pt;
   width: 150px;
   padding: 5px;
@@ -132,7 +132,19 @@ button{
   border: 1px solid #285e8e;
 }
 
-
 button:hover{
   border-color: #000 !important;
+}
+
+.button-disabled{
+  background-color: #ccc !important;
+  color: #888 !important;
+  border-color: #aaa !important;
+  cursor: default !important;
+}
+
+.button-disabled:hover{
+  background-color: #ccc !important;
+  color: #888 !important;
+  border-color: #aaa !important;
 }
