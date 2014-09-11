@@ -10,7 +10,7 @@ canvas{
   border-radius: 3px;
   border: 1px solid #444;
   text-align: center;
-  margin-left: 10px;  
+  margin-left: 10px;
 }
 
 #canvasContainer{
@@ -58,7 +58,7 @@ h1{
 }
 
 #sideMenu{
-  height: 500px;
+
   width: 190px;
   border: 1px solid #444;
   border-radius: 3px;
@@ -90,7 +90,7 @@ h1{
 
 button{
   border-radius: 3px;
-  border: 1px solid #444;
+  border: none;
   background-color: white;
   font-family: inherit;
   font-weight: bold;
@@ -98,9 +98,41 @@ button{
   width: 150px;
   padding: 5px;
   cursor: pointer;
+  color: white;
+  margin: 5px;
 }
 
 #resetbutton{
+  color: #444;
+  border: 1px solid #777;
+}
+
+#callButton{
+  background-color: #5bc0de;
+  border: 1px solid #39a0bd;
+}
+
+#betButton{
+  background-color: #d9534f;
+  border: 1px solid #ac2925;
+}
+
+#checkButton{
+  background-color: #449d44;
+  border: 1px solid #398439;
+}
+
+#raiseButton{
+  background-color: #ec971f;
+  border: 1px solid #d58512;
+}
+
+#foldButton{
   background-color: #3071a9;
-  color: white;
+  border: 1px solid #285e8e;
+}
+
+
+button:hover{
+  border-color: #000 !important;
 }
