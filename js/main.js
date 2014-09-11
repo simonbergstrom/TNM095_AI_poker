@@ -3,8 +3,10 @@
 //*********************************
 
 $("button").each(function(){
-  $(this).addClass("button-disabled");
-  $(this).attr("disabled", true);
+  if($(this).attr("id") !== "resetButton"){
+    $(this).addClass("button-disabled");
+    $(this).attr("disabled", true);
+  }
 });
 //Gamelogic and stuff
 var gameLogic = new Game();
@@ -22,7 +24,7 @@ var controls = new THREE.OrbitControls(camera);
 controls.damping = 0.2;
 controls.addEventListener('change', render);
 
-var renderer = new THREE.WebGLRenderer();
+var renderer = new THREE.WebGLRenderer({antialiasing: true});
 renderer.setSize(width, height);
 renderer.setClearColor( 0x99ccff, 1);
 document.getElementById("canvasContainer").appendChild(renderer.domElement);
@@ -141,3 +143,38 @@ function render() {
 }
 
 render();
+
+
+
+
+//***************
+//ButtonListeners
+//***************
+$("#resetButton").click(function(){
+  //Reset the game with a new instance of the gameLogic();
+  //Clear the object.
+  gameLogic = {};
+  //Generate new game
+  gameLogic = new Game();
+  gameLogic.playRound();
+});
+
+$("#callButton").click(function(){
+  gameLogic.call();
+});
+
+$("#betButton").click(function(){
+  gameLogic.bet();
+});
+
+$("#checkButton").click(function(){
+  gameLogic.check();
+});
+
+$("#raiseButton").click(function(){
+  gameLogic.raise();
+});
+
+$("#foldButton").click(function(){
+  gameLogic.fold();
+});
