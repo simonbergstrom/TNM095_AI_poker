@@ -41,9 +41,8 @@ var width = 880;
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, width/height, 0.1, 1000);
-camera.position.z = 4.5;
-camera.position.x = -4.95;
-camera.position.y = 4.59;
+camera.position.z = 350;
+camera.position.y = 300;
 
 var controls = new THREE.OrbitControls(camera);
 controls.damping = 0.2;
@@ -54,32 +53,104 @@ renderer.setSize(width, height);
 renderer.setClearColor( 0x99ccff, 1);
 document.getElementById("canvasContainer").appendChild(renderer.domElement);
 
-//Add lights
-var light = new THREE.PointLight(0xffffff, 1, 0);
-light.position.set(0, 200, 0);
-scene.add(light);
+var hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
+scene.add(hemisphereLight);
 
-var light2 = new THREE.PointLight(0xffffff, 1, 0);
-light2.position.set(0, -200, 0);
-scene.add(light2);
-
-var plane = new THREE.Mesh(new THREE.PlaneGeometry(700,700, 50, 50), new THREE.MeshLambertMaterial({color: 0xffffff}));
+var plane = new THREE.Mesh(new THREE.PlaneGeometry(700,700, 50, 50), new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('texture/pokertablefelt.jpg')}));
 plane.rotation.x -= 90*(Math.PI/180);
 plane.position.y = -5;
 scene.add(plane);
 
-
 var card_materials = [
-   new THREE.MeshLambertMaterial({color: 0xffffff}),
-   new THREE.MeshLambertMaterial({color: 0xffffff}),
+   new THREE.MeshLambertMaterial({color: 0xbbbbbb}),
+   new THREE.MeshLambertMaterial({color: 0xbbbbbb}),
    new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('texture/cards/h_07.png')}), // Top
    new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('texture/cards/backside.png')}), // Bottom
-   new THREE.MeshLambertMaterial({color: 0xffffff}),
-   new THREE.MeshLambertMaterial({color: 0xffffff})
+   new THREE.MeshLambertMaterial({color: 0xbbbbbb}),
+   new THREE.MeshLambertMaterial({color: 0xbbbbbb})
 ];
 
-var card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
+var card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+card.position.x = 160;
+card.name = "dealer_card1";
 scene.add(card);
+
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+card.position.x = 80;
+card.name = "dealer_card2";
+scene.add(card);
+
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
+card.position.x = 0;
+card.name = "dealer_card3";
+scene.add(card);
+
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
+card.position.x = -80;
+card.name = "dealer_card4";
+scene.add(card);
+
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
+card.position.x = -160;
+card.name = "dealer_card5";
+scene.add(card);
+
+// Player 1 card pos
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+card.position.z = 200;
+card.position.x = 40;
+card.position.y = 40;
+card.rotation.x = 45*(Math.PI/180);
+card.rotation.z = 20*(Math.PI/180);
+card.name = "player1_card1";
+scene.add(card);
+
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+card.position.z = 200;
+card.position.x = -40;
+card.position.y = 40;
+card.rotation.x = 45*(Math.PI/180);
+card.rotation.z = -20*(Math.PI/180);
+card.name = "player1_card2";
+scene.add(card);
+
+// Player 2 card pos
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+card.position.z = -200;
+card.position.x = 40;
+card.position.y = 40;
+card.rotation.x = -45*(Math.PI/180);
+card.rotation.z = 20*(Math.PI/180);
+card.name = "player2_card1";
+scene.add(card);
+
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+card.position.z = -200;
+card.position.x = -40;
+card.position.y = 40;
+card.rotation.x = -45*(Math.PI/180);
+card.rotation.z = -20*(Math.PI/180);
+card.name = "player2_card2";
+scene.add(card);
+
+// Deck
+card_materials = [
+   new THREE.MeshLambertMaterial({color: 0xbbbbbb}),
+   new THREE.MeshLambertMaterial({color: 0xbbbbbb}),
+   new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('texture/cards/backside.png')}), // Top
+   new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture('texture/cards/backside.png')}), // Bottom
+   new THREE.MeshLambertMaterial({color: 0xbbbbbb}),
+   new THREE.MeshLambertMaterial({color: 0xbbbbbb})
+];
+
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 30, 88), new THREE.MeshFaceMaterial(card_materials)); 
+
+card.position.x = 280;
+card.position.y = 15;
+card.name = "deck";
+scene.add(card);
+
+//scene.remove(scene.getObjectByName("deck"));
 
 animate();
 
