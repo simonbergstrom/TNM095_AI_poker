@@ -174,7 +174,7 @@ card.position.y = 15;
 card.name = "deck";
 card.castShadow = true;
 scene.add(card);
-
+console.log(card)
 //scene.remove(scene.getObjectByName("deck"));
 
 animate();
