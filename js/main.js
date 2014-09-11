@@ -3,11 +3,12 @@
 //*********************************
 var cards = new Cards();
 
+var gameLogic = new Game();
 
 // TEST : Shuffle .. two players get cards and Flop i out..
 
 // Shuffle card game/ new round
-cards.shuffle();
+/*cards.shuffle();
 
 // Two players get there two cards.. pop from deck
 cards.getPocket();
@@ -32,7 +33,7 @@ cards.getPocket();
 cards.getPocket();
 cards.getFlop();
 cards.getOneCard();
-cards.getOneCard();
+cards.getOneCard();*/
 
 var height = 500;
 var width = 880;
