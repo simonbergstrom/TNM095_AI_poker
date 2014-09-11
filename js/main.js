@@ -1,40 +1,14 @@
 //*********************************
 // SETUP SCENE ********************
 //*********************************
-//var cards = new Cards();
 
+$("button").each(function(){
+  $(this).addClass("button-disabled");
+  $(this).attr("disabled", true);
+});
+//Gamelogic and stuff
 var gameLogic = new Game();
 gameLogic.playRound();
-
-// TEST : Shuffle .. two players get cards and Flop i out..
-
-// Shuffle card game/ new round
-/*cards.shuffle();
-
-// Two players get there two cards.. pop from deck
-cards.getPocket();
-cards.getPocket();
-
-// The flop gets out three cards from deck
-cards.getFlop();
-
-// Reveal one card and then one again ("the river")
-var x1 = cards.getOneCard();
-var x2 = cards.getOneCard();
-cards.whichCard(x1);
-cards.whichCard(x2);
-//cards.whichCard(card);
-
-
-
-console.log("NEEW GAAAMMMEE!!!!!!!");
-// TEST 2 restart game and same test..
-cards.shuffle();
-cards.getPocket();
-cards.getPocket();
-cards.getFlop();
-cards.getOneCard();
-cards.getOneCard();*/
 
 var height = 500;
 var width = 880;
@@ -70,12 +44,12 @@ var card_materials = [
    new THREE.MeshLambertMaterial({color: 0xbbbbbb})
 ];
 
-var card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+var card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
 card.position.x = 160;
 card.name = "dealer_card1";
 scene.add(card);
 
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
 card.position.x = 80;
 card.name = "dealer_card2";
 scene.add(card);
@@ -96,7 +70,7 @@ card.name = "dealer_card5";
 scene.add(card);
 
 // Player 1 card pos
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
 card.position.z = 200;
 card.position.x = 40;
 card.position.y = 40;
@@ -105,7 +79,7 @@ card.rotation.z = 20*(Math.PI/180);
 card.name = "player1_card1";
 scene.add(card);
 
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
 card.position.z = 200;
 card.position.x = -40;
 card.position.y = 40;
@@ -115,7 +89,7 @@ card.name = "player1_card2";
 scene.add(card);
 
 // Player 2 card pos
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
 card.position.z = -200;
 card.position.x = 40;
 card.position.y = 40;
@@ -124,7 +98,7 @@ card.rotation.z = 20*(Math.PI/180);
 card.name = "player2_card1";
 scene.add(card);
 
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials)); 
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
 card.position.z = -200;
 card.position.x = -40;
 card.position.y = 40;
@@ -143,7 +117,7 @@ card_materials = [
    new THREE.MeshLambertMaterial({color: 0xbbbbbb})
 ];
 
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 30, 88), new THREE.MeshFaceMaterial(card_materials)); 
+card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 30, 88), new THREE.MeshFaceMaterial(card_materials));
 
 card.position.x = 280;
 card.position.y = 15;
