@@ -74,6 +74,7 @@ Game.prototype.playRound = function(){
   console.log(this.player1, this.player2, this.flop, this.turnCard, this.riverCard);
 };
 
+
 Game.prototype.makeMove = function(player){
   //This function just figures out what move the player has to make?
   //Then call another function for just that move?
@@ -143,3 +144,22 @@ Game.prototype.raise = function(){
 Game.prototype.fold = function(){
 
 };
+
+function evaluateCards(cardsOnHand,flop,turnCard,riverCard){
+  //Evaluate a players hand and return the best combination of five cards for the player with some kind of type of score
+
+  // 1) Trim from 7 to 5 best cards....
+
+  // 2) Create Histogram of the cards numbers...
+
+  // 3) Check if it's a flush
+
+  // 4) Check if it's a straight
+
+  // 5) Check if it's a straight flush
+
+  // 6) If no match in the previous it's High Card
+
+  // 7) Evaluate!
+
+}
