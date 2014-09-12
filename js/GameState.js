@@ -4,12 +4,12 @@ function GameState(){
   this.player1 = { //Player
     name : "Player",
     cardsOnHand : {},
-    money : 100
+    money : 20
   };
   this.player2 = { //Computer
     name : "Computer",
     cardsOnHand : {},
-    money : 100
+    money : 20
   };
 
   //The cards on the table
@@ -56,16 +56,18 @@ GameState.prototype.doMove = function(player, move){
         var validMoves = this.getAvailableMoves();
         console.log(validMoves);
         if(validMoves[move]){
-          console.log("Tjena");
+          this.moveHelper(player, move);
         }
         else{
           console.log("Invalid Move");
         }
       break;
     }
-    case 2:
-      //Do shit
+    case 2:{
+      //Dealer deals the turn card.
+      this.turnCard = this.deckOfCards.getOneCard();
       break;
+    }
     case 3:
       //Do shit
       break;
@@ -79,6 +81,24 @@ GameState.prototype.doMove = function(player, move){
     default:
       console.log("Game Over");
       break;
+  }
+};
+
+GameState.prototype.moveHelper = function(player, move){
+  if(move === "call"){
+
+  }
+  else if(move === "bet"){
+    this.bet(player);
+  }
+  else if(move === "check"){
+
+  }
+  else if(move === "raise"){
+
+  }
+  else if(move === "fold"){
+
   }
 };
 
@@ -138,6 +158,38 @@ GameState.prototype.getAvailableMoves = function(){
   }
   return res;
 };
+
+GameState.prototype.call = function(){
+
+}
+
+GameState.prototype.bet = function(player){
+  if(player.name === "Player"){ // The human player
+    this.player1.money--;
+  }
+  else{ // The computer player
+    this.player2.money--;
+  }
+  this.moneyPot++;
+
+  this.availableMoves.call = true;
+  this.availableMoves.bet = false;
+  this.availableMoves.check = false;
+  this.availableMoves.raise = true;
+  this.availableMoves.fold = true;
+}
+
+GameState.prototype.check = function(){
+
+}
+
+GameState.prototype.raise = function(){
+
+}
+
+GameState.prototype.fold = function(){
+
+}
 
 function evaluateCards(cardsOnHand,flop,turnCard,riverCard){
   //Evaluate a players hand and return the best combination of five cards for the player with some kind of type of score

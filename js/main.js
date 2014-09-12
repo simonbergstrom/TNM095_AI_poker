@@ -173,6 +173,7 @@ $("#callButton").click(function(){
 
 $("#betButton").click(function(){
   gameState.doMove(humanPlayer, "bet");
+  console.log(gameState);
 });
 
 $("#checkButton").click(function(){
