@@ -1,16 +1,17 @@
 //*********************************
 // SETUP SCENE ********************
 //*********************************
+var gameState;
+var humanPlayer;
+
 
 $("button").each(function(){
-  if($(this).attr("id") !== "resetButton"){
+  if($(this).attr("id") !== "resetButton" && $(this).attr("id") !== "startButton"){
     $(this).addClass("button-disabled");
     $(this).attr("disabled", true);
   }
 });
-//Gamelogic and stuff
-var gameLogic = new Game();
-gameLogic.playRound();
+
 
 var height = 500;
 var width = 880;
@@ -145,36 +146,43 @@ function render() {
 render();
 
 
-
-
 //***************
 //ButtonListeners
 //***************
+//Game is built arount events
+
+$("#startButton").click(function(){
+  //Gamelogic and stuff
+  console.log("Starting Game!");
+  gameState = new GameState();
+  humanPlayer = gameState.getHumanPlayer();
+  gameState.updateButtons();
+  console.log("These are your Cards: ", gameState.getHumanPlayerCards());
+});
+
 $("#resetButton").click(function(){
   //Reset the game with a new instance of the gameLogic();
   //Clear the object.
   gameLogic = {};
-  //Generate new game
   gameLogic = new Game();
-  gameLogic.playRound();
 });
 
 $("#callButton").click(function(){
-  gameLogic.call();
+  //Do shit
 });
 
 $("#betButton").click(function(){
-  gameLogic.bet();
+  gameState.doMove(humanPlayer, "bet");
 });
 
 $("#checkButton").click(function(){
-  gameLogic.check();
+
 });
 
 $("#raiseButton").click(function(){
-  gameLogic.raise();
+  //Do shit
 });
 
 $("#foldButton").click(function(){
-  gameLogic.fold();
+  //Do shit
 });

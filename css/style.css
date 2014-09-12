@@ -90,12 +90,10 @@ h1{
 
 button{
   border-radius: 3px;
-  border: none;
   background-color: white;
   font-family: inherit;
-
-  font-size: 14pt;
-  width: 150px;
+  font-size: 13pt;
+  width: 140px;
   padding: 5px;
   cursor: pointer;
   color: white;
@@ -130,6 +128,11 @@ button{
 #foldButton{
   background-color: #3071a9;
   border: 1px solid #285e8e;
+}
+
+#startButton{
+  background-color: #449d44;
+  border: 1px solid #398439;
 }
 
 button:hover{
