@@ -1,14 +1,17 @@
 //*********************************
 // SETUP SCENE ********************
 //*********************************
+var gameState;
+var humanPlayer;
+
 
 $("button").each(function(){
-  $(this).addClass("button-disabled");
-  $(this).attr("disabled", true);
+  if($(this).attr("id") !== "resetButton" && $(this).attr("id") !== "startButton"){
+    $(this).addClass("button-disabled");
+    $(this).attr("disabled", true);
+  }
 });
-//Gamelogic and stuff
-var gameLogic = new Game();
-gameLogic.playRound();
+
 
 var height = 500;
 var width = 880;
@@ -22,7 +25,7 @@ var controls = new THREE.OrbitControls(camera);
 controls.damping = 0.2;
 controls.addEventListener('change', render);
 
-var renderer = new THREE.WebGLRenderer();
+var renderer = new THREE.WebGLRenderer({antialiasing: true});
 renderer.setSize(width, height);
 renderer.setClearColor( 0x99ccff, 1);
 document.getElementById("canvasContainer").appendChild(renderer.domElement);
@@ -141,3 +144,46 @@ function render() {
 }
 
 render();
+
+
+//***************
+//ButtonListeners
+//***************
+//Game is built arount events
+
+$("#startButton").click(function(){
+  //Gamelogic and stuff
+  console.log("Starting Game!");
+  gameState = new GameState();
+  humanPlayer = gameState.getHumanPlayer();
+  gameState.updateButtons();
+  console.log("These are your Cards: ", gameState.getHumanPlayerCards());
+});
+
+$("#resetButton").click(function(){
+  //Reset the game with a new instance of the gameLogic();
+  //Clear the object.
+  gameLogic = {};
+  gameLogic = new Game();
+});
+
+$("#callButton").click(function(){
+  //Do shit
+});
+
+$("#betButton").click(function(){
+  gameState.doMove(humanPlayer, "bet");
+  console.log(gameState);
+});
+
+$("#checkButton").click(function(){
+
+});
+
+$("#raiseButton").click(function(){
+  //Do shit
+});
+
+$("#foldButton").click(function(){
+  //Do shit
+});
