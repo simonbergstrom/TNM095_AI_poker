@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <script src="evalPokerHand.js"></script>
+    </head>
+    <body>
+        <h1 class="skewed"><span>Poker Evaluator</span></h1>
+        <div><span><br/><br/><br/><br/><br/><br/><br/>
+         <input id="cardInput" size="30" type="text" placeholder="10♠ J♣ Q♥ K♦ A♠ [A♦ K♠]"
+          pattern="((?:\s*)(10|[2-9]|[J|Q|K|A])[♠|♣|♥|♦](?:\s*)){5,7}" />
+          <br/><br/></span>
+        </div>
+        <div id="output"><small>Use S,C,D,H to key in suits</small></div>
+        <div id="wrapper" class="centered">
+            <div class="playingCards twoColours faceImages"><br>
+              <ul class="table">
+                <li>
+                    <div id="card1" class="card rank-10 spades">
+                        <span class="rank">10</span>
+                        <span class="suit">&spades;</span>
+                    </div>
+                </li>
+                <li>
+                    <div id="card2" class="card rank-j spades">
+                        <span class="rank">J</span>
+                        <span class="suit">&spades;</span>
+                    </div>
+                </li>
+                <li>
+                    <div id="card3" class="card rank-q spades">
+                        <span class="rank">Q</span>
+                        <span class="suit">&spades;</span>
+                    </div>
+                </li>
+                <li>
+                    <div id="card4" class="card rank-k spades">
+                        <span class="rank">K</span>
+                        <span class="suit">&spades;</span>
+                    </div>
+                </li>
+                <li>
+                    <div id="card5" class="card rank-a spades">
+                        <span class="rank">A</span>
+                        <span class="suit">&spades;</span>
+                    </div>
+                </li>
+                <li>
+                    <div id="card6" class="blank">
+                        <span class="rank"></span>
+                        <span class="suit"></span>
+                    </div>
+                </li>
+                <li>
+                    <div id="card7" class="blank">
+                        <span class="rank"></span>
+                        <span class="suit"></span>
+                    </div>
+                </li>
+              </ul>
+            </div>
+        </div>
+        <div><footer><br/><br/><br/><br/><br/><br/>Enter from five to seven cards.</footer></div>
+    </body>
+</html>
