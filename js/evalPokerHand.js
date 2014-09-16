@@ -39,13 +39,24 @@ function getPokerScore(cs) {
     
 function rankHand(str) {
     var index = 10, winCardIndexes, i ,e;
+    console.log(str);
+    var cards = [],suits=[],suitsOrig=[];
+
+    console.log(str);
+
+    for (var obj in str){
+        cards.push(str[obj].number);
+        suits.push(str[obj].suit[0]);
+        suitsOrig.push(str[obj].suit);
+    }
+
     
-    if (str.match(/((?:\s*)(10|[2-9]|[J|Q|K|A])[S|C|H|D](?:\s*)){5,7}/g) !== null) {
-        var cardStr = str.replace(/A/g,"14").replace(/K/g,"13").replace(/Q/g,"12")
+    /*if (str.match(/((?:\s*)(10|[2-9]|[J|Q|K|A])[S|C|H|D](?:\s*)){5,7}/g) !== null) {*/
+        /*var cardStr = str.replace(/A/g,"14").replace(/K/g,"13").replace(/Q/g,"12")
             .replace(/J/g,"11").replace(/S|C|H|D/g,",");
         var cards = cardStr.replace(/\s/g, '').slice(0, -1).split(",");
-        var suits = str.match(/S|C|H|D/g);
-        var suitsOrig = suits.slice(0);
+        var suits = str.match(/S|C|H|D/g);*/
+        
         console.log("The hand to eval: ",cards,suits);
 
         // Convert from letters to special chars..
@@ -103,7 +114,7 @@ function rankHand(str) {
 
                         } else {
                             //Is in the solution
-                            cardUsed.push(cards[i].toString().concat(suitsOrig[i]));
+                            cardUsed.push({"suit":suitsOrig[i],"number":cards[i].toString()});
                              
                         }   
                     }
@@ -111,7 +122,7 @@ function rankHand(str) {
                 }
             }
         }
-    }
+    //}
 }  
 // Test type of hands...
 var theHand =  '2D3C4S5H6C7C';

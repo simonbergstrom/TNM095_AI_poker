@@ -183,7 +183,6 @@ animate();
 //FUNCTIONS*************
 //**********************
 function animate() {
-  console.log(camera.position);
   requestAnimationFrame(animate);
   render();
 }
