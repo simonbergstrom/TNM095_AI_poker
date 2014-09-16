@@ -1,5 +1,6 @@
 // Poker Hand Evaluator by Pat Wilson ©2012 (Chrome|IE8|IE9)
 
+
 hands=["4 of a Kind", "Straight Flush", "Straight", "Flush", "High Card",
        "1 Pair", "2 Pair", "Royal Flush", "3 of a Kind", "Full House", "-Invalid-" ];
 handRanks = [8,9,5,6,1,2,3,10,4,7,0];
@@ -8,10 +9,12 @@ function calcIndex(cs,ss) {
   var v,i,o,s; for (i=-1, v=o=0; i<5; i++, o=Math.pow(2,cs[i]*4)) {v += o*((v/o&15)+1);}
   if ((v%=15)!=5) {return v-1;} else {s = 1<<cs[0]|1<<cs[1]|1<<cs[2]|1<<cs[3]|1<<cs[4];}
   v -= ((s/(s&-s) == 31) || (s == 0x403c) ? 3 : 1);
-  return v - (ss[0] == (ss[0]|ss[1]|ss[2]|ss[3]|ss[4])) * ((s == 0x7c00) ? -5 : 1);
+  var ans = v - (ss[0] == (ss[0]|ss[1]|ss[2]|ss[3]|ss[4])) * ((s == 0x7c00) ? -5 : 1);
+  console.log("calcIndex: ",ans);
+  return ans;
 }
 function getCombinations(k,n) {
-    console.log('called getcombinations' + ' ' + k + ' ' + n);
+    //console.log('called getcombinations' + ' ' + k + ' ' + n);
     var result = [], comb = [];
         function next_comb(comb, k, n ,i) {
             if (comb.length === 0) {for (i = 0; i < k; ++i) {comb[i] = i;} return true;}
@@ -25,87 +28,25 @@ function getCombinations(k,n) {
     return result;
 }
 function getPokerScore(cs) {
-    console.log('called getpokerscore ' + cs);
+    //console.log('called getpokerscore ' + cs);
     var a = cs.slice(), d={}, i;
     for (i=0; i<5; i++) {d[a[i]] = (d[a[i]] >= 1) ? d[a[i]] + 1 : 1;}
     a.sort(function(a,b){return (d[a] < d[b]) ? +1 : (d[a] > d[b]) ? -1 : (b - a);});
     return a[0]<<16|a[1]<<12|a[2]<<8|a[3]<<4|a[4];
 }    
-function showParsedCards(cs,ss) {
-    var card, i;
-    var suitMap = {"♠":"spades", "♣":"clubs", "♥":"hearts", "♦":"diams"};
-
-    if (cs !== null && ss !== null) {
-        if (cs.length == ss.length) {       
-            for (i=0;i<7;i++) {
-                card = document.getElementById("card"+(i+1));
-                if (i < 5) {                     
-                    if (i < cs.length && cs.length !== 0) {
-                        card.className = "card rank-" + cs[i].toLowerCase() + " " + suitMap[ss[i]];
-                        card.getElementsByTagName("span")[0].innerHTML = cs[i];
-                        card.getElementsByTagName("span")[1].innerHTML = ss[i];
-                    } else {
-                        card.className = "card back";
-                        card.getElementsByTagName("span")[0].innerHTML = "";
-                        card.getElementsByTagName("span")[1].innerHTML = "";
-                        if (card.parentNode.tagName == "STRONG") {
-                            card.parentNode.parentNode.innerHTML = card.outerHTML;
-                        }
-                    }
-                } else {
-                    if (i < cs.length && cs.length !== 0) {
-                        card.className = "card rank-" + cs[i].toLowerCase() + " " + suitMap[ss[i]];
-                        card.getElementsByTagName("span")[0].innerHTML = cs[i];
-                        card.getElementsByTagName("span")[1].innerHTML = ss[i];
-                    } else {
-                        card.className = "blank";
-                        card.getElementsByTagName("span")[0].innerHTML = "";
-                        card.getElementsByTagName("span")[1].innerHTML = "";
-                        if (card.parentNode.tagName == "STRONG") {
-                            card.parentNode.parentNode.innerHTML = card.outerHTML;
-                        }
-                    }
-                }
-                if (cs.length < 5) {
-                    if (card.parentNode.tagName == "STRONG") {
-                        card.parentNode.parentNode.innerHTML = card.outerHTML;
-                    }
-                }
-            }
-        }
-    } else {
-        //Reset the cards
-        for (i=0;i<7;i++) {
-            card = document.getElementById("card"+(i+1));
-            if (i>4 && i<7) {
-                card.className = "blank";
-                card.getElementsByTagName("span")[0].innerHTML = "";
-                card.getElementsByTagName("span")[1].innerHTML = "";
-            } else {
-                card.className = "card back";
-                card.getElementsByTagName("span")[0].innerHTML = "";
-                card.getElementsByTagName("span")[1].innerHTML = "";
-            }
-            if (card.parentNode.tagName == "STRONG") {
-                card.parentNode.parentNode.innerHTML = card.outerHTML;
-            }
-        }
-    }
-
-    if (cs === null) {document.getElementById("wrapper").style.width = "425px";}
-    if (cs !== null && ss !== null && cs.length <= 7 && cs.length == ss.length) 
-        {document.getElementById("wrapper").style.width = Math.max(85*cs.length, 425) + "px";}
-}  
+ 
     
 function rankHand(str) {
     var index = 10, winCardIndexes, i ,e;
-    showParsedCards(str.match(/(1[0-4]|[2-9]|[J|Q|K|A])/g), str.match(/♠|♣|♥|♦/g));
+    //showParsedCards(str.match(/(1[0-4]|[2-9]|[J|Q|K|A])/g), str.match(/♠|♣|♥|♦/g));
     
-    if (str.match(/((?:\s*)(10|[2-9]|[J|Q|K|A])[♠|♣|♥|♦](?:\s*)){5,7}/g) !== null) {
+    if (str.match(/((?:\s*)(10|[2-9]|[J|Q|K|A])[S|C|H|D](?:\s*)){5,7}/g) !== null) {
         var cardStr = str.replace(/A/g,"14").replace(/K/g,"13").replace(/Q/g,"12")
-            .replace(/J/g,"11").replace(/♠|♣|♥|♦/g,",");
+            .replace(/J/g,"11").replace(/S|C|H|D/g,",");
         var cards = cardStr.replace(/\s/g, '').slice(0, -1).split(",");
-        var suits = str.match(/♠|♣|♥|♦/g);
+        var suits = str.match(/S|C|H|D/g);
+
+        console.log("Cards: ",cards,"suits: ",suits);
         if (cards !== null && suits !== null) {
             if (cards.length == suits.length) {
                 var o = {}, keyCount = 0, j; 
@@ -125,6 +66,8 @@ function rankHand(str) {
                          var ss = [suits[c[i][0]], suits[c[i][1]], suits[c[i][2]], 
                                    suits[c[i][3]], suits[c[i][4]]];
                          index = calcIndex(cs,ss);
+
+                         console.log("Index of hand:",index);
                              
                          if (handRanks[index] > maxRank) {
                              maxRank = handRanks[index];
@@ -138,7 +81,8 @@ function rankHand(str) {
                              if (score1 > score2) { wci= c[i].slice(); }
                          }
                     } 
-                    index = winIndex; 
+                    index = winIndex;
+                    console.log("morot:",index); 
                  }                     
                 }  
   
@@ -146,17 +90,23 @@ function rankHand(str) {
                 var card;
                 if (cards.length <= 7) {
                     for (i=0; i<7; i++) {
-                        card = document.getElementById("card"+(i+1));
+                        //card = document.getElementById("card"+(i+1));
+                        //card = cards(i+1);
+                        //console.log("TEST:",wci,cards);
                         if (wci.indexOf(i) == -1) {
                             //Not in the solution
-                            if (card.parentNode.tagName == "STRONG") {
+                            console.log("Card not in the solution: ",cards[i],"at index: ",i);
+                            /*if (card.parentNode.tagName == "STRONG") {
                                 card.parentNode.parentNode.innerHTML = card.outerHTML;
-                            }
+                              
+
+                            }*/
                         } else {
                             //Is in the solution
-                            if (card.parentNode.tagName == "LI") {
+                            console.log("Card in the solution: ",cards[i],"at index: ",i);
+                           /* if (card.parentNode.tagName == "LI") {
                                 card.outerHTML = "<strong>" + card.outerHTML  + "</strong>";
-                            }                                  
+                            }  */                                
                         }
                     }
                 }
@@ -164,70 +114,13 @@ function rankHand(str) {
         }
     }
 
-    document.getElementById("output").innerHTML = "<Big><B>Hand: </B>" + hands[index] + "</Big>";
+    console.log("Type of hands: ",hands[index],"at index:",index);
 }  
+var theHand = '2D3C4S5H6C7C';
+var straightF='AHKHQHJH10HASAD';
+var test = 'QSJS10S9S8SASAH';
 
-function inputCardSymbolsOnly(e) { 
-    var chrTyped, chrCode=0, evt=e?e:event;
-    if (evt.charCode!==undefined)     { chrCode = evt.charCode; }
-    else if (evt.which!==undefined)   { chrCode = evt.which; }
-    else if (evt.keyCode!==undefined) { chrCode = evt.keyCode; }
 
-    if (chrCode===0) {chrTyped = 'SPECIAL KEY';}
-    else {chrTyped = String.fromCharCode(chrCode);}
+//console.log("Hand that is evaluated: ",straightF);
+rankHand(test);
 
-    //[test only:] display chrTyped on the status bar 
-    //document.getElementById("output").innerHTML += chrCode;
-             
-    //Setup a collection of substitutions
-    var keyMap = {"a":"A", "k":"K", "q":"Q", "j":"J", "A":"A", "K":"K", "Q":"Q", "J":"J",
-                  "s":"♠", "c":"♣", "h":"♥", "d":"♦", "S":"♠", "C":"♣", "H":"♥", "D":"♦",
-                  "@":"A", "&":"K", "$":"Q", ")":"J", "?":"♠", "!":"♣", "'":"♥", '"':"♦"};
-
-    if (chrTyped in keyMap) {
-        evt.returnValue=false; //Super important do not move!!!
-        if(document.selection){
-          //IE  
-          var range = document.selection.createRange();
-          range.text = keyMap[chrTyped];
-            if (evt.preventDefault !== undefined) {evt.preventDefault();}
-          // Chrome + FF
-          }else if(e.target.selectionStart || e.target.selectionStart == '0'){                           
-                 var start = evt.target.selectionStart;
-                 var end = evt.target.selectionEnd;
-                 evt.target.value = evt.target.value.substring(0, start) + keyMap[chrTyped] + 
-                  evt.target.value.substring(end, evt.target.value.length);
-                 evt.target.selectionStart = start + 1;
-                 evt.target.selectionEnd = start +1;
-             }else{
-                 evt.target.value += keyMap[chrTyped];            
-             }
-        
-        return false; 
-    }
-
-    if (chrTyped.match(/\d|\s|SPECIAL/)) { evt.returnValue=true; return true;} 
-    if (evt.altKey || evt.ctrlKey || chrCode<28) {return true;}
-
-     //Any other input? Prevent the default response:
-    if (evt.preventDefault) {evt.preventDefault();}
-        evt.returnValue=false;
-
-    return false;
-}
-
-function addEventHandler(elem,eventType,handler) {
-    if (elem.addEventListener) {elem.addEventListener (eventType,handler,true);}
-    else if (elem.attachEvent) {elem.attachEvent ('on'+eventType,handler);}
-    else {return 0;}
-    return 1;
-}
-
-function doRank(e) {
-    setTimeout(function() { rankHand(document.getElementById("cardInput").value); }, 0);
-}
-
-addEventHandler(document.getElementById("cardInput"),'keypress',inputCardSymbolsOnly);
-addEventHandler(document.getElementById("cardInput"),'keyup',doRank);
-addEventHandler(document.getElementById("cardInput"),'input', doRank);
-document.getElementById('cardInput').focus();
