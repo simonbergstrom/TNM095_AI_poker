@@ -56,7 +56,6 @@ function rankHand(str) {
           else if(suits[x]=='D'){suits[x]=decodeURIComponent("%E2%99%A6");}
         }
 
-
         console.log("Cards: ",cards,"suits: ",suits);
         console.log("Charcode: ",suits[0].charCodeAt(0));
         if (cards !== null && suits !== null) {
@@ -111,6 +110,8 @@ function rankHand(str) {
                             //Is in the solution
                             console.log("Card in the solution: ",cards[i],"at index: ",i);                             
                         }
+
+                        return {primeScore: handRanks[index], secondaryScore: getPokerScore([cards[wci[0]],cards[wci[1]],cards[wci[2]],cards[wci[3]],cards[wci[4]]])};
                     }
                 }
             }
@@ -119,12 +120,12 @@ function rankHand(str) {
 
     console.log("Type of hands: ",hands[index],"at index:",index);
 }  
-var theHand = '2D3C4S5H6C7C';
-var straightF='AHKHQHJH10HASAD';
-var test = 'QSJS10S9S8SASAH';
+var theHand =  '2D3C4S5H6C7C';
+var straightF= 'AHKHQHJH10HASAD';
+var straight = '10H9C8H7H6H2D9D';
+var test =     'QSJS10S9S8SASAH';
 var highcard = 'AD2D3C8S9S';
-var house = '3D3S3C7D7C';
+var house =    '3D3S3C7D7C';
+var house2 =   '2D2S2C7D7C';
 
-//console.log("Hand that is evaluated: ",straightF);
-rankHand(test);
 
