@@ -163,27 +163,39 @@ $("#startButton").click(function(){
 $("#resetButton").click(function(){
   //Reset the game with a new instance of the gameLogic();
   //Clear the object.
-  gameLogic = {};
-  gameLogic = new Game();
+  gameState = {};
+  gameState = new GameState();
+  gameState.updateButtons();
 });
 
 $("#callButton").click(function(){
-  //Do shit
+  gameState.doMove(humanPlayer, "call");
+
+  //Start the enemy move
+  gameState.enemyMakeRandomMove();
 });
 
 $("#betButton").click(function(){
   gameState.doMove(humanPlayer, "bet");
-  console.log(gameState);
+
+  //Start the enemy move
+  gameState.enemyMakeRandomMove();
 });
 
 $("#checkButton").click(function(){
+  gameState.doMove(humanPlayer, "check");
 
+  //Start the enemy move
+  gameState.enemyMakeRandomMove();
 });
 
 $("#raiseButton").click(function(){
-  //Do shit
+  gameState.doMove(humanPlayer, "raise");
+
+  //Start the enemy move
+  gameState.enemyMakeRandomMove();
 });
 
 $("#foldButton").click(function(){
-  //Do shit
+  gameState.doMove(humanPlayer, "fold");
 });

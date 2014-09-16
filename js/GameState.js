@@ -39,6 +39,7 @@ function GameState(){
   };
 
   this.turn = 1;
+  this.numberRaised = 0;
 }
 
 //Getters
@@ -51,54 +52,68 @@ GameState.prototype.getHumanPlayer = function(){
 }
 
 GameState.prototype.doMove = function(player, move){
-  switch(this.turn){
-    case 1:{
-        var validMoves = this.getAvailableMoves();
-        console.log(validMoves);
-        if(validMoves[move]){
-          this.moveHelper(player, move);
-        }
-        else{
-          console.log("Invalid Move");
-        }
-      break;
-    }
-    case 2:{
-      //Dealer deals the turn card.
-      this.turnCard = this.deckOfCards.getOneCard();
-      break;
-    }
-    case 3:
-      //Do shit
-      break;
-    case 4:
-      //Do shit
-      break;
-    case 5:
-      //Do shit
-      //Evaluate cards maybe
-      break;
-    default:
-      console.log("Game Over");
-      break;
+  var validMoves = this.getAvailableMoves();
+  console.log(validMoves);
+  if(validMoves[move]){
+    this.moveHelper(player, move);
+  }
+  else{
+    console.log("Invalid Move");
   }
 };
 
+GameState.prototype.startNewRound = function(){
+  console.log("Starting new round!");
+  console.log("Dealing cards...");
+
+  this.availableMoves.call = false;
+  this.availableMoves.bet = true;
+  this.availableMoves.check = true;
+  this.availableMoves.raise = false;
+  this.availableMoves.fold = false;
+
+  this.updateButtons();
+
+  switch(this.turn){
+    case 2:{
+      this.flop = this.deckOfCards.getFlop();
+      console.log("The flop: ", this.flop);
+      break;
+    }
+    case 3:{
+      this.turnCard= this.deckOfCards.getOneCard();
+      console.log("The turnCard: ", this.turnCard);
+      break;
+    }
+    case 4:{
+      this.riverCard = this.deckOfCards.getOneCard();
+      console.log("The turnCard: ", this.riverCard);
+      break;
+    }
+    case 5:{
+      //TODO the evaluation
+      console.log("Figure out the winner!");
+      console.log(gameState);
+    }
+  }
+};
+
+
 GameState.prototype.moveHelper = function(player, move){
   if(move === "call"){
-
+    this.call(player);
   }
   else if(move === "bet"){
     this.bet(player);
   }
   else if(move === "check"){
-
+    this.check(player);
   }
   else if(move === "raise"){
-
+    this.raise(player);
   }
   else if(move === "fold"){
-
+    this.fold(player);
   }
 };
 
@@ -159,8 +174,16 @@ GameState.prototype.getAvailableMoves = function(){
   return res;
 };
 
-GameState.prototype.call = function(){
 
+//All the moves the players can do.
+GameState.prototype.call = function(player){
+
+  //TODO Add the right number of money in the pot
+
+  this.turn++;
+  this.startNewRound();
+
+  console.log(player.name + " called");
 }
 
 GameState.prototype.bet = function(player){
@@ -177,19 +200,91 @@ GameState.prototype.bet = function(player){
   this.availableMoves.check = false;
   this.availableMoves.raise = true;
   this.availableMoves.fold = true;
+
+  console.log(player.name + " made a bet!");
 }
 
-GameState.prototype.check = function(){
+GameState.prototype.check = function(player){
+  this.availableMoves.call = false;
+  this.availableMoves.bet = true;
+  this.availableMoves.check = true;
+  this.availableMoves.raise = false;
+  this.availableMoves.fold = false;
 
-}
+  if(player.name === "Computer"){
+    this.turn++;
+    this.startNewRound();
+  }
 
-GameState.prototype.raise = function(){
+  //Nothing else do be done really. When checking?
+  console.log(player.name + " checked!");
+};
 
-}
+GameState.prototype.raise = function(player){
+  if(player.name === "Player"){ // The human player
+    this.player1.money--;
+  }
+  else{ // The computer player
+    this.player2.money--;
+  }
+  this.moneyPot++;
 
-GameState.prototype.fold = function(){
+  this.availableMoves.call = true;
+  this.availableMoves.bet = false;
+  this.availableMoves.check = false;
+  this.availableMoves.raise = true;
+  this.availableMoves.fold = true;
 
-}
+  if(player.name === "Computer"){
+    this.numberRaised++;
+    if(this.numberRaised === 3){
+      this.turn++;
+      this.startNewRound();
+    }
+  }
+
+  console.log(player.name + " raised!");
+};
+
+GameState.prototype.fold = function(player){
+  console.log(player.name + " lost!");
+  //All the money goes to the other player! TODO
+};
+
+GameState.prototype.enemyMakeRandomMove = function(){
+  //Generate random number between 1 and 5.
+  while(true){ //Dangerous while true!
+    var randomMove = Math.floor((Math.random() * 5) + 1);
+    var availableMoves = this.getAvailableMoves();
+    var computerMove;
+    console.log(availableMoves);
+    if(randomMove === 1){
+      computerMove = "call";
+    }
+    else if(randomMove === 2){
+      computerMove = "bet";
+    }
+    else if(randomMove === 3){
+      computerMove = "check";
+    }
+    else if(randomMove === 4){
+      computerMove = "raise";
+    }
+    else if(randomMove === 5){
+      computerMove = "fold";
+    }
+
+    if(availableMoves[computerMove]){
+      this.doMove(this.player2, computerMove);
+      this.updateButtons();
+      break;
+    }
+  }
+};
+
+GameState.prototype.enemyMakeAiMove = function(){
+
+};
 
 function evaluateCards(cardsOnHand,flop,turnCard,riverCard){
   //Evaluate a players hand and return the best combination of five cards for the player with some kind of type of score
