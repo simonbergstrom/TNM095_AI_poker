@@ -4,6 +4,7 @@
 var gameState;
 var humanPlayer;
 
+var clock = new THREE.Clock();
 
 $("button").each(function(){
   if($(this).attr("id") !== "resetButton" && $(this).attr("id") !== "startButton"){
@@ -11,7 +12,6 @@ $("button").each(function(){
     $(this).attr("disabled", true);
   }
 });
-
 
 var height = 500;
 var width = 880;
@@ -32,8 +32,6 @@ renderer.shadowMapEnabled = true;
 renderer.shadowMapSoft = true;
 document.getElementById("canvasContainer").appendChild(renderer.domElement);
 
-//var hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
-//scene.add(hemisphereLight);
 var d = 300;
 var spotLight = new THREE.SpotLight( 0xffffff );
 spotLight.position.set(0, 1100, 500);
@@ -75,90 +73,27 @@ plane.receiveShadow = true;
 plane.material.side = THREE.DoubleSide;
 scene.add(plane);
 
-var card_materials = [
-   new THREE.MeshPhongMaterial({color: 0xbbbbbb}),
-   new THREE.MeshPhongMaterial({color: 0xbbbbbb}),
-   new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('texture/cards/h_07.png')}), // Top
-   new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('texture/cards/backside.png')}), // Bottom
-   new THREE.MeshPhongMaterial({color: 0xbbbbbb}),
-   new THREE.MeshPhongMaterial({color: 0xbbbbbb})
-];
-
-var card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
-card.position.x = 160;
-card.name = "dealer_card1";
-card.castShadow = true;
-scene.add(card);
-
-
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
-card.position.x = 80;
-card.name = "dealer_card2";
-card.castShadow = true;
-scene.add(card);
-
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
-card.position.x = 0;
-card.name = "dealer_card3";
-card.castShadow = true;
-scene.add(card);
-
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
-card.position.x = -80;
-card.name = "dealer_card4";
-card.castShadow = true;
-scene.add(card);
-
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
-card.position.x = -160;
-card.name = "dealer_card5";
-card.castShadow = true;
-scene.add(card);
-
-// Player 1 card pos
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
-card.position.z = 200;
-card.position.x = 40;
-card.position.y = 40;
-card.rotation.x = 45*(Math.PI/180);
-card.rotation.z = 20*(Math.PI/180);
-card.castShadow = true;
-card.name = "player1_card1";
-scene.add(card);
-
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
-card.position.z = 200;
-card.position.x = -40;
-card.position.y = 40;
-card.rotation.x = 45*(Math.PI/180);
-card.rotation.z = -20*(Math.PI/180);
-card.castShadow = true;
-card.name = "player1_card2";
-scene.add(card);
-
-// Player 2 card pos
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
-card.position.z = -200;
-card.position.x = 40;
-card.position.y = 40;
-card.rotation.x = -45*(Math.PI/180);
-card.rotation.z = 20*(Math.PI/180);
-card.name = "player2_card1";
-card.castShadow = true;
-scene.add(card);
-
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
-card.position.z = -200;
-card.position.x = -40;
-card.position.y = 40;
-card.rotation.x = -45*(Math.PI/180);
-card.rotation.z = -20*(Math.PI/180);
-card.name = "player2_card2";
-card.castShadow = true;
-scene.add(card);
-
+var cardObjects = {"dealer_card1" : {pos: new THREE.Vector3(160,0,0),     rot: new THREE.Vector3(0,0,0)},
+                   "dealer_card2" : {pos: new THREE.Vector3(80,0,0),      rot: new THREE.Vector3(0,0,0)},
+                   "dealer_card3" : {pos: new THREE.Vector3(0,0,0),       rot: new THREE.Vector3(0,0,0)},
+                   "dealer_card4" : {pos: new THREE.Vector3(-80,0,0),     rot: new THREE.Vector3(0,0,0)},
+                   "dealer_card5" : {pos: new THREE.Vector3(-160,0,0),    rot: new THREE.Vector3(0,0,0)},
+                   "player1_card1": {pos: new THREE.Vector3(40,40,200),   rot: new THREE.Vector3(45*(Math.PI/180),0,20*(Math.PI/180))},
+                   "player1_card2": {pos: new THREE.Vector3(-40,40,200),  rot: new THREE.Vector3(45*(Math.PI/180),0,-20*(Math.PI/180))},
+                   "player2_card1": {pos: new THREE.Vector3(40,40,-200),  rot: new THREE.Vector3(-45*(Math.PI/180),0,20*(Math.PI/180))},
+                   "player2_card2": {pos: new THREE.Vector3(-40,40,-200), rot: new THREE.Vector3(-45*(Math.PI/180),0,-20*(Math.PI/180))}};
+/*
+var cardObjects = {"dealer_card1" : {position: new THREE.Vector3(160,0,0),     rotation: new THREE.Vector3(0,0,0)},
+                   "dealer_card2" : {position: new THREE.Vector3(80,0,0),      rotation: new THREE.Vector3(0,0,0)},
+                   "dealer_card3" : {position: new THREE.Vector3(0,0,0),       rotation: new THREE.Vector3(0,0,0)},
+                   "dealer_card4" : {position: new THREE.Vector3(-80,0,0),     rotation: new THREE.Vector3(0,0,0)},
+                   "dealer_card5" : {position: new THREE.Vector3(-160,0,0),    rotation: new THREE.Vector3(0,0,0)},
+                   "player1_card1": {position: new THREE.Vector3(40,40,200),   rotation: new THREE.Vector3(45*(Math.PI/180),0,20*(Math.PI/180))},
+                   "player1_card2": {position: new THREE.Vector3(-40,40,200),  rotation: new THREE.Vector3(45*(Math.PI/180),0,-20*(Math.PI/180))},
+                   "player2_card1": {position: new THREE.Vector3(40,40,-200),  rotation: new THREE.Vector3(-45*(Math.PI/180),0,20*(Math.PI/180))},
+                   "player2_card2": {position: new THREE.Vector3(-40,40,-200), rotation: new THREE.Vector3(-45*(Math.PI/180),0,-20*(Math.PI/180))}};*/
 // Deck
-card_materials = [
+var deck_material = [
    new THREE.MeshPhongMaterial({color: 0xbbbbbb}),
    new THREE.MeshPhongMaterial({color: 0xbbbbbb}),
    new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('texture/cards/backside.png')}), // Top
@@ -167,15 +102,13 @@ card_materials = [
    new THREE.MeshPhongMaterial({color: 0xbbbbbb})
 ];
 
-card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 30, 88), new THREE.MeshFaceMaterial(card_materials));
+var deck = new THREE.Mesh(new THREE.BoxGeometry(63.5, 30, 88), new THREE.MeshFaceMaterial(deck_material));
 
-card.position.x = 280;
-card.position.y = 15;
-card.name = "deck";
-card.castShadow = true;
-scene.add(card);
-console.log(card)
-//scene.remove(scene.getObjectByName("deck"));
+deck.position.x = 280;
+deck.position.y = 15;
+deck.name = "deck";
+deck.castShadow = true;
+scene.add(deck);
 
 animate();
 
@@ -183,6 +116,9 @@ animate();
 //FUNCTIONS*************
 //**********************
 function animate() {
+  var time  = clock.getElapsedTime();
+  var delta = clock.getDelta();
+
   requestAnimationFrame(animate);
   render();
 }
@@ -191,8 +127,32 @@ function render() {
   renderer.render(scene, camera);
 }
 
-render();
+function removeCards() {
+    for(card in cardObjects){
+        scene.remove(scene.getObjectByName(card));
+    }
+}
 
+function drawCard(name, card) {
+    var card_materials = [
+       new THREE.MeshPhongMaterial({color: 0xbbbbbb}),
+       new THREE.MeshPhongMaterial({color: 0xbbbbbb}),
+       new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('texture/cards/' + card.suit + card.number + '.png')}), // Top
+       new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('texture/cards/backside.png')}), // Bottom
+       new THREE.MeshPhongMaterial({color: 0xbbbbbb}),
+       new THREE.MeshPhongMaterial({color: 0xbbbbbb})
+    ];
+    var new_card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
+    new_card.position.x = cardObjects[name].pos.x;
+    new_card.position.y = cardObjects[name].pos.y;
+    new_card.position.z = cardObjects[name].pos.z;
+    new_card.rotation.x = cardObjects[name].rot.x;
+    new_card.rotation.y = cardObjects[name].rot.y;
+    new_card.rotation.z = cardObjects[name].rot.z;
+    new_card.name       = name;
+    new_card.castShadow = true;
+    scene.add(new_card);
+}
 
 //***************
 //ButtonListeners

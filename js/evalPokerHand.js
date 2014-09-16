@@ -122,8 +122,10 @@ function rankHand(str) {
                 }
             }
         }
-    //}
 }  
+
+/*
+>>>>>>> f53cd89... Cards now changes to the right texture
 // Test type of hands...
 var theHand =  '2D3C4S5H6C7C';
 var straightF= 'AHKHQHJH10HASAD';
@@ -135,9 +137,8 @@ var house2 =   '2D2S2C7D7C';
 
 // Testing the evaluator....
 
-//var hand = rankHand(straightF);
+var hand = rankHand(straightF);
 
-//console.log(hand);
-
-
+console.log(hand);
+*/
 

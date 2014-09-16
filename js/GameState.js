@@ -1,6 +1,8 @@
 //The main file for the game logic.
 
 function GameState(){
+  removeCards();
+
   this.player1 = { //Player
     name : "Player",
     cardsOnHand : {},
@@ -27,7 +29,12 @@ function GameState(){
 
   //Give the players their cards.
   this.player1.cardsOnHand = this.deckOfCards.getPocket();
+  drawCard("player1_card1", this.player1.cardsOnHand.card1);
+  drawCard("player1_card2", this.player1.cardsOnHand.card2);
+
   this.player2.cardsOnHand = this.deckOfCards.getPocket();
+  drawCard("player2_card1", this.player2.cardsOnHand.card1);
+  drawCard("player2_card2", this.player2.cardsOnHand.card2);
 
   //Moves available first round
   this.availableMoves = {
@@ -79,16 +86,21 @@ GameState.prototype.startNewRound = function(){
   switch(this.turn){
     case 2:{
       this.flop = this.deckOfCards.getFlop();
+      drawCard("dealer_card1", this.flop.card1);
+      drawCard("dealer_card2", this.flop.card2);
+      drawCard("dealer_card3", this.flop.card3);
       console.log("The flop: ", this.flop);
       break;
     }
     case 3:{
-      this.turnCard= this.deckOfCards.getOneCard();
+      this.turnCard = this.deckOfCards.getOneCard();
+      drawCard("dealer_card4", this.turnCard);
       console.log("The turnCard: ", this.turnCard);
       break;
     }
     case 4:{
       this.riverCard = this.deckOfCards.getOneCard();
+      drawCard("dealer_card5", this.riverCard);
       console.log("The turnCard: ", this.riverCard);
       break;
     }
