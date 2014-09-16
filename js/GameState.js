@@ -42,6 +42,9 @@ function GameState(){
   this.numberRaised = 0;
 }
 
+//Static roundCounter
+GameState.roundCounter = 0;
+
 //Getters
 GameState.prototype.getHumanPlayerCards = function(){
   return this.player1.cardsOnHand;
@@ -53,7 +56,6 @@ GameState.prototype.getHumanPlayer = function(){
 
 GameState.prototype.doMove = function(player, move){
   var validMoves = this.getAvailableMoves();
-  console.log(validMoves);
   if(validMoves[move]){
     this.moveHelper(player, move);
   }
@@ -257,7 +259,7 @@ GameState.prototype.enemyMakeRandomMove = function(){
     var randomMove = Math.floor((Math.random() * 5) + 1);
     var availableMoves = this.getAvailableMoves();
     var computerMove;
-    console.log(availableMoves);
+
     if(randomMove === 1){
       computerMove = "call";
     }
