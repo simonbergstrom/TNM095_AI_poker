@@ -46,7 +46,19 @@ function rankHand(str) {
         var cards = cardStr.replace(/\s/g, '').slice(0, -1).split(",");
         var suits = str.match(/S|C|H|D/g);
 
+        //♠|♣|♥|♦
+
+        // Convert from letters to special chars..
+        for(x in suits){
+          if(suits[x]=='S'){suits[x]=decodeURIComponent("%E2%99%A0");}
+          else if(suits[x]=='C'){suits[x]=decodeURIComponent("%E2%99%A3");}
+          else if(suits[x]=='H'){suits[x]=decodeURIComponent("%E2%99%A5");}
+          else if(suits[x]=='D'){suits[x]=decodeURIComponent("%E2%99%A6");}
+        }
+
+
         console.log("Cards: ",cards,"suits: ",suits);
+        console.log("Charcode: ",suits[0].charCodeAt(0));
         if (cards !== null && suits !== null) {
             if (cards.length == suits.length) {
                 var o = {}, keyCount = 0, j; 
@@ -89,24 +101,15 @@ function rankHand(str) {
                 //Show the best cards if cs.length is less than 7 cards.
                 var card;
                 if (cards.length <= 7) {
-                    for (i=0; i<7; i++) {
-                        //card = document.getElementById("card"+(i+1));
-                        //card = cards(i+1);
-                        //console.log("TEST:",wci,cards);
+                    for (i=0; i<cards.length; i++) {
+
                         if (wci.indexOf(i) == -1) {
                             //Not in the solution
                             console.log("Card not in the solution: ",cards[i],"at index: ",i);
-                            /*if (card.parentNode.tagName == "STRONG") {
-                                card.parentNode.parentNode.innerHTML = card.outerHTML;
-                              
 
-                            }*/
                         } else {
                             //Is in the solution
-                            console.log("Card in the solution: ",cards[i],"at index: ",i);
-                           /* if (card.parentNode.tagName == "LI") {
-                                card.outerHTML = "<strong>" + card.outerHTML  + "</strong>";
-                            }  */                                
+                            console.log("Card in the solution: ",cards[i],"at index: ",i);                             
                         }
                     }
                 }
@@ -119,7 +122,8 @@ function rankHand(str) {
 var theHand = '2D3C4S5H6C7C';
 var straightF='AHKHQHJH10HASAD';
 var test = 'QSJS10S9S8SASAH';
-
+var highcard = 'AD2D3C8S9S';
+var house = '3D3S3C7D7C';
 
 //console.log("Hand that is evaluated: ",straightF);
 rankHand(test);
