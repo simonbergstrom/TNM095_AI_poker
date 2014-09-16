@@ -18,8 +18,8 @@ var width = 880;
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, width/height, 0.1, 1000);
-camera.position.z = 280;
-camera.position.y = 350;
+camera.position.z = 320;
+camera.position.y = 200;
 
 var controls = new THREE.OrbitControls(camera);
 controls.damping = 0.2;
