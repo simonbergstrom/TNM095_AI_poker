@@ -95,7 +95,33 @@ GameState.prototype.startNewRound = function(){
     case 5:{
       //TODO the evaluation
       console.log("Figure out the winner!");
-      console.log(gameState);
+      var cardstoEvalplayer1 = [],cardstoEvalplayer2 = [];
+
+      cardstoEvalplayer1 = [gameState.player1.cardsOnHand.card1,gameState.player1.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
+      cardstoEvalplayer2 = [gameState.player2.cardsOnHand.card1,gameState.player2.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
+      
+      var res1 = rankHand(cardstoEvalplayer1);
+      var res2 = rankHand(cardstoEvalplayer2);
+
+      if(res1.primeScore == res2.primeScore){
+        if(res1.secondaryScore > res2.secondaryScore){
+          console.log("Player 1 wins with:",res1);
+        }
+        else if(res1.secondaryScore == res2.secondaryScore) {
+
+          console.log("We have tie!!!");
+        }
+        else{
+            console.log("Player 2 wins with: ",res2);
+        }
+      }
+      else if (res1.primeScore > res2.primScore){
+            console.log("Player 1 wins with: ",res1);
+      }
+      else{
+            console.log("Player 2 wins with: ",res2); 
+      }
+
     }
   }
 };
