@@ -337,7 +337,7 @@ GameState.prototype.raise = function(player){
     }
   }
 
-  console.log(player.name + " raised! <br/>");
+  $("#enemyLog").append(player.name + " raised! <br/>");
 };
 
 GameState.prototype.fold = function(player){
