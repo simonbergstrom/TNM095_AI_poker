@@ -75,6 +75,8 @@ GameState.prototype.startNewRound = function(){
   console.log("Starting new round!");
   console.log("Dealing cards...");
 
+  console.log("TURN: ", this.turn);
+
   this.availableMoves.call = false;
   this.availableMoves.bet = true;
   this.availableMoves.check = true;
@@ -313,7 +315,7 @@ GameState.prototype.enemyMakeRandomMove = function(){
     else if(randomMove === 5){
       computerMove = "fold";
     }
-
+    
     if(availableMoves[computerMove]){
       this.doMove(this.player2, computerMove);
       this.updateButtons();
