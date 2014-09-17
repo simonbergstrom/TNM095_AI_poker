@@ -47,7 +47,15 @@ function GameState(){
 
   this.turn = 1;
   this.numberRaised = 0;
+
+  this.updateScoreUi();
 }
+
+GameState.prototype.updateScoreUi = function(){
+  $("#playerScore").html(this.player1.money);
+  $("#computerScore").html(this.player2.money);
+  $("#tableScore").html(this.moneyPot);
+};
 
 //Static roundCounter
 GameState.roundCounter = 0;
@@ -113,7 +121,7 @@ GameState.prototype.startNewRound = function(){
 
       cardstoEvalplayer1 = [gameState.player1.cardsOnHand.card1,gameState.player1.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
       cardstoEvalplayer2 = [gameState.player2.cardsOnHand.card1,gameState.player2.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
-      
+
       var res1 = rankHand(cardstoEvalplayer1);
       var res2 = rankHand(cardstoEvalplayer2);
 
@@ -133,7 +141,7 @@ GameState.prototype.startNewRound = function(){
             console.log("Player 1 wins with: ",res1);
       }
       else{
-            console.log("Player 2 wins with: ",res2); 
+            console.log("Player 2 wins with: ",res2);
       }
 
     }
@@ -237,6 +245,8 @@ GameState.prototype.bet = function(player){
   }
   this.moneyPot++;
 
+  this.updateScoreUi();
+
   this.availableMoves.call = true;
   this.availableMoves.bet = false;
   this.availableMoves.check = false;
@@ -270,6 +280,8 @@ GameState.prototype.raise = function(player){
     this.player2.money--;
   }
   this.moneyPot++;
+
+  this.updateScoreUi();
 
   this.availableMoves.call = true;
   this.availableMoves.bet = false;
@@ -315,7 +327,7 @@ GameState.prototype.enemyMakeRandomMove = function(){
     else if(randomMove === 5){
       computerMove = "fold";
     }
-    
+
     if(availableMoves[computerMove]){
       this.doMove(this.player2, computerMove);
       this.updateButtons();

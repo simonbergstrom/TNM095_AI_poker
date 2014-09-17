@@ -10,11 +10,11 @@
     </div>
   </div>
   <div id="container">
-		<div id="sideMenu">
-			<div id="sideMenuHeader">
+		<div class="sideMenu">
+			<div class="sideMenuHeader">
 				<h3> Controls </h3>
 			</div>
-			<div id="sideMenuBody">
+			<div class="sideMenuBody">
 				<button id="startButton">Start</button>
 				<button id="resetButton" style="margin-bottom:40px;">Reset</button>
 				<button id="callButton">Call</button>
@@ -25,6 +25,18 @@
 			</div>
 		</div>
 	<div id="canvasContainer"></div>
+	<div class="sideMenu">
+		<div class="sideMenuHeader" style="background-color:#dff0d8;color:#3c763d;">
+			<h3> Score </h3>
+		</div>
+		<div class="sideMenuBody" id="scorePanel" style="font-size:10pt;">
+			<table cellspacing="0" style="width: 100%;">
+				<tr><td>Player:</td><td id="playerScore"></td></tr>
+				<tr><td>Computer:</td><td id="computerScore"></td></tr>
+				<tr><td>On Table:</td><td id="tableScore"></td></tr>
+			</table>
+		</div>
+	</div>
 	<script src="libs/jquery-1.11.1.min.js"></script>
     <script src="libs/three.js"></script>
 		<!-- script src="libs/cellshading.js"></script -->
