@@ -14,27 +14,16 @@ function GameState(){
     money : 20
   };
 
+  this.bigBlind = 1;
+
   //The cards on the table
   this.flop = {};
   this.turnCard = {};
   this.riverCard = {};
 
-
   //this.aiPlayer = {};
 
   this.deckOfCards = new Cards();
-  this.deckOfCards.shuffle();
-
-  this.moneyPot = 0;
-
-  //Give the players their cards.
-  this.player1.cardsOnHand = this.deckOfCards.getPocket();
-  drawCard("player1_card1", this.player1.cardsOnHand.card1);
-  drawCard("player1_card2", this.player1.cardsOnHand.card2);
-
-  this.player2.cardsOnHand = this.deckOfCards.getPocket();
-  drawCard("player2_card1", {suit: "Secret", number: ""});
-  drawCard("player2_card2", {suit: "Secret", number: ""});
 
   //Moves available first round
   this.availableMoves = {
@@ -47,10 +36,14 @@ function GameState(){
 
   this.turn = 1;
   this.numberRaised = 0;
+  this.moneyPot = 0;
+
+  this.startNewRound();
 }
 
 //Static roundCounter
 GameState.roundCounter = 0;
+
 
 //Getters
 GameState.prototype.getHumanPlayerCards = function(){
@@ -77,6 +70,8 @@ GameState.prototype.startNewRound = function(){
 
   console.log("TURN: ", this.turn);
 
+  this.numberRaised = 0;
+
   this.availableMoves.call = false;
   this.availableMoves.bet = true;
   this.availableMoves.check = true;
@@ -86,6 +81,29 @@ GameState.prototype.startNewRound = function(){
   this.updateButtons();
 
   switch(this.turn){
+    case 1:{
+      this.deckOfCards.shuffle();
+      //Give the players their cards.
+      this.player1.cardsOnHand = this.deckOfCards.getPocket();
+      drawCard("player1_card1", this.player1.cardsOnHand.card1);
+      drawCard("player1_card2", this.player1.cardsOnHand.card2);
+
+      this.player2.cardsOnHand = this.deckOfCards.getPocket();
+      drawCard("player2_card1", {suit: "Secret", number: ""});
+      drawCard("player2_card2", {suit: "Secret", number: ""});
+
+      if(this.bigBlind === 1){
+        this.player1.money -= 2;
+        this.player2.money -= 1;
+      }
+      else{
+        this.player1.money -= 1;
+        this.player2.money -= 2;
+      }
+      this.moneyPot += 3;
+
+      break;
+    }
     case 2:{
       this.flop = this.deckOfCards.getFlop();
       drawCard("dealer_card1", this.flop.card1);
@@ -107,35 +125,52 @@ GameState.prototype.startNewRound = function(){
       break;
     }
     case 5:{
-      //TODO the evaluation
-      console.log("Figure out the winner!");
-      var cardstoEvalplayer1 = [],cardstoEvalplayer2 = [];
-
-      cardstoEvalplayer1 = [gameState.player1.cardsOnHand.card1,gameState.player1.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
-      cardstoEvalplayer2 = [gameState.player2.cardsOnHand.card1,gameState.player2.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
+      var cardstoEvalplayer1 = [gameState.player1.cardsOnHand.card1,gameState.player1.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
+      var cardstoEvalplayer2 = [gameState.player2.cardsOnHand.card1,gameState.player2.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
       
       var res1 = rankHand(cardstoEvalplayer1);
       var res2 = rankHand(cardstoEvalplayer2);
 
       if(res1.primeScore == res2.primeScore){
         if(res1.secondaryScore > res2.secondaryScore){
-          console.log("Player 1 wins with:",res1);
+          console.log("Player 1 wins with:", res1);
+          this.player1.money += this.moneyPot;
         }
         else if(res1.secondaryScore == res2.secondaryScore) {
-
           console.log("We have tie!!!");
+          this.player1.money += Math.ceil(this.moneyPot/2);
+          this.player2.money += Math.floor(this.moneyPot/2);
         }
         else{
-            console.log("Player 2 wins with: ",res2);
+          console.log("Player 2 wins with: ", res2);
+          this.player2.money += this.moneyPot;
         }
       }
       else if (res1.primeScore > res2.primScore){
-            console.log("Player 1 wins with: ",res1);
+        console.log("Player 1 wins with: ", res1);
+        this.player1.money += this.moneyPot;
       }
       else{
-            console.log("Player 2 wins with: ",res2); 
+        console.log("Player 2 wins with: ", res2); 
+        this.player2.money += this.moneyPot;
       }
 
+      // Reset variables
+      this.turn = 1;
+      this.moneyPot = 0;
+
+      if(this.bigBlind === 1){
+        this.bigBlind = 2;
+      }
+      else{
+        this.bigBlind = 1;
+      }
+
+      // Display the cards of the AI
+      scene.getObjectByName("player2_card1").material.materials[2].map = textureArray[this.player1.cardsOnHand.card1.suit + this.player1.cardsOnHand.card1.number];
+      scene.getObjectByName("player2_card2").material.materials[2].map = textureArray[this.player1.cardsOnHand.card1.suit + this.player1.cardsOnHand.card1.number];
+
+      //removeCards();  
     }
   }
 };
