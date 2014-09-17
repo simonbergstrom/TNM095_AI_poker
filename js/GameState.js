@@ -127,21 +127,20 @@ GameState.prototype.startNewRound = function(){
 
       if(res1.primeScore == res2.primeScore){
         if(res1.secondaryScore > res2.secondaryScore){
-          console.log("Player 1 wins with:",res1);
+          $("#enemyLog").append("Player wins! <br/>");
         }
         else if(res1.secondaryScore == res2.secondaryScore) {
-
-          console.log("We have tie!!!");
+          $("#enemyLog").append("We have a tie! <br/>");
         }
         else{
-            console.log("Player 2 wins with: ",res2);
+            $("#enemyLog").append("Computer wins! <br/>");
         }
       }
       else if (res1.primeScore > res2.primScore){
-            console.log("Player 1 wins with: ",res1);
+        $("#enemyLog").append("Player wins! <br/>");
       }
       else{
-            console.log("Player 2 wins with: ",res2);
+        $("#enemyLog").append("Compter wins! <br/>");
       }
 
     }
@@ -233,7 +232,9 @@ GameState.prototype.call = function(player){
   this.turn++;
   this.startNewRound();
 
-  console.log(player.name + " called");
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " called <br/>");
+  }
 }
 
 GameState.prototype.bet = function(player){
@@ -253,7 +254,9 @@ GameState.prototype.bet = function(player){
   this.availableMoves.raise = true;
   this.availableMoves.fold = true;
 
-  console.log(player.name + " made a bet!");
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " made a bet <br/>");
+  }
 }
 
 GameState.prototype.check = function(player){
@@ -269,7 +272,9 @@ GameState.prototype.check = function(player){
   }
 
   //Nothing else do be done really. When checking?
-  console.log(player.name + " checked!");
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " checked <br/>");
+  }
 };
 
 GameState.prototype.raise = function(player){
@@ -297,12 +302,13 @@ GameState.prototype.raise = function(player){
     }
   }
 
-  console.log(player.name + " raised!");
+  console.log(player.name + " raised! <br/>");
 };
 
 GameState.prototype.fold = function(player){
-  console.log(player.name + " lost!");
-  //All the money goes to the other player! TODO
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " folded! <br/>");
+  }
 };
 
 GameState.prototype.enemyMakeRandomMove = function(){
