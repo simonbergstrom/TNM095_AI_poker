@@ -39,7 +39,14 @@ function GameState(){
   this.moneyPot = 0;
 
   this.startNewRound();
+  this.updateScoreUi();
 }
+
+GameState.prototype.updateScoreUi = function(){
+  $("#playerScore").html(this.player1.money);
+  $("#computerScore").html(this.player2.money);
+  $("#tableScore").html(this.moneyPot);
+};
 
 //Static roundCounter
 GameState.roundCounter = 0;
@@ -272,6 +279,8 @@ GameState.prototype.bet = function(player){
   }
   this.moneyPot++;
 
+  this.updateScoreUi();
+
   this.availableMoves.call = true;
   this.availableMoves.bet = false;
   this.availableMoves.check = false;
@@ -305,6 +314,8 @@ GameState.prototype.raise = function(player){
     this.player2.money--;
   }
   this.moneyPot++;
+
+  this.updateScoreUi();
 
   this.availableMoves.call = true;
   this.availableMoves.bet = false;
@@ -350,7 +361,7 @@ GameState.prototype.enemyMakeRandomMove = function(){
     else if(randomMove === 5){
       computerMove = "fold";
     }
-    
+
     if(availableMoves[computerMove]){
       this.doMove(this.player2, computerMove);
       this.updateButtons();
