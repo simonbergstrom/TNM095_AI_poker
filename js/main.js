@@ -48,6 +48,10 @@ spotLight.shadowCameraFar = 4000;
 spotLight.shadowDarkness = 0.4;
 scene.add(spotLight);
 
+var pointLight = new THREE.PointLight( 0xffffff, 0.75, 400);
+pointLight.position.set(0, 80, 0);
+scene.add(pointLight);
+
 var tableTexture = THREE.ImageUtils.loadTexture('texture/pattern16.png');
 tableTexture.wrapS = tableTexture.wrapT = THREE.RepeatWrapping;
 tableTexture.repeat.set(15, 15);
