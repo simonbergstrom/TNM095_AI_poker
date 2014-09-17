@@ -134,31 +134,31 @@ GameState.prototype.startNewRound = function(){
     case 5:{
       var cardstoEvalplayer1 = [gameState.player1.cardsOnHand.card1,gameState.player1.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
       var cardstoEvalplayer2 = [gameState.player2.cardsOnHand.card1,gameState.player2.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
-      
+
       var res1 = rankHand(cardstoEvalplayer1);
       var res2 = rankHand(cardstoEvalplayer2);
 
       if(res1.primeScore == res2.primeScore){
         if(res1.secondaryScore > res2.secondaryScore){
-          console.log("Player 1 wins with:", res1);
+          $("#enemyLog").append("Player wins! <br/>");
           this.player1.money += this.moneyPot;
         }
         else if(res1.secondaryScore == res2.secondaryScore) {
-          console.log("We have tie!!!");
+          $("#enemyLog").append("We have a tie! <br/>");
           this.player1.money += Math.ceil(this.moneyPot/2);
           this.player2.money += Math.floor(this.moneyPot/2);
         }
         else{
-          console.log("Player 2 wins with: ", res2);
-          this.player2.money += this.moneyPot;
+            $("#enemyLog").append("Computer wins! <br/>");
+            this.player2.money += this.moneyPot;
         }
       }
       else if (res1.primeScore > res2.primScore){
-        console.log("Player 1 wins with: ", res1);
+        $("#enemyLog").append("Player wins! <br/>");
         this.player1.money += this.moneyPot;
       }
       else{
-        console.log("Player 2 wins with: ", res2); 
+        $("#enemyLog").append("Computer wins! <br/>");
         this.player2.money += this.moneyPot;
       }
 
@@ -167,8 +167,6 @@ GameState.prototype.startNewRound = function(){
       scene.getObjectByName("player2_card2").material.materials[2].map = textureArray[this.player1.cardsOnHand.card1.suit + this.player1.cardsOnHand.card1.number];
 
       this.resetTurn();
-
-      //removeCards();  
     }
   }
 };
@@ -187,6 +185,10 @@ GameState.prototype.resetTurn = function(){
   else{
     this.bigBlind = 1;
   }
+
+  this.startNewRound();
+
+  removeCards();
 }
 
 GameState.prototype.moveHelper = function(player, move){
@@ -274,7 +276,9 @@ GameState.prototype.call = function(player){
   this.turn++;
   this.startNewRound();
 
-  console.log(player.name + " called");
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " called <br/>");
+  }
 }
 
 GameState.prototype.bet = function(player){
@@ -289,7 +293,9 @@ GameState.prototype.bet = function(player){
   this.availableMoves.raise = true;
   this.availableMoves.fold = true;
 
-  console.log(player.name + " made a bet!");
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " made a bet <br/>");
+  }
 }
 
 GameState.prototype.check = function(player){
@@ -305,7 +311,9 @@ GameState.prototype.check = function(player){
   }
 
   //Nothing else do be done really. When checking?
-  console.log(player.name + " checked!");
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " checked <br/>");
+  }
 };
 
 GameState.prototype.raise = function(player){
@@ -328,20 +336,22 @@ GameState.prototype.raise = function(player){
     }
   }
 
-  console.log(player.name + " raised!");
+  console.log(player.name + " raised! <br/>");
 };
 
 GameState.prototype.fold = function(player){
-  console.log(player.name + " lost!");
-
   if(player.name === "Computer"){
-    this.player1 += this.moneyPot();
+    this.player1.money += this.moneyPot;
   }
   else{
-    this.player2 += this.moneyPot();
+    this.player2.money += this.moneyPot;
   }
 
   this.resetTurn();
+
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " folded! <br/>");
+  }
 };
 
 GameState.prototype.enemyMakeRandomMove = function(){
