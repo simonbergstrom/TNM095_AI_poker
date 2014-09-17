@@ -164,7 +164,3 @@ button:hover{
   color: #888 !important;
   border-color: #aaa !important;
 }
-
-#enemyLog{
-  overflow-y:scroll;
-}
