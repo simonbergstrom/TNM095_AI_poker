@@ -162,26 +162,32 @@ GameState.prototype.startNewRound = function(){
         this.player2.money += this.moneyPot;
       }
 
-      // Reset variables
-      this.turn = 1;
-      this.moneyPot = 0;
-
-      if(this.bigBlind === 1){
-        this.bigBlind = 2;
-      }
-      else{
-        this.bigBlind = 1;
-      }
-
       // Display the cards of the AI
       scene.getObjectByName("player2_card1").material.materials[2].map = textureArray[this.player1.cardsOnHand.card1.suit + this.player1.cardsOnHand.card1.number];
       scene.getObjectByName("player2_card2").material.materials[2].map = textureArray[this.player1.cardsOnHand.card1.suit + this.player1.cardsOnHand.card1.number];
+
+      this.resetTurn();
 
       //removeCards();  
     }
   }
 };
 
+GameState.prototype.resetTurn = function(){
+  // Reset variables
+  this.turn = 1;
+  this.moneyPot = 0;
+
+  // Update the ui with the result
+  this.updateScoreUi();
+
+  if(this.bigBlind === 1){
+    this.bigBlind = 2;
+  }
+  else{
+    this.bigBlind = 1;
+  }
+}
 
 GameState.prototype.moveHelper = function(player, move){
   if(move === "call"){
@@ -258,11 +264,12 @@ GameState.prototype.getAvailableMoves = function(){
   return res;
 };
 
-
 //All the moves the players can do.
 GameState.prototype.call = function(player){
+  this.moneyPot++;
+  player.money--;
 
-  //TODO Add the right number of money in the pot
+  this.updateScoreUi();
 
   this.turn++;
   this.startNewRound();
@@ -271,12 +278,7 @@ GameState.prototype.call = function(player){
 }
 
 GameState.prototype.bet = function(player){
-  if(player.name === "Player"){ // The human player
-    this.player1.money--;
-  }
-  else{ // The computer player
-    this.player2.money--;
-  }
+  player.money--;
   this.moneyPot++;
 
   this.updateScoreUi();
@@ -307,13 +309,8 @@ GameState.prototype.check = function(player){
 };
 
 GameState.prototype.raise = function(player){
-  if(player.name === "Player"){ // The human player
-    this.player1.money--;
-  }
-  else{ // The computer player
-    this.player2.money--;
-  }
-  this.moneyPot++;
+  player.money -= 2;
+  this.moneyPot += 2;
 
   this.updateScoreUi();
 
@@ -336,7 +333,15 @@ GameState.prototype.raise = function(player){
 
 GameState.prototype.fold = function(player){
   console.log(player.name + " lost!");
-  //All the money goes to the other player! TODO
+
+  if(player.name === "Computer"){
+    this.player1 += this.moneyPot();
+  }
+  else{
+    this.player2 += this.moneyPot();
+  }
+
+  this.resetTurn();
 };
 
 GameState.prototype.enemyMakeRandomMove = function(){
@@ -373,22 +378,3 @@ GameState.prototype.enemyMakeRandomMove = function(){
 GameState.prototype.enemyMakeAiMove = function(){
 
 };
-
-function evaluateCards(cardsOnHand,flop,turnCard,riverCard){
-  //Evaluate a players hand and return the best combination of five cards for the player with some kind of type of score
-
-  // 1) Trim from 7 to 5 best cards....
-
-  // 2) Create Histogram of the cards numbers...
-
-  // 3) Check if it's a flush
-
-  // 4) Check if it's a straight
-
-  // 5) Check if it's a straight flush
-
-  // 6) If no match in the previous it's High Card
-
-  // 7) Evaluate!
-
-}
