@@ -17,7 +17,7 @@ var height = 500;
 var width = 880;
 
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera(75, width/height, 0.1, 1000);
+var camera = new THREE.PerspectiveCamera(75, width/height, 1, 2000);
 camera.position.z = 320;
 camera.position.y = 200;
 
@@ -66,9 +66,9 @@ scene.add(spotLight2);*/
 
 var tableTexture = THREE.ImageUtils.loadTexture('texture/pattern16.png');
 tableTexture.wrapS = tableTexture.wrapT = THREE.RepeatWrapping;
-tableTexture.repeat.set(4, 4);
+tableTexture.repeat.set(15, 15);
 
-var plane = new THREE.Mesh(new THREE.PlaneGeometry(1500,1500, 1, 1), new THREE.MeshPhongMaterial({map: tableTexture}));
+var plane = new THREE.Mesh(new THREE.PlaneGeometry(2000,4000, 1, 1), new THREE.MeshPhongMaterial({map: tableTexture}));
 plane.rotation.x -= 90*(Math.PI/180);
 plane.position.y = -5;
 plane.receiveShadow = true;
