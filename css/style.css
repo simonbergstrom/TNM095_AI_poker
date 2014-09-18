@@ -10,22 +10,34 @@ canvas{
   border-radius: 3px;
   border: 1px solid #444;
   text-align: center;
-  margin-left: 10px;
 }
 
 #canvasContainer{
   float:left;
   display: inline-block;
+  margin-left: 6px;
+  margin-right: 6px;
+  padding: 0px;
 }
 
 #topBarContent{
-  width: 1100px;
+  width: 1200px;
   margin: 0 auto;
 }
 
 #container{
   margin: 0 auto;
-  width: 1100px;
+  width: 1200px;
+}
+
+td{
+  padding-top: 20px;
+}
+
+table{
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
 }
 
 #topBar{
@@ -57,17 +69,18 @@ h1{
   display:inline-block;
 }
 
-#sideMenu{
+.sideMenu{
 
-  width: 190px;
+  width: 150px;
   border: 1px solid #444;
   border-radius: 3px;
   background-color: #fff;
   display: inline-block;
   float:left;
+  height: 335px;
 }
 
-#sideMenuHeader{
+.sideMenuHeader{
   margin: 0px;
   padding: 5px;
   background-color: #d9edf7;
@@ -78,14 +91,14 @@ h1{
   color: #31708f;
 }
 
-#sideMenuHeader  h3{
+.sideMenuHeader  h3{
   margin: 3px;
   padding: 0px;
 }
 
-#sideMenuBody{
+.sideMenuBody{
   text-align: center;
-  padding: 5px;
+  padding: 1px;
 }
 
 button{
@@ -97,7 +110,7 @@ button{
   padding: 5px;
   cursor: pointer;
   color: white;
-  margin: 5px;
+  margin: 2px;
 }
 
 #resetbutton{

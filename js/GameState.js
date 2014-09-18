@@ -1,6 +1,8 @@
 //The main file for the game logic.
 
 function GameState(){
+  removeCards();
+
   this.player1 = { //Player
     name : "Player",
     cardsOnHand : {},
@@ -17,17 +19,9 @@ function GameState(){
   this.turnCard = {};
   this.riverCard = {};
 
-
   //this.aiPlayer = {};
 
   this.deckOfCards = new Cards();
-  this.deckOfCards.shuffle();
-
-  this.moneyPot = 0;
-
-  //Give the players their cards.
-  this.player1.cardsOnHand = this.deckOfCards.getPocket();
-  this.player2.cardsOnHand = this.deckOfCards.getPocket();
 
   //Moves available first round
   this.availableMoves = {
@@ -38,13 +32,26 @@ function GameState(){
     "fold": false
   };
 
+  
   this.turn = 1;
+  this.moneyPot = 0;
+  this.bigBlind = Math.floor((Math.random() * 2) + 1);
   this.numberRaised = 0;
+
+  this.startNewRound();
+  this.updateScoreUi();
 
 }
 
+GameState.prototype.updateScoreUi = function(){
+  $("#playerScore").html(this.player1.money);
+  $("#computerScore").html(this.player2.money);
+  $("#tableScore").html(this.moneyPot);
+};
+
 //Static roundCounter
 GameState.roundCounter = 0;
+
 
 //Getters
 GameState.prototype.getHumanPlayerCards = function(){
@@ -69,6 +76,10 @@ GameState.prototype.startNewRound = function(){
   console.log("Starting new round!");
   console.log("Dealing cards...");
 
+  console.log("TURN: ", this.turn);
+
+  this.numberRaised = 0;
+
   this.availableMoves.call = false;
   this.availableMoves.bet = true;
   this.availableMoves.check = true;
@@ -78,58 +89,133 @@ GameState.prototype.startNewRound = function(){
   this.updateButtons();
 
   switch(this.turn){
+    case 1:{
+      this.deckOfCards.shuffle();
+      //Give the players their cards.
+      $("#enemyLog").append("Betting round 1! <br/>");
+
+      this.player1.cardsOnHand = this.deckOfCards.getPocket();
+      drawCard("player1_card1", this.player1.cardsOnHand.card1);
+      drawCard("player1_card2", this.player1.cardsOnHand.card2);
+
+      this.player2.cardsOnHand = this.deckOfCards.getPocket();
+      drawCard("player2_card1", {suit: "Secret", number: ""});
+      drawCard("player2_card2", {suit: "Secret", number: ""});
+
+      if(this.bigBlind === 1){
+        this.player1.money -= 2;
+        this.player2.money -= 1;
+      }
+      else{
+        this.player1.money -= 1;
+        this.player2.money -= 2;
+      }
+      
+      this.moneyPot += 3;
+
+      this.updateScoreUi();
+
+      break;
+    }
     case 2:{
+      $("#enemyLog").append("Betting round 2! <br/>");
       this.flop = this.deckOfCards.getFlop();
+      drawCard("dealer_card1", this.flop.card1);
+      drawCard("dealer_card2", this.flop.card2);
+      drawCard("dealer_card3", this.flop.card3);
       console.log("The flop: ", this.flop);
       break;
     }
     case 3:{
-      this.turnCard= this.deckOfCards.getOneCard();
+      $("#enemyLog").append("Betting round 3! <br/>");
+      this.turnCard = this.deckOfCards.getOneCard();
+      drawCard("dealer_card4", this.turnCard);
       console.log("The turnCard: ", this.turnCard);
       break;
     }
     case 4:{
+      $("#enemyLog").append("Betting round 4! <br/>");
       this.riverCard = this.deckOfCards.getOneCard();
+      drawCard("dealer_card5", this.riverCard);
       console.log("The turnCard: ", this.riverCard);
       break;
     }
     case 5:{
-      //TODO the evaluation
-      console.log("Figure out the winner!");
-      var cardstoEvalplayer1 = [],cardstoEvalplayer2 = [];
+      $("#enemyLog").append("Showdown! <br/>");
+      var cardstoEvalplayer1 = [gameState.player1.cardsOnHand.card1,gameState.player1.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
+      var cardstoEvalplayer2 = [gameState.player2.cardsOnHand.card1,gameState.player2.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
 
-      cardstoEvalplayer1 = [gameState.player1.cardsOnHand.card1,gameState.player1.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
-      cardstoEvalplayer2 = [gameState.player2.cardsOnHand.card1,gameState.player2.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
-      
-      
+
       var res1 = rankHand(cardstoEvalplayer1);
       var res2 = rankHand(cardstoEvalplayer2);
       
 
       if(res1.primeScore == res2.primeScore){
         if(res1.secondaryScore > res2.secondaryScore){
-          console.log("Player 1 wins with:",res1);
+          $("#enemyLog").append("Player wins! <br/>");
+          this.player1.money += this.moneyPot;
         }
         else if(res1.secondaryScore == res2.secondaryScore) {
-
-          console.log("We have tie!!!");
+          $("#enemyLog").append("We have a tie! <br/>");
+          this.player1.money += Math.ceil(this.moneyPot/2);
+          this.player2.money += Math.floor(this.moneyPot/2);
         }
         else{
-            console.log("Player 2 wins with: ",res2);
+            $("#enemyLog").append("Computer wins! <br/>");
+            this.player2.money += this.moneyPot;
         }
       }
       else if (res1.primeScore > res2.primScore){
-            console.log("Player 1 wins with: ",res1);
+        $("#enemyLog").append("Player wins! <br/>");
+        this.player1.money += this.moneyPot;
       }
       else{
-            console.log("Player 2 wins with: ",res2); 
+        $("#enemyLog").append("Computer wins! <br/>");
+        this.player2.money += this.moneyPot;
       }
       
 
+      // Display the cards of the AI
+      scene.getObjectByName("player2_card1").material.materials[2].map = textureArray[this.player2.cardsOnHand.card1.suit + this.player2.cardsOnHand.card1.number];
+      scene.getObjectByName("player2_card2").material.materials[2].map = textureArray[this.player2.cardsOnHand.card2.suit + this.player2.cardsOnHand.card2.number];
+
+      $("button").each(function(){
+        if($(this).attr("id") !== "startButton"){
+          $(this).addClass("button-disabled");
+          $(this).attr("disabled", true);
+        }
+      });
+      
+      var self = this;
+      setTimeout(function(){
+        self.resetTurn();
+      }, 7000);
     }
+  }
+  if(this.bigBlind === 1 && this.turn !== 5){
+    this.enemyMakeRandomMove();
   }
 };
 
+GameState.prototype.resetTurn = function(){
+  // Reset variables
+  this.turn = 1;
+  this.moneyPot = 0;
+
+  // Update the ui with the result
+  this.updateScoreUi();
+
+  if(this.bigBlind === 1){
+    this.bigBlind = 2;
+  }
+  else{
+    this.bigBlind = 1;
+  }
+  $("#enemyLog").html("");
+  this.startNewRound();
+
+  removeCards();
+}
 
 GameState.prototype.moveHelper = function(player, move){
   if(move === "call"){
@@ -206,26 +292,26 @@ GameState.prototype.getAvailableMoves = function(){
   return res;
 };
 
-
 //All the moves the players can do.
 GameState.prototype.call = function(player){
+  this.moneyPot++;
+  player.money--;
 
-  //TODO Add the right number of money in the pot
+  this.updateScoreUi();
 
   this.turn++;
   this.startNewRound();
 
-  console.log(player.name + " called");
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " called <br/>");
+  }
 }
 
 GameState.prototype.bet = function(player){
-  if(player.name === "Player"){ // The human player
-    this.player1.money--;
-  }
-  else{ // The computer player
-    this.player2.money--;
-  }
+  player.money--;
   this.moneyPot++;
+
+  this.updateScoreUi();
 
   this.availableMoves.call = true;
   this.availableMoves.bet = false;
@@ -233,7 +319,9 @@ GameState.prototype.bet = function(player){
   this.availableMoves.raise = true;
   this.availableMoves.fold = true;
 
-  console.log(player.name + " made a bet!");
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " made a bet <br/>");
+  }
 }
 
 GameState.prototype.check = function(player){
@@ -243,23 +331,22 @@ GameState.prototype.check = function(player){
   this.availableMoves.raise = false;
   this.availableMoves.fold = false;
 
-  if(player.name === "Computer"){
+  if((this.bigBlind === 2 && player.name === "Computer") || (this.bigBlind === 1 && player.name === "Player")){
     this.turn++;
     this.startNewRound();
   }
 
   //Nothing else do be done really. When checking?
-  console.log(player.name + " checked!");
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " checked <br/>");
+  }
 };
 
 GameState.prototype.raise = function(player){
-  if(player.name === "Player"){ // The human player
-    this.player1.money--;
-  }
-  else{ // The computer player
-    this.player2.money--;
-  }
-  this.moneyPot++;
+  player.money -= 2;
+  this.moneyPot += 2;
+
+  this.updateScoreUi();
 
   this.availableMoves.call = true;
   this.availableMoves.bet = false;
@@ -267,20 +354,42 @@ GameState.prototype.raise = function(player){
   this.availableMoves.raise = true;
   this.availableMoves.fold = true;
 
-  if(player.name === "Computer"){
-    this.numberRaised++;
-    if(this.numberRaised === 3){
-      this.turn++;
-      this.startNewRound();
-    }
+  this.numberRaised++;
+  if(this.numberRaised === 6){
+    this.turn++;
+    this.startNewRound();
   }
 
-  console.log(player.name + " raised!");
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " raised! <br/>");
+  }
 };
 
 GameState.prototype.fold = function(player){
-  console.log(player.name + " lost!");
-  //All the money goes to the other player! TODO
+  if(player.name === "Computer"){
+    this.player1.money += this.moneyPot;
+  }
+  else{
+    this.player2.money += this.moneyPot;
+  }
+  this.moneyPot = 0;
+  this.updateScoreUi();
+
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " folded! <br/>");
+  }
+
+  $("button").each(function(){
+    if($(this).attr("id") !== "startButton"){
+      $(this).addClass("button-disabled");
+      $(this).attr("disabled", true);
+    }
+  });
+
+  var self = this;
+  setTimeout(function(){
+    self.resetTurn();
+  }, 7000);
 };
 
 GameState.prototype.enemyMakeRandomMove = function(){
@@ -317,22 +426,3 @@ GameState.prototype.enemyMakeRandomMove = function(){
 GameState.prototype.enemyMakeAiMove = function(){
 
 };
-
-function evaluateCards(cardsOnHand,flop,turnCard,riverCard){
-  //Evaluate a players hand and return the best combination of five cards for the player with some kind of type of score
-
-  // 1) Trim from 7 to 5 best cards....
-
-  // 2) Create Histogram of the cards numbers...
-
-  // 3) Check if it's a flush
-
-  // 4) Check if it's a straight
-
-  // 5) Check if it's a straight flush
-
-  // 6) If no match in the previous it's High Card
-
-  // 7) Evaluate!
-
-}

@@ -39,105 +39,85 @@ function getPokerScore(cs) {
     
 function rankHand(str) {
     var index = 10, winCardIndexes, i ,e;
-    console.log(str);
     var cards = [],suits=[],suitsOrig=[];
 
-    console.log(str);
-
     for (var obj in str){
-        cards.push(str[obj].number);
+        if(str[obj].number === 1){
+            cards.push(14);
+        }
+        else{
+            cards.push(str[obj].number);
+        }
         suits.push(str[obj].suit[0]);
         suitsOrig.push(str[obj].suit);
     }
 
-    
-    /*if (str.match(/((?:\s*)(10|[2-9]|[J|Q|K|A])[S|C|H|D](?:\s*)){5,7}/g) !== null) {*/
-        /*var cardStr = str.replace(/A/g,"14").replace(/K/g,"13").replace(/Q/g,"12")
+    /*if (str.match(/((?:\s*)(10|[2-9]|[J|Q|K|A])[S|C|H|D](?:\s*)){5,7}/g) !== null) {
+        var cardStr = str.replace(/1/g,"14").replace(/K/g,"13").replace(/Q/g,"12")
             .replace(/J/g,"11").replace(/S|C|H|D/g,",");
         var cards = cardStr.replace(/\s/g, '').slice(0, -1).split(",");
         var suits = str.match(/S|C|H|D/g);*/
-        
-        console.log("The hand to eval: ",cards,suits);
+    
+    // Convert from letters to special chars..
+    for(var x in suits){
+      if(suits[x]=='S'){suits[x]=decodeURIComponent("%E2%99%A0");} // Spades
+      else if(suits[x]=='C'){suits[x]=decodeURIComponent("%E2%99%A3");} // Clubs
+      else if(suits[x]=='H'){suits[x]=decodeURIComponent("%E2%99%A5");} // Hearts
+      else if(suits[x]=='D'){suits[x]=decodeURIComponent("%E2%99%A6");} // Diamonds
+    }
 
-        // Convert from letters to special chars..
-        for(var x in suits){
-          if(suits[x]=='S'){suits[x]=decodeURIComponent("%E2%99%A0");} // Spades
-          else if(suits[x]=='C'){suits[x]=decodeURIComponent("%E2%99%A3");} // Clubs
-          else if(suits[x]=='H'){suits[x]=decodeURIComponent("%E2%99%A5");} // Hearts
-          else if(suits[x]=='D'){suits[x]=decodeURIComponent("%E2%99%A6");} // Diamonds
-        }
+    if (cards !== null && suits !== null) {
+        if (cards.length == suits.length) {
+            var o = {}, keyCount = 0, j,wci; 
+            for (i = 0; i < cards.length; i++) { e = cards[i]+suits[i]; o[e] = 1;}
+            for (j in o) { if (o.hasOwnProperty(j)) { keyCount++;}}
+                           
+            if (cards.length >=5) {
+             if (cards.length == suits.length && cards.length == keyCount) {
+                for (i=0;i<cards.length;i++) { cards[i]-=0; }
+                for (i=0;i<suits.length;i++) 
+                    { suits[i] = Math.pow(2, (suits[i].charCodeAt(0)%9824)); }
+                var c = getCombinations(5, cards.length);
+                var maxRank = 0, winIndex = 10;
+                for (i=0; i < c.length; i++) {
+                     var cs = [cards[c[i][0]], cards[c[i][1]], cards[c[i][2]], 
+                               cards[c[i][3]], cards[c[i][4]]];
+                     var ss = [suits[c[i][0]], suits[c[i][1]], suits[c[i][2]], 
+                               suits[c[i][3]], suits[c[i][4]]];
+                     index = calcIndex(cs,ss);
+       
+                     if (handRanks[index] > maxRank) {
+                         maxRank = handRanks[index];
+                         winIndex = index; 
+                         wci = c[i].slice();
+                     } else if (handRanks[index] == maxRank) {
+                         //If by chance we have a tie, find the best one
+                         var score1 = getPokerScore(cs);
+                         var score2 = getPokerScore([cards[wci[0]],cards[wci[1]],cards[wci[2]],
+                                                     cards[wci[3]],cards[wci[4]]]);
+                         if (score1 > score2) { wci= c[i].slice(); }
+                     }
+                } 
+                // Type of hand that will be returned...
+                index = winIndex;
+             }                     
+            }  
 
-        if (cards !== null && suits !== null) {
-            if (cards.length == suits.length) {
-                var o = {}, keyCount = 0, j,wci; 
-                for (i = 0; i < cards.length; i++) { e = cards[i]+suits[i]; o[e] = 1;}
-                for (j in o) { if (o.hasOwnProperty(j)) { keyCount++;}}
-                               
-                if (cards.length >=5) {
-                 if (cards.length == suits.length && cards.length == keyCount) {
-                    for (i=0;i<cards.length;i++) { cards[i]-=0; }
-                    for (i=0;i<suits.length;i++) 
-                        { suits[i] = Math.pow(2, (suits[i].charCodeAt(0)%9824)); }
-                    var c = getCombinations(5, cards.length);
-                    var maxRank = 0, winIndex = 10;
-                    for (i=0; i < c.length; i++) {
-                         var cs = [cards[c[i][0]], cards[c[i][1]], cards[c[i][2]], 
-                                   cards[c[i][3]], cards[c[i][4]]];
-                         var ss = [suits[c[i][0]], suits[c[i][1]], suits[c[i][2]], 
-                                   suits[c[i][3]], suits[c[i][4]]];
-                         index = calcIndex(cs,ss);
-           
-                         if (handRanks[index] > maxRank) {
-                             maxRank = handRanks[index];
-                             winIndex = index; 
-                             wci = c[i].slice();
-                         } else if (handRanks[index] == maxRank) {
-                             //If by chance we have a tie, find the best one
-                             var score1 = getPokerScore(cs);
-                             var score2 = getPokerScore([cards[wci[0]],cards[wci[1]],cards[wci[2]],
-                                                         cards[wci[3]],cards[wci[4]]]);
-                             if (score1 > score2) { wci= c[i].slice(); }
-                         }
-                    } 
-                    // Type of hand that will be returned...
-                    index = winIndex;
-                 }                     
-                }  
-  
-                //Show the best cards if cs.length is less than 7 cards.
-                var cardUsed = [];
-                if (cards.length <= 7) {
-                    for (i=0; i<cards.length; i++) {
+            //Show the best cards if cs.length is less than 7 cards.
+            var cardUsed = [];
+            if (cards.length <= 7) {
+                for (i=0; i<cards.length; i++) {
 
-                        if (wci.indexOf(i) == -1) {
-                            //Not in the solution
+                    if (wci.indexOf(i) == -1) {
+                        //Not in the solution
 
-                        } else {
-                            //Is in the solution
-                            cardUsed.push({"suit":suitsOrig[i],"number":cards[i].toString()});
-                             
-                        }   
-                    }
-                    return {type:hands[index],cardsUsed: cardUsed,primeScore: handRanks[index], secondaryScore: getPokerScore([cards[wci[0]],cards[wci[1]],cards[wci[2]],cards[wci[3]],cards[wci[4]]])};
+                    } else {
+                        //Is in the solution
+                        cardUsed.push({"suit":suitsOrig[i],"number":cards[i].toString()});
+                    }   
                 }
+                return {type:hands[index],cardsUsed: cardUsed,primeScore: handRanks[index], secondaryScore: getPokerScore([cards[wci[0]],cards[wci[1]],cards[wci[2]],cards[wci[3]],cards[wci[4]]])};
             }
         }
-    //}
-}  
-// Test type of hands...
-var theHand =  '2D3C4S5H6C7C';
-var straightF= 'AHKHQHJH10HASAD';
-var straight = '10H9C8H7H6H2D9D';
-var test =     'QSJS10S9S8SASAH';
-var highcard = 'AD2D3C8S9S';
-var house =    '3D3S3C7D7C';
-var house2 =   '2D2S2C7D7C';
-
-// Testing the evaluator....
-
-//var hand = rankHand(straightF);
-
-//console.log(hand);
-
-
-
+    }
+}
