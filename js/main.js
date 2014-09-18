@@ -138,7 +138,7 @@ function drawCard(name, card) {
        new THREE.MeshPhongMaterial({color: 0xbbbbbb}),
        new THREE.MeshPhongMaterial({color: 0xbbbbbb})
     ];
-    var new_card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
+    var new_card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88, 1, 1), new THREE.MeshFaceMaterial(card_materials));
 
     addProperty(new_card, cardObjects["all_cards"]);
     addProperty(new_card, cardObjects[name]);
@@ -176,6 +176,7 @@ $("#resetButton").click(function(){
   gameState = {};
   gameState = new GameState();
   gameState.updateButtons();
+  $("#enemyLog").html("");
 });
 
 $("#callButton").click(function(){
