@@ -7,7 +7,7 @@ var humanPlayer;
 var clock = new THREE.Clock();
 
 $("button").each(function(){
-  if($(this).attr("id") !== "resetButton" && $(this).attr("id") !== "startButton"){
+  if($(this).attr("id") !== "startButton"){
     $(this).addClass("button-disabled");
     $(this).attr("disabled", true);
   }
@@ -183,7 +183,7 @@ $("#callButton").click(function(){
   gameState.doMove(humanPlayer, "call");
 
   //Start the enemy move
-  gameState.enemyMakeRandomMove();
+  //gameState.enemyMakeRandomMove();
 });
 
 $("#betButton").click(function(){
@@ -197,7 +197,9 @@ $("#checkButton").click(function(){
   gameState.doMove(humanPlayer, "check");
 
   //Start the enemy move
-  gameState.enemyMakeRandomMove();
+  if(gameState.bigBlind === 2){
+    gameState.enemyMakeRandomMove();
+  }
 });
 
 $("#raiseButton").click(function(){
