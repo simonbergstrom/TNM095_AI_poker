@@ -14,8 +14,6 @@ function GameState(){
     money : 20
   };
 
-  this.bigBlind = 1;
-
   //The cards on the table
   this.flop = {};
   this.turnCard = {};
@@ -34,9 +32,11 @@ function GameState(){
     "fold": false
   };
 
+  
   this.turn = 1;
-  this.numberRaised = 0;
   this.moneyPot = 0;
+  this.bigBlind = Math.floor((Math.random() * 2) + 1);
+  this.numberRaised = 0;
 
   this.startNewRound();
   this.updateScoreUi();
@@ -109,6 +109,7 @@ GameState.prototype.startNewRound = function(){
         this.player1.money -= 1;
         this.player2.money -= 2;
       }
+      
       this.moneyPot += 3;
 
       break;
@@ -172,8 +173,21 @@ GameState.prototype.startNewRound = function(){
       scene.getObjectByName("player2_card1").material.materials[2].map = textureArray[this.player2.cardsOnHand.card1.suit + this.player2.cardsOnHand.card1.number];
       scene.getObjectByName("player2_card2").material.materials[2].map = textureArray[this.player2.cardsOnHand.card2.suit + this.player2.cardsOnHand.card2.number];
 
-      this.resetTurn();
+      $("button").each(function(){
+        if($(this).attr("id") !== "resetButton" && $(this).attr("id") !== "startButton"){
+          $(this).addClass("button-disabled");
+          $(this).attr("disabled", true);
+        }
+      });
+      
+      var self = this;
+      setTimeout(function(){
+        self.resetTurn();
+      }, 7000);
     }
+  }
+  if(this.bigBlind === 1 && this.turn !== 5){
+    this.enemyMakeRandomMove();
   }
 };
 
@@ -191,8 +205,9 @@ GameState.prototype.resetTurn = function(){
   else{
     this.bigBlind = 1;
   }
-
+  $("#enemyLog").html("");
   this.startNewRound();
+
 
   removeCards();
 }
@@ -311,7 +326,7 @@ GameState.prototype.check = function(player){
   this.availableMoves.raise = false;
   this.availableMoves.fold = false;
 
-  if(player.name === "Computer"){
+  if((this.bigBlind === 2 && player.name === "Computer") || (this.bigBlind === 1 && player.name === "Player")){
     this.turn++;
     this.startNewRound();
   }
@@ -334,15 +349,15 @@ GameState.prototype.raise = function(player){
   this.availableMoves.raise = true;
   this.availableMoves.fold = true;
 
-  if(player.name === "Computer"){
-    this.numberRaised++;
-    if(this.numberRaised === 3){
-      this.turn++;
-      this.startNewRound();
-    }
+  this.numberRaised++;
+  if(this.numberRaised === 6){
+    this.turn++;
+    this.startNewRound();
   }
 
-  $("#enemyLog").append(player.name + " raised! <br/>");
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " raised! <br/>");
+  }
 };
 
 GameState.prototype.fold = function(player){
@@ -353,11 +368,21 @@ GameState.prototype.fold = function(player){
     this.player2.money += this.moneyPot;
   }
 
-  this.resetTurn();
-
   if(player.name === "Computer"){
     $("#enemyLog").append(player.name + " folded! <br/>");
   }
+
+  $("button").each(function(){
+    if($(this).attr("id") !== "resetButton" && $(this).attr("id") !== "startButton"){
+      $(this).addClass("button-disabled");
+      $(this).attr("disabled", true);
+    }
+  });
+
+  var self = this;
+  setTimeout(function(){
+    self.resetTurn();
+  }, 7000);
 };
 
 GameState.prototype.enemyMakeRandomMove = function(){

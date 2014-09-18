@@ -182,7 +182,7 @@ $("#callButton").click(function(){
   gameState.doMove(humanPlayer, "call");
 
   //Start the enemy move
-  gameState.enemyMakeRandomMove();
+  //gameState.enemyMakeRandomMove();
 });
 
 $("#betButton").click(function(){
@@ -196,7 +196,9 @@ $("#checkButton").click(function(){
   gameState.doMove(humanPlayer, "check");
 
   //Start the enemy move
-  gameState.enemyMakeRandomMove();
+  if(gameState.bigBlind === 2){
+    gameState.enemyMakeRandomMove();
+  }
 });
 
 $("#raiseButton").click(function(){
