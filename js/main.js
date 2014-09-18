@@ -18,7 +18,7 @@ var width = 880;
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, width/height, 1, 2000);
-camera.position.z = 320;
+camera.position.z = 220;
 camera.position.y = 200;
 
 var controls = new THREE.OrbitControls(camera);
@@ -89,10 +89,10 @@ var cardObjects = {"all_cards"     : {castShadow: true},
                    "dealer_card3"  : {name:  "dealer_card3", position: {x:    0, y:  0, z:    0}, rotation: {x:                 0, y: 0, z:                 0}},
                    "dealer_card4"  : {name:  "dealer_card4", position: {x:  -80, y:  0, z:    0}, rotation: {x:                 0, y: 0, z:                 0}},
                    "dealer_card5"  : {name:  "dealer_card5", position: {x: -160, y:  0, z:    0}, rotation: {x:                 0, y: 0, z:                 0}},
-                   "player1_card1" : {name: "player1_card1", position: {x:   40, y: 40, z:  200}, rotation: {x:  45*(Math.PI/180), y: 0, z:  20*(Math.PI/180)}},
-                   "player1_card2" : {name: "player1_card2", position: {x:  -40, y: 40, z:  200}, rotation: {x:  45*(Math.PI/180), y: 0, z: -20*(Math.PI/180)}},
-                   "player2_card1" : {name: "player2_card1", position: {x:   40, y: 40, z: -200}, rotation: {x: -45*(Math.PI/180), y: 0, z:  20*(Math.PI/180)}},
-                   "player2_card2" : {name: "player2_card2", position: {x:  -40, y: 40, z: -200}, rotation: {x: -45*(Math.PI/180), y: 0, z: -20*(Math.PI/180)}}};
+                   "player1_card1" : {name: "player1_card1", position: {x:   40, y: 40, z:  150}, rotation: {x:  45*(Math.PI/180), y: 0, z:  20*(Math.PI/180)}},
+                   "player1_card2" : {name: "player1_card2", position: {x:  -40, y: 40, z:  150}, rotation: {x:  45*(Math.PI/180), y: 0, z: -20*(Math.PI/180)}},
+                   "player2_card1" : {name: "player2_card1", position: {x:   40, y: 40, z: -150}, rotation: {x: -45*(Math.PI/180), y: 0, z:  20*(Math.PI/180)}},
+                   "player2_card2" : {name: "player2_card2", position: {x:  -40, y: 40, z: -150}, rotation: {x: -45*(Math.PI/180), y: 0, z: -20*(Math.PI/180)}}};
 
 loadTextures();
 animate();
