@@ -91,6 +91,8 @@ GameState.prototype.startNewRound = function(){
     case 1:{
       this.deckOfCards.shuffle();
       //Give the players their cards.
+      $("#enemyLog").append("Betting round 1! <br/>");
+
       this.player1.cardsOnHand = this.deckOfCards.getPocket();
       drawCard("player1_card1", this.player1.cardsOnHand.card1);
       drawCard("player1_card2", this.player1.cardsOnHand.card2);
@@ -112,6 +114,7 @@ GameState.prototype.startNewRound = function(){
       break;
     }
     case 2:{
+      $("#enemyLog").append("Betting round 2! <br/>");
       this.flop = this.deckOfCards.getFlop();
       drawCard("dealer_card1", this.flop.card1);
       drawCard("dealer_card2", this.flop.card2);
@@ -120,18 +123,21 @@ GameState.prototype.startNewRound = function(){
       break;
     }
     case 3:{
+      $("#enemyLog").append("Betting round 3! <br/>");
       this.turnCard = this.deckOfCards.getOneCard();
       drawCard("dealer_card4", this.turnCard);
       console.log("The turnCard: ", this.turnCard);
       break;
     }
     case 4:{
+      $("#enemyLog").append("Betting round 4! <br/>");
       this.riverCard = this.deckOfCards.getOneCard();
       drawCard("dealer_card5", this.riverCard);
       console.log("The turnCard: ", this.riverCard);
       break;
     }
     case 5:{
+      $("#enemyLog").append("Showdown! <br/>");
       var cardstoEvalplayer1 = [gameState.player1.cardsOnHand.card1,gameState.player1.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
       var cardstoEvalplayer2 = [gameState.player2.cardsOnHand.card1,gameState.player2.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
 
@@ -163,8 +169,8 @@ GameState.prototype.startNewRound = function(){
       }
 
       // Display the cards of the AI
-      scene.getObjectByName("player2_card1").material.materials[2].map = textureArray[this.player1.cardsOnHand.card1.suit + this.player1.cardsOnHand.card1.number];
-      scene.getObjectByName("player2_card2").material.materials[2].map = textureArray[this.player1.cardsOnHand.card1.suit + this.player1.cardsOnHand.card1.number];
+      scene.getObjectByName("player2_card1").material.materials[2].map = textureArray[this.player2.cardsOnHand.card1.suit + this.player2.cardsOnHand.card1.number];
+      scene.getObjectByName("player2_card2").material.materials[2].map = textureArray[this.player2.cardsOnHand.card2.suit + this.player2.cardsOnHand.card2.number];
 
       this.resetTurn();
     }
