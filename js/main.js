@@ -7,7 +7,7 @@ var humanPlayer;
 var clock = new THREE.Clock();
 
 $("button").each(function(){
-  if($(this).attr("id") !== "resetButton" && $(this).attr("id") !== "startButton"){
+  if($(this).attr("id") !== "startButton"){
     $(this).addClass("button-disabled");
     $(this).attr("disabled", true);
   }
@@ -168,14 +168,6 @@ $("#startButton").click(function(){
   humanPlayer = gameState.getHumanPlayer();
   gameState.updateButtons();
   console.log("These are your Cards: ", gameState.getHumanPlayerCards());
-});
-
-$("#resetButton").click(function(){
-  //Reset the game with a new instance of the gameLogic();
-  //Clear the object.
-  gameState = {};
-  gameState = new GameState();
-  gameState.updateButtons();
 });
 
 $("#callButton").click(function(){

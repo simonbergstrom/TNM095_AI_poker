@@ -112,6 +112,8 @@ GameState.prototype.startNewRound = function(){
       
       this.moneyPot += 3;
 
+      this.updateScoreUi();
+
       break;
     }
     case 2:{
@@ -174,7 +176,7 @@ GameState.prototype.startNewRound = function(){
       scene.getObjectByName("player2_card2").material.materials[2].map = textureArray[this.player2.cardsOnHand.card2.suit + this.player2.cardsOnHand.card2.number];
 
       $("button").each(function(){
-        if($(this).attr("id") !== "resetButton" && $(this).attr("id") !== "startButton"){
+        if($(this).attr("id") !== "startButton"){
           $(this).addClass("button-disabled");
           $(this).attr("disabled", true);
         }
@@ -207,7 +209,6 @@ GameState.prototype.resetTurn = function(){
   }
   $("#enemyLog").html("");
   this.startNewRound();
-
 
   removeCards();
 }
@@ -367,13 +368,15 @@ GameState.prototype.fold = function(player){
   else{
     this.player2.money += this.moneyPot;
   }
+  this.moneyPot = 0;
+  this.updateScoreUi();
 
   if(player.name === "Computer"){
     $("#enemyLog").append(player.name + " folded! <br/>");
   }
 
   $("button").each(function(){
-    if($(this).attr("id") !== "resetButton" && $(this).attr("id") !== "startButton"){
+    if($(this).attr("id") !== "startButton"){
       $(this).addClass("button-disabled");
       $(this).attr("disabled", true);
     }
