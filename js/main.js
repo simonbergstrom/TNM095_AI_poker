@@ -168,8 +168,6 @@ $("#startButton").click(function(){
   console.log("Starting Game!");
   gameState = new GameState();
   humanPlayer = gameState.getHumanPlayer();
-  gameState.updateButtons();
-  console.log("These are your Cards: ", gameState.getHumanPlayerCards());
 });
 
 $("#resetButton").click(function(){
@@ -183,9 +181,6 @@ $("#resetButton").click(function(){
 
 $("#callButton").click(function(){
   gameState.doMove(humanPlayer, "call");
-
-  //Start the enemy move
-  //gameState.enemyMakeRandomMove();
 });
 
 $("#betButton").click(function(){

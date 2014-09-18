@@ -38,8 +38,11 @@ function GameState(){
   this.bigBlind = Math.floor((Math.random() * 2) + 1);
   this.numberRaised = 0;
 
-  this.startNewRound();
+  $("#enemyLog").html("");
+
   this.updateScoreUi();
+
+  this.startNewRound();
 
 }
 
@@ -51,7 +54,6 @@ GameState.prototype.updateScoreUi = function(){
 
 //Static roundCounter
 GameState.roundCounter = 0;
-
 
 //Getters
 GameState.prototype.getHumanPlayerCards = function(){
@@ -73,27 +75,14 @@ GameState.prototype.doMove = function(player, move){
 };
 
 GameState.prototype.startNewRound = function(){
-  console.log("Starting new round!");
-  console.log("Dealing cards...");
-
-  console.log("TURN: ", this.turn);
-
   this.numberRaised = 0;
-
-  this.availableMoves.call = false;
-  this.availableMoves.bet = true;
-  this.availableMoves.check = true;
-  this.availableMoves.raise = false;
-  this.availableMoves.fold = false;
-
-  this.updateButtons();
 
   switch(this.turn){
     case 1:{
       this.deckOfCards.shuffle();
+      
+      $("#enemyLog").append("Round 1! <br/>");
       //Give the players their cards.
-      $("#enemyLog").append("Betting round 1! <br/>");
-
       this.player1.cardsOnHand = this.deckOfCards.getPocket();
       drawCard("player1_card1", this.player1.cardsOnHand.card1);
       drawCard("player1_card2", this.player1.cardsOnHand.card2);
@@ -103,41 +92,55 @@ GameState.prototype.startNewRound = function(){
       drawCard("player2_card2", {suit: "Secret", number: ""});
 
       if(this.bigBlind === 1){
-        this.player1.money -= 2;
-        this.player2.money -= 1;
+        if(this.player1.money > 1){
+          this.player1.money -= 2;
+          this.player2.money -= 1;
+          this.moneyPot += 3;
+        }
+        else{
+          this.player1.money -= 1;
+          this.player2.money -= 1;
+          this.moneyPot += 2;
+        }
       }
       else{
-        this.player1.money -= 1;
-        this.player2.money -= 2;
+        if(this.player2.money > 1){
+          this.player2.money -= 2;
+          this.player1.money -= 1;
+          this.moneyPot += 3;
+        }
+        else{
+          this.player1.money -= 1;
+          this.player2.money -= 1;
+          this.moneyPot += 2;
+        }
       }
-      
-      this.moneyPot += 3;
 
       this.updateScoreUi();
 
       break;
     }
     case 2:{
-      $("#enemyLog").append("Betting round 2! <br/>");
+      $("#enemyLog").append("Round 2! <br/>");
       this.flop = this.deckOfCards.getFlop();
       drawCard("dealer_card1", this.flop.card1);
       drawCard("dealer_card2", this.flop.card2);
       drawCard("dealer_card3", this.flop.card3);
-      console.log("The flop: ", this.flop);
+      //console.log("The flop: ", this.flop);
       break;
     }
     case 3:{
-      $("#enemyLog").append("Betting round 3! <br/>");
+      $("#enemyLog").append("Round 3! <br/>");
       this.turnCard = this.deckOfCards.getOneCard();
       drawCard("dealer_card4", this.turnCard);
-      console.log("The turnCard: ", this.turnCard);
+      //console.log("The turnCard: ", this.turnCard);
       break;
     }
     case 4:{
-      $("#enemyLog").append("Betting round 4! <br/>");
+      $("#enemyLog").append("Round 4! <br/>");
       this.riverCard = this.deckOfCards.getOneCard();
       drawCard("dealer_card5", this.riverCard);
-      console.log("The turnCard: ", this.riverCard);
+      //console.log("The turnCard: ", this.riverCard);
       break;
     }
     case 5:{
@@ -179,21 +182,38 @@ GameState.prototype.startNewRound = function(){
       scene.getObjectByName("player2_card1").material.materials[2].map = textureArray[this.player2.cardsOnHand.card1.suit + this.player2.cardsOnHand.card1.number];
       scene.getObjectByName("player2_card2").material.materials[2].map = textureArray[this.player2.cardsOnHand.card2.suit + this.player2.cardsOnHand.card2.number];
 
-      $("button").each(function(){
-        if($(this).attr("id") !== "startButton"){
-          $(this).addClass("button-disabled");
-          $(this).attr("disabled", true);
-        }
-      });
-      
       var self = this;
       setTimeout(function(){
         self.resetTurn();
       }, 7000);
     }
   }
-  if(this.bigBlind === 1 && this.turn !== 5){
-    this.enemyMakeRandomMove();
+
+  if(this.turn !== 5){
+    this.availableMoves.call  = false;
+    this.availableMoves.check = true;
+    this.availableMoves.bet   = false;
+    this.availableMoves.raise = false;
+    this.availableMoves.fold  = false;
+
+    if(this.player2.money > 0 && this.player1.money > 0){
+      this.availableMoves.bet = true;
+    }
+
+    if(this.bigBlind === 1){
+      this.enemyMakeRandomMove();
+    }
+    else{
+      this.updateButtons();
+    } 
+  }
+  else{
+    $("button").each(function(){
+      if($(this).attr("id") !== "startButton"){
+        $(this).addClass("button-disabled");
+        $(this).attr("disabled", true);
+      }
+    });
   }
 };
 
@@ -205,6 +225,10 @@ GameState.prototype.resetTurn = function(){
   // Update the ui with the result
   this.updateScoreUi();
 
+  if(this.player1.money < 1 || this.player2.money < 1){
+    return;
+  }
+
   if(this.bigBlind === 1){
     this.bigBlind = 2;
   }
@@ -212,28 +236,178 @@ GameState.prototype.resetTurn = function(){
     this.bigBlind = 1;
   }
   $("#enemyLog").html("");
-  this.startNewRound();
-
   removeCards();
+  this.startNewRound();
 }
 
-GameState.prototype.moveHelper = function(player, move){
-  if(move === "call"){
-    this.call(player);
+//All the moves the players can do.
+GameState.prototype.call = function(player){
+  this.moneyPot++;
+  player.money--;
+
+  this.updateScoreUi();
+
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " called <br/>");
   }
-  else if(move === "bet"){
-    this.bet(player);
+
+  this.turn++;
+  this.startNewRound();
+}
+
+GameState.prototype.bet = function(player){
+  player.money--;
+  this.moneyPot++;
+
+  this.updateScoreUi();
+
+  if(player.money > 1){
+    this.availableMoves.raise = true;
   }
-  else if(move === "check"){
-    this.check(player);
+  else{
+    this.availableMoves.raise = false;
   }
-  else if(move === "raise"){
-    this.raise(player);
+
+  this.availableMoves.call = true;
+  this.availableMoves.bet = false;
+  this.availableMoves.check = false;
+  this.availableMoves.fold = true;
+
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " made a bet <br/>");
   }
-  else if(move === "fold"){
-    this.fold(player);
+}
+
+GameState.prototype.check = function(player){
+
+  if(this.otherPlayer(player).money > 0){
+    this.availableMoves.bet = true;
+  }
+  else{
+    this.availableMoves.bet = false;
+  }
+
+  this.availableMoves.call = false;
+  this.availableMoves.check = true;
+  this.availableMoves.raise = false;
+  this.availableMoves.fold = false;
+
+  //Nothing else do be done really. When checking?
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " checked <br/>");
+  }
+
+  if((this.bigBlind === 2 && player.name === "Computer") || (this.bigBlind === 1 && player.name === "Player")){
+    this.turn++;
+    this.startNewRound();
   }
 };
+
+GameState.prototype.raise = function(player){
+  player.money -= 2;
+  this.moneyPot += 2;
+
+  this.updateScoreUi();
+
+  if(player.money > 1){
+    this.availableMoves.raise = true;
+  }
+  else{
+    this.availableMoves.raise = false;
+  }
+
+  this.availableMoves.call = true;
+  this.availableMoves.bet = false;
+  this.availableMoves.check = false;
+  this.availableMoves.fold = true;
+
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " raised! <br/>");
+  }
+
+  this.numberRaised++;
+  if(this.numberRaised === 6){
+    this.turn++;
+    this.startNewRound();
+  }
+};
+
+GameState.prototype.fold = function(player){
+  if(player.name === "Computer"){
+    this.player1.money += this.moneyPot;
+  }
+  else{
+    this.player2.money += this.moneyPot;
+  }
+  this.moneyPot = 0;
+  this.updateScoreUi();
+
+  if(player.name === "Computer"){
+    $("#enemyLog").append(player.name + " folded! <br/>");
+  }
+
+  this.availableMoves.raise = false;
+  this.availableMoves.call  = false;
+  this.availableMoves.bet   = false;
+  this.availableMoves.check = false;
+  this.availableMoves.fold  = false;
+
+  $("button").each(function(){
+    if($(this).attr("id") !== "startButton"){
+      $(this).addClass("button-disabled");
+      $(this).attr("disabled", true);
+    }
+  });
+
+  var self = this;
+  setTimeout(function(){
+    self.resetTurn();
+  }, 7000);
+};
+
+GameState.prototype.enemyMakeRandomMove = function(){
+  //Generate random number between 1 and 5.
+  while(true){ //Dangerous while true!
+    var randomMove = Math.floor((Math.random() * 5) + 1);
+    var availableMoves = this.getAvailableMoves();
+    var computerMove;
+
+    if(randomMove === 1){
+      computerMove = "call";
+    }
+    else if(randomMove === 2){
+      computerMove = "bet";
+    }
+    else if(randomMove === 3){
+      computerMove = "check";
+    }
+    else if(randomMove === 4){
+      computerMove = "raise";
+    }
+    else if(randomMove === 5){
+      computerMove = "fold";
+    }
+
+    if(availableMoves[computerMove]){
+      this.doMove(this.player2, computerMove);
+      this.updateButtons();
+      break;
+    }
+  }
+};
+
+GameState.prototype.enemyMakeAiMove = function(){
+
+};
+
+GameState.prototype.otherPlayer = function(player){
+  if(player.name === "Computer"){
+    return this.player1;
+  }
+  else{
+    return this.player2;
+  }
+}
 
 GameState.prototype.updateButtons = function(){
   if(this.availableMoves.call){
@@ -292,137 +466,20 @@ GameState.prototype.getAvailableMoves = function(){
   return res;
 };
 
-//All the moves the players can do.
-GameState.prototype.call = function(player){
-  this.moneyPot++;
-  player.money--;
-
-  this.updateScoreUi();
-
-  this.turn++;
-  this.startNewRound();
-
-  if(player.name === "Computer"){
-    $("#enemyLog").append(player.name + " called <br/>");
+GameState.prototype.moveHelper = function(player, move){
+  if(move === "call"){
+    this.call(player);
   }
-}
-
-GameState.prototype.bet = function(player){
-  player.money--;
-  this.moneyPot++;
-
-  this.updateScoreUi();
-
-  this.availableMoves.call = true;
-  this.availableMoves.bet = false;
-  this.availableMoves.check = false;
-  this.availableMoves.raise = true;
-  this.availableMoves.fold = true;
-
-  if(player.name === "Computer"){
-    $("#enemyLog").append(player.name + " made a bet <br/>");
+  else if(move === "bet"){
+    this.bet(player);
   }
-}
-
-GameState.prototype.check = function(player){
-  this.availableMoves.call = false;
-  this.availableMoves.bet = true;
-  this.availableMoves.check = true;
-  this.availableMoves.raise = false;
-  this.availableMoves.fold = false;
-
-  if((this.bigBlind === 2 && player.name === "Computer") || (this.bigBlind === 1 && player.name === "Player")){
-    this.turn++;
-    this.startNewRound();
+  else if(move === "check"){
+    this.check(player);
   }
-
-  //Nothing else do be done really. When checking?
-  if(player.name === "Computer"){
-    $("#enemyLog").append(player.name + " checked <br/>");
+  else if(move === "raise"){
+    this.raise(player);
   }
-};
-
-GameState.prototype.raise = function(player){
-  player.money -= 2;
-  this.moneyPot += 2;
-
-  this.updateScoreUi();
-
-  this.availableMoves.call = true;
-  this.availableMoves.bet = false;
-  this.availableMoves.check = false;
-  this.availableMoves.raise = true;
-  this.availableMoves.fold = true;
-
-  this.numberRaised++;
-  if(this.numberRaised === 6){
-    this.turn++;
-    this.startNewRound();
+  else if(move === "fold"){
+    this.fold(player);
   }
-
-  if(player.name === "Computer"){
-    $("#enemyLog").append(player.name + " raised! <br/>");
-  }
-};
-
-GameState.prototype.fold = function(player){
-  if(player.name === "Computer"){
-    this.player1.money += this.moneyPot;
-  }
-  else{
-    this.player2.money += this.moneyPot;
-  }
-  this.moneyPot = 0;
-  this.updateScoreUi();
-
-  if(player.name === "Computer"){
-    $("#enemyLog").append(player.name + " folded! <br/>");
-  }
-
-  $("button").each(function(){
-    if($(this).attr("id") !== "startButton"){
-      $(this).addClass("button-disabled");
-      $(this).attr("disabled", true);
-    }
-  });
-
-  var self = this;
-  setTimeout(function(){
-    self.resetTurn();
-  }, 7000);
-};
-
-GameState.prototype.enemyMakeRandomMove = function(){
-  //Generate random number between 1 and 5.
-  while(true){ //Dangerous while true!
-    var randomMove = Math.floor((Math.random() * 5) + 1);
-    var availableMoves = this.getAvailableMoves();
-    var computerMove;
-
-    if(randomMove === 1){
-      computerMove = "call";
-    }
-    else if(randomMove === 2){
-      computerMove = "bet";
-    }
-    else if(randomMove === 3){
-      computerMove = "check";
-    }
-    else if(randomMove === 4){
-      computerMove = "raise";
-    }
-    else if(randomMove === 5){
-      computerMove = "fold";
-    }
-
-    if(availableMoves[computerMove]){
-      this.doMove(this.player2, computerMove);
-      this.updateButtons();
-      break;
-    }
-  }
-};
-
-GameState.prototype.enemyMakeAiMove = function(){
-
 };
