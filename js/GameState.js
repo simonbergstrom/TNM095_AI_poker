@@ -32,7 +32,7 @@ function GameState(){
     "fold": false
   };
 
-  
+
   this.turn = 1;
   this.moneyPot = 0;
   this.bigBlind = Math.floor((Math.random() * 2) + 1);
@@ -80,7 +80,7 @@ GameState.prototype.startNewRound = function(){
   switch(this.turn){
     case 1:{
       this.deckOfCards.shuffle();
-      
+
       $("#enemyLog").append("Round 1! <br/>");
       //Give the players their cards.
       this.player1.cardsOnHand = this.deckOfCards.getPocket();
@@ -151,7 +151,7 @@ GameState.prototype.startNewRound = function(){
 
       var res1 = rankHand(cardstoEvalplayer1);
       var res2 = rankHand(cardstoEvalplayer2);
-      
+
 
       if(res1.primeScore == res2.primeScore){
         if(res1.secondaryScore > res2.secondaryScore){
@@ -168,7 +168,7 @@ GameState.prototype.startNewRound = function(){
             this.player2.money += this.moneyPot;
         }
       }
-      else if (res1.primeScore > res2.primScore){
+      else if (res1.primeScore > res2.primeScore){
         $("#enemyLog").append("Player wins! <br/>");
         this.player1.money += this.moneyPot;
       }
@@ -176,7 +176,7 @@ GameState.prototype.startNewRound = function(){
         $("#enemyLog").append("Computer wins! <br/>");
         this.player2.money += this.moneyPot;
       }
-      
+
 
       // Display the cards of the AI
       scene.getObjectByName("player2_card1").material.materials[2].map = textureArray[this.player2.cardsOnHand.card1.suit + this.player2.cardsOnHand.card1.number];
@@ -205,7 +205,7 @@ GameState.prototype.startNewRound = function(){
     }
     else{
       this.updateButtons();
-    } 
+    }
   }
   else{
     $("button").each(function(){
