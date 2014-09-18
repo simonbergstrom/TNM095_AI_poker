@@ -38,6 +38,7 @@ Cards.prototype.whichCard = function(card){
 };
 
 
+
 // Method for shuffle the cards and start a new round
 Cards.prototype.shuffle = function() {
   for(var j, x, i = this.cards.length; i; j = Math.floor(Math.random() * i), x = this.cards[--i], this.cards[i] = this.cards[j], this.cards[j] = x);

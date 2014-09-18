@@ -21,6 +21,8 @@ var camera = new THREE.PerspectiveCamera(75, width/height, 0.1, 1000);
 camera.position.z = 280;
 camera.position.y = 350;
 
+
+
 var controls = new THREE.OrbitControls(camera);
 controls.damping = 0.2;
 controls.addEventListener('change', render);
