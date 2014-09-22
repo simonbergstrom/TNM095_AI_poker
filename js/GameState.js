@@ -152,10 +152,12 @@ GameState.prototype.startNewRound = function(){
       var res1 = rankHand(cardstoEvalplayer1);
       var res2 = rankHand(cardstoEvalplayer2);
 
+      console.log("The resulting hands: ",res1,res2);
+
 
       if(res1.primeScore == res2.primeScore){
         if(res1.secondaryScore > res2.secondaryScore){
-          $("#enemyLog").append("Player wins! <br/>");
+          $("#enemyLog").append("Player wins with a "+res1.type+"! <br/>");
           this.player1.money += this.moneyPot;
         }
         else if(res1.secondaryScore == res2.secondaryScore) {
@@ -164,16 +166,16 @@ GameState.prototype.startNewRound = function(){
           this.player2.money += Math.floor(this.moneyPot/2);
         }
         else{
-            $("#enemyLog").append("Computer wins! <br/>");
+            $("#enemyLog").append("Computer wins! with a "+ res2.type +"! <br/> ");
             this.player2.money += this.moneyPot;
         }
       }
       else if (res1.primeScore > res2.primeScore){
-        $("#enemyLog").append("Player wins! <br/>");
+        $("#enemyLog").append("Player wins with a "+res1.type+"! <br/>");
         this.player1.money += this.moneyPot;
       }
       else{
-        $("#enemyLog").append("Computer wins! <br/>");
+        $("#enemyLog").append("Computer wins with a "+res2.type+"! <br/>");
         this.player2.money += this.moneyPot;
       }
 
