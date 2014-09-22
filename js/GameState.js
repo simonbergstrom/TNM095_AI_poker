@@ -43,7 +43,6 @@ function GameState(){
   this.updateScoreUi();
 
   this.startNewRound();
-
 }
 
 GameState.prototype.updateScoreUi = function(){
@@ -144,6 +143,14 @@ GameState.prototype.startNewRound = function(){
       break;
     }
     case 5:{
+      this.availableMoves.call = false;
+      this.availableMoves.bet = false;
+      this.availableMoves.check = false;
+      this.availableMoves.raise = false;
+      this.availableMoves.fold = false;
+
+      this.updateButtons();
+
       $("#enemyLog").append("Showdown! <br/>");
       var cardstoEvalplayer1 = [gameState.player1.cardsOnHand.card1,gameState.player1.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
       var cardstoEvalplayer2 = [gameState.player2.cardsOnHand.card1,gameState.player2.cardsOnHand.card2,this.flop.card1,this.flop.card2,this.flop.card3,this.turnCard,this.riverCard];
@@ -180,6 +187,7 @@ GameState.prototype.startNewRound = function(){
       }
 
 
+
       // Display the cards of the AI
       scene.getObjectByName("player2_card1").material.materials[2].map = textureArray[this.player2.cardsOnHand.card1.suit + this.player2.cardsOnHand.card1.number];
       scene.getObjectByName("player2_card2").material.materials[2].map = textureArray[this.player2.cardsOnHand.card2.suit + this.player2.cardsOnHand.card2.number];
@@ -190,6 +198,8 @@ GameState.prototype.startNewRound = function(){
       }, 7000);
     }
   }
+
+  console.log("TheTURN!:", this.turn);
 
   if(this.turn !== 5){
     this.availableMoves.call  = false;
@@ -209,14 +219,14 @@ GameState.prototype.startNewRound = function(){
       this.updateButtons();
     }
   }
-  else{
+  /*else if(this.turn === 5){
     $("button").each(function(){
       if($(this).attr("id") !== "startButton"){
         $(this).addClass("button-disabled");
         $(this).attr("disabled", true);
       }
     });
-  }
+  }*/
 };
 
 GameState.prototype.resetTurn = function(){
