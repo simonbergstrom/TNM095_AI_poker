@@ -43,7 +43,6 @@ function GameState(){
   this.updateScoreUi();
 
   this.startNewRound();
-
 }
 
 GameState.prototype.updateScoreUi = function(){
