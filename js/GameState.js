@@ -186,8 +186,6 @@ GameState.prototype.startNewRound = function(){
         this.player2.money += this.moneyPot;
       }
 
-
-
       // Display the cards of the AI
       scene.getObjectByName("player2_card1").material.materials[2].map = textureArray[this.player2.cardsOnHand.card1.suit + this.player2.cardsOnHand.card1.number];
       scene.getObjectByName("player2_card2").material.materials[2].map = textureArray[this.player2.cardsOnHand.card2.suit + this.player2.cardsOnHand.card2.number];
@@ -406,10 +404,14 @@ GameState.prototype.enemyMakeRandomMove = function(){
       break;
     }
   }
+  this.enemyMakeAiMove();
 };
 
 GameState.prototype.enemyMakeAiMove = function(){
-
+  var a = new SimpleGameState("fold");
+  a.initFromGameState(this);
+  var ai = new AI(a);
+  ai.traverse();
 };
 
 GameState.prototype.otherPlayer = function(player){
