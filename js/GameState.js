@@ -408,7 +408,6 @@ GameState.prototype.enemyMakeAiMove = function(){
   var a = new SimpleGameState();
   a.initFromGameState(this, "check");
   var ai = new AI(a);
-  console.log("REMOVE THIS OUTPUT");
 };
 
 GameState.prototype.otherPlayer = function(player){
