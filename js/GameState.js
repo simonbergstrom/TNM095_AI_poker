@@ -32,10 +32,10 @@ function GameState(){
     "fold": false
   };
 
-
   this.turn = 1;
   this.moneyPot = 0;
-  this.bigBlind = Math.floor((Math.random() * 2) + 1);
+  //this.bigBlind = Math.floor((Math.random() * 2) + 1);
+  this.bigBlind = 2;
   this.numberRaised = 0;
 
   $("#enemyLog").html("");
@@ -87,8 +87,10 @@ GameState.prototype.startNewRound = function(){
       drawCard("player1_card2", this.player1.cardsOnHand.card2);
 
       this.player2.cardsOnHand = this.deckOfCards.getPocket();
-      drawCard("player2_card1", {suit: "Secret", number: ""});
-      drawCard("player2_card2", {suit: "Secret", number: ""});
+      //drawCard("player2_card1", {suit: "Secret", number: ""});
+      //drawCard("player2_card2", {suit: "Secret", number: ""});
+      drawCard("player2_card1", this.player2.cardsOnHand.card1);
+      drawCard("player2_card2", this.player2.cardsOnHand.card2);
 
       if(this.bigBlind === 1){
         if(this.player1.money > 1){
@@ -125,21 +127,18 @@ GameState.prototype.startNewRound = function(){
       drawCard("dealer_card1", this.flop.card1);
       drawCard("dealer_card2", this.flop.card2);
       drawCard("dealer_card3", this.flop.card3);
-      //console.log("The flop: ", this.flop);
       break;
     }
     case 3:{
       $("#enemyLog").append("Round 3! <br/>");
       this.turnCard = this.deckOfCards.getOneCard();
       drawCard("dealer_card4", this.turnCard);
-      //console.log("The turnCard: ", this.turnCard);
       break;
     }
     case 4:{
       $("#enemyLog").append("Round 4! <br/>");
       this.riverCard = this.deckOfCards.getOneCard();
       drawCard("dealer_card5", this.riverCard);
-      //console.log("The turnCard: ", this.riverCard);
       break;
     }
     case 5:{
@@ -196,8 +195,6 @@ GameState.prototype.startNewRound = function(){
       }, 7000);
     }
   }
-
-  console.log("TheTURN!:", this.turn);
 
   if(this.turn !== 5){
     this.availableMoves.call  = false;
@@ -376,6 +373,7 @@ GameState.prototype.fold = function(player){
 };
 
 GameState.prototype.enemyMakeRandomMove = function(){
+  this.enemyMakeAiMove();
   //Generate random number between 1 and 5.
   while(true){ //Dangerous while true!
     var randomMove = Math.floor((Math.random() * 5) + 1);
@@ -397,21 +395,19 @@ GameState.prototype.enemyMakeRandomMove = function(){
     else if(randomMove === 5){
       computerMove = "fold";
     }
-
+    computerMove = "check";
     if(availableMoves[computerMove]){
       this.doMove(this.player2, computerMove);
       this.updateButtons();
       break;
     }
   }
-  this.enemyMakeAiMove();
 };
 
 GameState.prototype.enemyMakeAiMove = function(){
-  var a = new SimpleGameState("fold");
-  a.initFromGameState(this);
+  var a = new SimpleGameState();
+  a.initFromGameState(this, "check");
   var ai = new AI(a);
-  ai.traverse();
 };
 
 GameState.prototype.otherPlayer = function(player){

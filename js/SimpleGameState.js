@@ -8,39 +8,65 @@ SimpleGameState.prototype.initFromGameState = function(state, move){
 	this.playerMoney = {"human": state.player1.money, "ai": state.player2.money};
 	this.turn = state.turn;
 	this.pot = state.moneyPot;
-	this.cardOnHand = [state.player2.cardsOnHand.card1, state.player2.cardsOnHand.card1];
-	this.cardsOnTable = [jQuery.extend(true, {}, state.flop.card1), jQuery.extend(true, {}, state.flop.card2),jQuery.extend(true, {}, state.flop.card3),
-						 jQuery.extend(true, {}, state.turnCard), jQuery.extend(true, {}, state.riverCard)];
+	this.cardOnHand = [state.player2.cardsOnHand.card1, state.player2.cardsOnHand.card2];
+	/*this.cardsOnTable = [jQuery.extend(true, {}, state.flop.card1), jQuery.extend(true, {}, state.flop.card2),jQuery.extend(true, {}, state.flop.card3),
+						 jQuery.extend(true, {}, state.turnCard), jQuery.extend(true, {}, state.riverCard)];*/
+	this.cardsOnTable = [];
+	if(state.flop.card1 !== undefined){
+		this.cardsOnTable.push(state.flop.card1);
+		this.cardsOnTable.push(state.flop.card2);
+		this.cardsOnTable.push(state.flop.card3);
+	}
+	if(state.turnCard.number !== undefined){
+		this.cardsOnTable.push(state.turnCard);
+	}
+	if(state.riverCard.number !== undefined){
+		this.cardsOnTable.push(state.riverCard);
+	}
+
 	this.availableMoves = jQuery.extend(true, {}, state.availableMoves);
+	this.availableMoves.gameEnded = false;
 	this.numberOfTimesRaised = state.numberRaised;
 }
 SimpleGameState.prototype.initFromSimpleState = function(state){
 	this.player = state.player === "human" ? "ai" : "human";
 	this.bigBlind = state.bigBlind;
-	this.playerMoney = {"human": state.playerMoney["human"], "ai": state.playerMoney["ai"]};
+	this.playerMoney = {"human": state.playerMoney.human, "ai": state.playerMoney.ai};
 	this.turn = state.turn;
 	this.pot = state.pot;
 	this.cardOnHand = state.cardOnHand;
-	this.cardsOnTable = [jQuery.extend(true, {}, state.cardsOnTable[0]), jQuery.extend(true, {}, state.cardsOnTable[1]),jQuery.extend(true, {}, state.cardsOnTable[2]),
+	/*this.cardsOnTable = [jQuery.extend(true, {}, state.cardsOnTable[0]), jQuery.extend(true, {}, state.cardsOnTable[1]),jQuery.extend(true, {}, state.cardsOnTable[2]),
 						 jQuery.extend(true, {}, state.cardsOnTable[3]), jQuery.extend(true, {}, state.cardsOnTable[4])];
+	*/
+	this.cardsOnTable = [];
 
+	for(var i=0; i<state.cardsOnTable.length; ++i){
+		this.cardsOnTable.push(state.cardsOnTable[i]);
+	}
+	
 	this.availableMoves = jQuery.extend(true, {}, state.availableMoves);
 	this.numberOfTimesRaised = state.numberOfTimesRaised;
 }
 SimpleGameState.prototype.makeMove = function(move){
+
 	var newState = new SimpleGameState();
 	newState.initFromSimpleState(this);
 	newState.move = move;
 	newState.resetMoves();
-
+	
 	if(move === "check"){
-		if((newState.player === "human" && newState.humanMoney > 0) || (newState.player === "ai" && newState.aiMoney > 0)){
-			newState.availableMoves.bet = true;
-		} 
-        newState.availableMoves.check = true;
-
-		if(newState.player === this.bigBlind){
-			this.turn++;	
+		if(newState.player === this.bigBlind && this.turn === 5){
+			newState.availableMoves.gameEnded = true;
+		}
+		else{
+			if(newState.playerMoney.human > 0 && newState.playerMoney.ai > 0){  
+				newState.availableMoves.bet = true;
+			} 
+	        newState.availableMoves.check = true;
+	        
+			if(newState.player === this.bigBlind){
+				newState.turn++;	
+			}
 		}
 	}
 	else if(move === "fold"){
@@ -50,9 +76,11 @@ SimpleGameState.prototype.makeMove = function(move){
 		else{
 			newState.playerMoney.human += newState.pot;
 		}
+		newState.availableMoves.gameEnded = true;
+		newState.turn = 5;
 	}
 	else if(move === "raise"){
-		if(((newState.player === "human" && newState.humanMoney > 1) || (newState.player === "ai" && newState.aiMoney > 1)) && newState.numberOfTimesRaised < 6){
+		if(newState.playerMoney.human > 1 && newState.playerMoney.ai > 1 && newState.numberOfTimesRaised < 6){
 			newState.availableMoves.raise = true;
 		}
         newState.availableMoves.call = true;
@@ -77,12 +105,12 @@ SimpleGameState.prototype.makeMove = function(move){
 		newState.playerMoney[newState.player] -= 1;
         newState.pot += 1;
 
-        if((newState.player === "human" && newState.humanMoney > 0) || (newState.player === "ai" && newState.aiMoney > 0)){
+        if(newState.playerMoney.human > 0 && newState.playerMoney.ai > 0){
 			newState.availableMoves.bet = true;
 		}
         newState.availableMoves.check = true;
 
-        this.turn++;
+        newState.turn++;
 	}
 	return newState;
 }
