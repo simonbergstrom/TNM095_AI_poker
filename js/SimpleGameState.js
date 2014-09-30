@@ -9,8 +9,6 @@ SimpleGameState.prototype.initFromGameState = function(state, move){
 	this.turn = state.turn;
 	this.pot = state.moneyPot;
 	this.cardOnHand = [state.player2.cardsOnHand.card1, state.player2.cardsOnHand.card2];
-	/*this.cardsOnTable = [jQuery.extend(true, {}, state.flop.card1), jQuery.extend(true, {}, state.flop.card2),jQuery.extend(true, {}, state.flop.card3),
-						 jQuery.extend(true, {}, state.turnCard), jQuery.extend(true, {}, state.riverCard)];*/
 	this.cardsOnTable = [];
 	if(state.flop.card1 !== undefined){
 		this.cardsOnTable.push(state.flop.card1);
@@ -35,9 +33,6 @@ SimpleGameState.prototype.initFromSimpleState = function(state){
 	this.turn = state.turn;
 	this.pot = state.pot;
 	this.cardOnHand = state.cardOnHand;
-	/*this.cardsOnTable = [jQuery.extend(true, {}, state.cardsOnTable[0]), jQuery.extend(true, {}, state.cardsOnTable[1]),jQuery.extend(true, {}, state.cardsOnTable[2]),
-						 jQuery.extend(true, {}, state.cardsOnTable[3]), jQuery.extend(true, {}, state.cardsOnTable[4])];
-	*/
 	this.cardsOnTable = [];
 
 	for(var i=0; i<state.cardsOnTable.length; ++i){
@@ -64,7 +59,7 @@ SimpleGameState.prototype.makeMove = function(move){
 			} 
 	        newState.availableMoves.check = true;
 	        
-			if(newState.player === this.bigBlind){
+			if(this.move === "check" && move === "check"){
 				newState.turn++;	
 			}
 		}
@@ -92,7 +87,7 @@ SimpleGameState.prototype.makeMove = function(move){
 		newState.numberOfTimesRaised++;
 	}
 	else if(move === "bet"){
-		if((newState.player === "human" && newState.humanMoney > 1) || (newState.player === "ai" && newState.aiMoney > 1)){
+		if(newState.playerMoney.human > 1 && newState.playerMoney.ai > 1){
 			newState.availableMoves.raise = true;
 		}
         newState.availableMoves.call = true;

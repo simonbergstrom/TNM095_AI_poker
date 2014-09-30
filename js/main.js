@@ -3,6 +3,7 @@
 //*********************************
 var gameState;
 var humanPlayer;
+var aiPlayer;
 
 var clock = new THREE.Clock();
 
@@ -20,8 +21,6 @@ var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, width/height, 1, 2000);
 camera.position.z = 220;
 camera.position.y = 200;
-
-
 
 var controls = new THREE.OrbitControls(camera);
 controls.damping = 0.2;
@@ -166,6 +165,7 @@ function addProperty(target, object){
 $("#startButton").click(function(){
   //Gamelogic and stuff
   console.log("Starting Game!");
+  aiPlayer = new AI();
   gameState = new GameState();
   humanPlayer = gameState.getHumanPlayer();
 });
@@ -187,7 +187,8 @@ $("#betButton").click(function(){
   gameState.doMove(humanPlayer, "bet");
 
   //Start the enemy move
-  gameState.enemyMakeRandomMove();
+  //gameState.enemyMakeRandomMove();
+  gameState.enemyMakeAiMove("bet");
 });
 
 $("#checkButton").click(function(){
@@ -195,7 +196,8 @@ $("#checkButton").click(function(){
 
   //Start the enemy move
   if(gameState.bigBlind === 2){
-    gameState.enemyMakeRandomMove();
+    //gameState.enemyMakeRandomMove();
+    gameState.enemyMakeAiMove("check");
   }
 });
 
@@ -203,60 +205,10 @@ $("#raiseButton").click(function(){
   gameState.doMove(humanPlayer, "raise");
 
   //Start the enemy move
-  gameState.enemyMakeRandomMove();
+  //gameState.enemyMakeRandomMove();
+  gameState.enemyMakeAiMove("raise");
 });
 
 $("#foldButton").click(function(){
   gameState.doMove(humanPlayer, "fold");
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-function drawCard(name, card) {
-    var card_materials = [
-       new THREE.MeshPhongMaterial({color: 0xbbbbbb}),
-       new THREE.MeshPhongMaterial({color: 0xbbbbbb}),
-       new THREE.MeshPhongMaterial({map: textureArray[card.suit+card.number]}), // Top
-       new THREE.MeshPhongMaterial({map: textureArray["backside"]}),            // Bottom
-       new THREE.MeshPhongMaterial({color: 0xbbbbbb}),
-       new THREE.MeshPhongMaterial({color: 0xbbbbbb})
-    ];
-    var new_card = new THREE.Mesh(new THREE.BoxGeometry(63.5, 1, 88), new THREE.MeshFaceMaterial(card_materials));
-    new_card.position.x = cardObjects[name].pos.x;
-    new_card.position.y = cardObjects[name].pos.y;
-    new_card.position.z = cardObjects[name].pos.z;
-    new_card.rotation.x = cardObjects[name].rot.x;
-    new_card.rotation.y = cardObjects[name].rot.y;
-    new_card.rotation.z = cardObjects[name].rot.z;
-    new_card.name       = name;
-    new_card.castShadow = true;
-    scene.add(new_card);
-
-var cardObjects = {"dealer_card1" : {pos: new THREE.Vector3(160,0,0),     rot: new THREE.Vector3(0,0,0)},
-                   "dealer_card2" : {pos: new THREE.Vector3(80,0,0),      rot: new THREE.Vector3(0,0,0)},
-                   "dealer_card3" : {pos: new THREE.Vector3(0,0,0),       rot: new THREE.Vector3(0,0,0)},
-                   "dealer_card4" : {pos: new THREE.Vector3(-80,0,0),     rot: new THREE.Vector3(0,0,0)},
-                   "dealer_card5" : {pos: new THREE.Vector3(-160,0,0),    rot: new THREE.Vector3(0,0,0)},
-                   "player1_card1": {pos: new THREE.Vector3(40,40,200),   rot: new THREE.Vector3(45*(Math.PI/180),0,20*(Math.PI/180))},
-                   "player1_card2": {pos: new THREE.Vector3(-40,40,200),  rot: new THREE.Vector3(45*(Math.PI/180),0,-20*(Math.PI/180))},
-                   "player2_card1": {pos: new THREE.Vector3(40,40,-200),  rot: new THREE.Vector3(-45*(Math.PI/180),0,20*(Math.PI/180))},
-                   "player2_card2": {pos: new THREE.Vector3(-40,40,-200), rot: new THREE.Vector3(-45*(Math.PI/180),0,-20*(Math.PI/180))}};
-}*/

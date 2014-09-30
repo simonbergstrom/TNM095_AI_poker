@@ -35,7 +35,7 @@ function GameState(){
   this.turn = 1;
   this.moneyPot = 0;
   //this.bigBlind = Math.floor((Math.random() * 2) + 1);
-  this.bigBlind = 2;
+  this.bigBlind = 1;
   this.numberRaised = 0;
 
   $("#enemyLog").html("");
@@ -208,7 +208,8 @@ GameState.prototype.startNewRound = function(){
     }
 
     if(this.bigBlind === 1){
-      this.enemyMakeRandomMove();
+      this.enemyMakeAiMove("firstMove");
+      //this.enemyMakeRandomMove();
     }
     else{
       this.updateButtons();
@@ -373,7 +374,6 @@ GameState.prototype.fold = function(player){
 };
 
 GameState.prototype.enemyMakeRandomMove = function(){
-  this.enemyMakeAiMove();
   //Generate random number between 1 and 5.
   while(true){ //Dangerous while true!
     var randomMove = Math.floor((Math.random() * 5) + 1);
@@ -404,11 +404,9 @@ GameState.prototype.enemyMakeRandomMove = function(){
   }
 };
 
-GameState.prototype.enemyMakeAiMove = function(){
-  var a = new SimpleGameState();
-  a.initFromGameState(this, "check");
-  var ai = new AI(a);
-  console.log("majs")
+GameState.prototype.enemyMakeAiMove = function(move){
+  this.doMove(this.player2, aiPlayer.findBestMove(this, move));
+  this.updateButtons();
 };
 
 GameState.prototype.otherPlayer = function(player){
