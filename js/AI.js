@@ -14,27 +14,45 @@ AI.prototype.findBestMove = function(state, move){
 function HandStrength(ourcards,boardcards){
 	var ahead=0,tied=0,behind=0,ourrank,opprank;
 
-	// Simulate opponentscards (All possible combination of two cards for the opponent)
-	var oppCards = simulateOppCards(ourcards);
+	//Rank the hand with function in evalPokerHand
+	if(typeof boardcards.turnCard === 'undefined'){
+		ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3]);
+	}
+	else if (typeof boardcards.riverCard === 'undefined'){
+		ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard]);
+	}
+	else {
+		ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
+	}
+
+	var oppCards = simulateOppCards(ourcards,boardcards);
 
 	for(var i in oppCards) {
 
-		console.log([oppCards[i],boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
+		//Rank the hand with function in evalPokerHand
+		if(typeof boardcards.turnCard === 'undefined'){
+			opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3]);
+		}
+		else if (typeof boardcards.riverCard === 'undefined'){
+			opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard]);
+		}
+		else {
+			opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
+		}
 
-		opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.card1,boardcards.card2,boardcards.card3,boardcards.turnCard,boardcards.riverCard]);
 
-		if(ourRank.primeScore === opprank.primeScore){
+		if(ourrank.primeScore === opprank.primeScore){
 
-			if(ourRank.secondaryScore > opprank.secondaryScore){
+			if(ourrank.secondaryScore > opprank.secondaryScore){
 				ahead++;
 			}
-			else if(ourRank.secondaryScore < opprank.secondaryScore){
+			else if(ourrank.secondaryScore < opprank.secondaryScore){
 				behind++;
 			}
 			else
 				tied++;
 		}
-		else if (ourRank.primeScore > opprank.primeScore){
+		else if (ourrank.primeScore > opprank.primeScore){
 			ahead++;
 		}
 		else 
@@ -45,9 +63,8 @@ function HandStrength(ourcards,boardcards){
 		else behind += 1;*/
 	}
 
-	var handstrength = (ahead + tied/2)/(ahead + tied + behind);
+	return (ahead + tied/2)/(ahead + tied + behind);
 
-	return handstrength;
 }
 
 function simulateOppCards(playerCards, boardCards){

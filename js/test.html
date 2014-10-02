@@ -18,7 +18,7 @@
 	var boardCards = { "flop":deck.getFlop(),"turnCard":deck.getOneCard(),"riverCard":deck.getOneCard() };
 
 
-	HandPotential(playerCards, boardCards);
+	//HandPotential(playerCards, boardCards);
 	//deck.removePossibleCards2([playerCards.card1,playerCards.card2]);
 
 	var oppCards = [];
@@ -35,7 +35,9 @@
 =======
 	}*/
 
-	//var handStrength = HandStrength(playerCards,boardCards);
+	var handStrength = HandStrength(playerCards,boardCards);
+
+	console.log("HandStrength: ",handStrength);
 
 </script>
 
