@@ -14,27 +14,51 @@ AI.prototype.findBestMove = function(state, move){
 function HandStrength(ourcards,boardcards){
 	var ahead=0,tied=0,behind=0,ourrank,opprank;
 
-	ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
-	//ourrank = ourrank.primeScore + ourrank.secondaryScore;  
+	console.log(ourcards,boardcards);
 
+	// Check how many cards we have on the table....
+
+
+	if(typeof boardcards.turnCard === 'undefined'){
+		ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3]);
+	}
+	else if (typeof boardcards.riverCard === 'undefined'){
+		ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard]);
+	}
+	else {
+		ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
+	}
 	// Simulate opponentscards (All possible combination of two cards for the opponent)
-	var oppCards = simulateOppCards(ourcards);
+	var oppCards = simulateOppCards(ourcards,boardcards);
+
 
 	for(var i in oppCards) {
 		opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
-		opprank = opprank.primeScore+opprank.secondaryScore; 
 
-		if(ourrank > opprank) ahead += 1;
-		else if (ourrank == opprank) tied += 1;
-		else behind += 1;
+		if(ourRank.primeScore === opprank.primeScore){
+
+			if(ourRank.secondaryScore > opprank.secondaryScore){
+				ahead++;
+			}
+			else if(ourRank.secondaryScore < opprank.secondaryScore){
+				behind++;
+			}
+			else
+				tied++;
+		}
+		else if (ourRank.primeScore > opprank.primeScore){
+			ahead++;
+		}
+		else 
+			behind++;
+
 	}
 
-	var handstrength = (ahead + tied/2)/(ahead + tied + behind);
+	return (ahead + tied/2)/(ahead + tied + behind);
 
-	return handstrength;
 }
 
-function simulateOppCards(playerCards){
+function simulateOppCards(playerCards,boardCards){
 
 	var oppCards = [];
 
@@ -42,6 +66,14 @@ function simulateOppCards(playerCards){
 	deck.shuffle();
 
 	deck.removePossibleCards2([playerCards.card1,playerCards.card2]);
+	deck.removePossibleCards2(boardCards.flop.card1,boardCards.flop.card2,boardCards.flop.card3);
+
+	if(typeof boardCards.turnCard !== "undefined"){
+		deck.removePossibleCards2([boardCards.turnCard]);
+	}
+	if(typeof boardCards.riverCard !== "undefined"){
+		deck.removePossibleCards2([boardCards.riverCard]);
+	}
 
 	// Save all possible two combination of cards for the opponent player....
 	for (var i=0; i<deck.cards.length; ++i) {
