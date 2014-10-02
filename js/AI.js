@@ -65,6 +65,7 @@ function simulateOppCards(playerCards,boardCards){
 	var deck = new Cards();
 	deck.shuffle();
 
+	// Remove the cards that is already on table to simulate the possible cards for the opponent...
 	deck.removePossibleCards2([playerCards.card1,playerCards.card2]);
 	deck.removePossibleCards2(boardCards.flop.card1,boardCards.flop.card2,boardCards.flop.card3);
 
