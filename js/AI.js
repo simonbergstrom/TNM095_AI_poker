@@ -14,24 +14,52 @@ AI.prototype.findBestMove = function(state, move){
 function HandStrength(ourcards,boardcards){
 	var ahead=0,tied=0,behind=0,ourrank,opprank;
 
-	//ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
-	//ourrank = ourrank.primeScore + ourrank.secondaryScore;
-
-	// Simulate opponentscards (All possible combination of two cards for the opponent)
-	var oppCards = simulateOppCards(ourcards);
-
-	for(var i in oppCards) {
-		//opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
-		//opprank = opprank.primeScore+opprank.secondaryScore;
-
-		if(ourrank > opprank) ahead += 1;
-		else if (ourrank == opprank) tied += 1;
-		else behind += 1;
+	//Rank the hand with function in evalPokerHand
+	if(typeof boardcards.turnCard === 'undefined'){
+		ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3]);
+	}
+	else if (typeof boardcards.riverCard === 'undefined'){
+		ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard]);
+	}
+	else {
+		ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
 	}
 
-	var handstrength = (ahead + tied/2)/(ahead + tied + behind);
+	var oppCards = simulateOppCards(ourcards,boardcards);
 
-	return handstrength;
+	for(var i in oppCards) {
+
+		if(typeof boardcards.turnCard === 'undefined'){
+			opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3]);
+		}
+		else if (typeof boardcards.riverCard === 'undefined'){
+			opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard]);
+		}
+		else {
+			opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
+		}
+
+
+		if(ourrank.primeScore === opprank.primeScore){
+
+			if(ourrank.secondaryScore > opprank.secondaryScore){
+				ahead++;
+			}
+			else if(ourrank.secondaryScore < opprank.secondaryScore){
+				behind++;
+			}
+			else
+				tied++;
+		}
+		else if (ourrank.primeScore > opprank.primeScore){
+			ahead++;
+		}
+		else
+			behind++;
+	}
+
+	return (ahead + tied/2)/(ahead + tied + behind);
+
 }
 
 function simulateOppCards(playerCards, boardCards){
@@ -89,6 +117,7 @@ function simulateBoards(playerCards, boardCards, oppCards, nrCardsToGet){
 }
 
 function HandPotential(ourcards,boardcards){
+	console.log("Calculating HandPotential...");
 	var HP = [];
 	for(var i = 0; i < 3; ++i){
 		HP[i] = [];
@@ -98,7 +127,11 @@ function HandPotential(ourcards,boardcards){
 	}
 	console.log(HP);
 
-	var HPTotal = [3];
+	var HPTotal = [];
+	HPTotal[0] = 0;
+	HPTotal[1] = 0;
+	HPTotal[2] = 0;
+
 	var ourrank;
 	var opprank;
 	var behind = 0; var tied = 1; var ahead = 2;
@@ -118,7 +151,7 @@ function HandPotential(ourcards,boardcards){
 	var oppCards = simulateOppCards(ourcards, boardcards);
 
 
-	for(var i = 0; i < oppCards.length; i++){
+	for(var i = 0; i < oppCards.length; ++i){
 		//Rank the hand with function in evalPokerHand
 		if(typeof boardcards.turnCard === 'undefined'){
 			opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3]);
@@ -129,42 +162,61 @@ function HandPotential(ourcards,boardcards){
 		else {
 			opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
 		}
-		console.log(ourrank, opprank);
-		if(ourrank > opprank){
+		if(ourrank.primeScore === opprank.primeScore){
+
+			if(ourrank.secondaryScore > opprank.secondaryScore){
+				index = ahead;
+			}
+			else if(ourrank.secondaryScore < opprank.secondaryScore){
+				index = behind;
+			}
+			else{
+				index = tied;
+			}
+		}
+		else if (ourrank.primeScore > opprank.primeScore){
 			index = ahead;
 		}
-		else if(ourrank === opprank){
-			index = tied;
-		}
- 		else{
+		else{
 			index = behind;
 		}
- 		HPTotal[index]++;
+
+
+
 
  		// Loop through all possible board cards to come.
-		//console.log(ourcards);
+		//console.log(ourcards)
 		var ourBest;
 		var oppBest;
 		var allPossibleBoards = simulateBoards(ourcards, boardcards, oppCards[i], 2);
- 		for(var j = 0; j < 20; ++j){
+ 		for(var j = 0; j < allPossibleBoards.length; j+=10){
+			HPTotal[index] += 1;
 			ourBest = rankHand([ourcards.card1, ourcards.card2, boardcards.flop.card1, boardcards.flop.card2, boardcards.flop.card3, allPossibleBoards[j].card1, allPossibleBoards[j].card2]);
 			oppBest = rankHand([oppCards[i].card1, oppCards[i].card2, boardcards.flop.card1, boardcards.flop.card2, boardcards.flop.card3, allPossibleBoards[j].card1, allPossibleBoards[j].card2]);
 
-			if(ourBest > oppBest){
-				HP[index][ahead]++;
+			if(ourBest.primeScore === oppBest.primeScore){
+
+				if(ourBest.secondaryScore > oppBest.secondaryScore){
+					HP[index][ahead]++;
+				}
+				else if(ourBest.secondaryScore < oppBest.secondaryScore){
+					HP[index][behind]++;
+				}
+				else{
+					HP[index][tied]++;
+				}
 			}
-			else if(ourBest === oppBest){
-				HP[index][tied]++;
-				console.log[HP[index][tied]];
+			else if (ourBest.primeScore > oppBest.primeScore){
+				HP[index][ahead]++;
 			}
 			else{
 				HP[index][behind]++;
 			}
 		}
+	}
+	//End outer for loop
+	console.log("HPTotal: ", HPTotal);
 
-	}//End outer for loop
-	console.log(behind, tied, ahead);
-	console.log(HP);
 	var PPot = (HP[behind][ahead] + HP[behind][tied]/2 + HP[tied][ahead]/2) / (HPTotal[behind]+HPTotal[tied]/2);
 	var NPot = (HP[ahead][behind] + HP[tied][behind]/2 + HP[ahead][tied]/2) / (HPTotal[ahead]+HPTotal[tied]/2);
 

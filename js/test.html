@@ -13,12 +13,10 @@
 	deck.shuffle();
 	var playerCards = {card1: deck.getOneCard(), card2: deck.getOneCard()};
 
-	var playerCards = {card1: deck.getOneCard() , card2: deck.getOneCard()};
-
 	var boardCards = { "flop":deck.getFlop()};
 
 
-	HandPotential(playerCards, boardCards);
+	//HandPotential(playerCards, boardCards);
 	//deck.removePossibleCards2([playerCards.card1,playerCards.card2]);
 
 	var oppCards = [];
@@ -35,7 +33,9 @@
 =======
 	}*/
 
-	//var handStrength = HandStrength(playerCards,boardCards);
+	var handStrength = HandStrength(playerCards,boardCards);
+	HandPotential(playerCards, boardCards);
+	console.log("HandStrength: ",handStrength);
 
 </script>
 
