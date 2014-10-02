@@ -3,14 +3,19 @@
 
 <script src="Cards.js"></script>
 <script src="AI.js"></script>
+<script src="evalPokerHand.js"></script>
 
 <script type="text/javascript">
-	
+
 // Simulation for the HandStrength algorithm....
 	var deck = new Cards();
 	deck.shuffle();
-	var playerCards = {card1: deck.getOneCard() , card2: deck.getOneCard()};
+	var playerCards = {card1: deck.getOneCard(), card2: deck.getOneCard()};
 	var boardCards = deck.getFlop();
+	boardCards.turnCard = deck.getOneCard();
+	boardCards.riverCard = deck.getOneCard();
+
+	HandPotential(playerCards, boardCards);
 
 	deck.removePossibleCards2([playerCards.card1,playerCards.card2]);
 
@@ -24,7 +29,7 @@
 			oppCards.push([deck.whichCard(deck.cards[i]), deck.whichCard(deck.cards[j])]);
 		}
 	}
-	
+
 
 </script>
 

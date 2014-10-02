@@ -13,7 +13,7 @@ function Cards() {
 Cards.prototype.whichCard = function(card){
 	var number=card%13;
 
-	if(number === 0)
+	if(number === 0 && number === 1)
 		number = 13;
 
 	var res;
@@ -82,7 +82,7 @@ Cards.prototype.removePossibleCards = function(cardList){
 			}
 
 			this.cards[this.cards.indexOf(number)] = this.cards[index];
-			this.cards[index] = number; 
+			this.cards[index] = number;
 			this.counter++;
 			index--;
 		}

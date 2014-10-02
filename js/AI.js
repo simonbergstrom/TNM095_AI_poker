@@ -1,4 +1,4 @@
-// Functonality for the poker agent runned by a monte carlo search 
+// Functonality for the poker agent runned by a monte carlo search
 function AI(){
 	var humanOpponentActions = {};
 
@@ -15,14 +15,14 @@ function HandStrength(ourcards,boardcards){
 	var ahead=0,tied=0,behind=0,ourrank,opprank;
 
 	ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
-	//ourrank = ourrank.primeScore + ourrank.secondaryScore;  
+	//ourrank = ourrank.primeScore + ourrank.secondaryScore;
 
 	// Simulate opponentscards (All possible combination of two cards for the opponent)
 	var oppCards = simulateOppCards(ourcards);
 
 	for(var i in oppCards) {
 		opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
-		opprank = opprank.primeScore+opprank.secondaryScore; 
+		opprank = opprank.primeScore+opprank.secondaryScore;
 
 		if(ourrank > opprank) ahead += 1;
 		else if (ourrank == opprank) tied += 1;
@@ -39,7 +39,7 @@ function simulateOppCards(playerCards){
 	var oppCards = [];
 
 	var deck = new Cards();
-	deck.shuffle();
+	//deck.shuffle();
 
 	deck.removePossibleCards2([playerCards.card1,playerCards.card2]);
 
@@ -47,7 +47,7 @@ function simulateOppCards(playerCards){
 	for (var i=0; i<deck.cards.length; ++i) {
 		for (var j=i+1; j<deck.cards.length; ++j){
 
-			oppCards.push([deck.whichCard(deck.cards[i]), deck.whichCard(deck.cards[j])]);
+			oppCards.push({"card1": deck.whichCard(deck.cards[i]), "card2": deck.whichCard(deck.cards[j])});
 		}
 	}
 
@@ -56,20 +56,35 @@ function simulateOppCards(playerCards){
 
 function HandPotential(ourcards,boardcards){
 
-	var HP = [],HPTotal = [],ourrank,opprank;
+	//console.log(ourcards, boardcards);
 
+	var HP = [], HPTotal = [], ourrank, opprank;
 
-	ourrank=rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
-
+	//Rank the hand with function in evalPokerHand
+	if(typeof boardcards.turnCard === 'undefined'){
+		ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3]);
+	}
+	else if (typeof boardcards.riverCard === 'undefined'){
+		ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard]);
+	}
+	else {
+		ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.card1,boardcards.card2,boardcards.card3,boardcards.turnCard,boardcards.riverCard]);
+	}
 
 	var oppCards = simulateOppCards(ourcards);
 
-	for(var i in oppCards){
-		opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
-		opprank = opprank.primeScore+opprank.secondaryScore;
+	//console.log("OppCards: ", oppCards);
+
+	for(var i = 0; i < oppCards.length; i++){
+		//console.log(oppCards[i].card1);
+		//console.log(oppCards[i].card2);
+		//console.log(boardcards.card1);
+		console.log([oppCards[i].card1, oppCards[i].card2, boardcards.card1, boardcards.card2, boardcards.card3, boardcards.turnCard, boardcards.riverCard]);
+		opprank = rankHand([oppCards[i].card1, oppCards[i].card2, boardcards.card1, boardcards.card2, boardcards.card3, boardcards.turnCard, boardcards.riverCard]);
+		//opprank = opprank.primeScore+opprank.secondaryScore;
 
 
-		if(ourrank>opprank) index = ahead;
+		/*if(ourrank>opprank) index = ahead;
 		else if(ourrank===opprank) index = tied;
  		else index = behind;
  		HPTotal[index] += 1;
@@ -81,6 +96,6 @@ function HandPotential(ourcards,boardcards){
 
  		if(ourrank>opprank) HP[index][ahead]+=1;
 		else if(ourrank === opprank) HP[index][tied]+=1;
-		else HP[index][behind]+=1;
+		else HP[index][behind]+=1;*/
 	}
 }
