@@ -11,21 +11,13 @@
 // Simulation for the HandStrength algorithm....
 	var deck = new Cards();
 	deck.shuffle();
-<<<<<<< HEAD
 	var playerCards = {card1: deck.getOneCard(), card2: deck.getOneCard()};
-	var boardCards = deck.getFlop();
-	boardCards.turnCard = deck.getOneCard();
-	boardCards.riverCard = deck.getOneCard();
 
-	HandPotential(playerCards, boardCards);
-=======
 	var playerCards = {card1: deck.getOneCard() , card2: deck.getOneCard()};
-	
+
 	var boardCards = { "flop":deck.getFlop(),"turnCard":deck.getOneCard(),"riverCard":deck.getOneCard() };
 
->>>>>>> f7d66408157adefaeb5e8e59ec5583c1e94abc9f
-
-
+	HandPotential(playerCards, boardCards);
 	//deck.removePossibleCards2([playerCards.card1,playerCards.card2]);
 
 	var oppCards = [];
@@ -42,11 +34,7 @@
 =======
 	}*/
 
-	var handStrength = HandStrength(playerCards,boardCards);
-
-	console.log(handStrength);
->>>>>>> f7d66408157adefaeb5e8e59ec5583c1e94abc9f
-
+	//var handStrength = HandStrength(playerCards,boardCards);
 
 </script>
 

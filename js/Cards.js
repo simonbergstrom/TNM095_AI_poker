@@ -13,7 +13,7 @@ function Cards() {
 Cards.prototype.whichCard = function(card){
 	var number=card%13;
 
-	if(number === 0 && number === 1)
+	if(number === 0)
 		number = 13;
 
 	var res;
