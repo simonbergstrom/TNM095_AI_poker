@@ -64,7 +64,7 @@ Cards.prototype.getOneCard = function(){
 	return res;
 }
 
-Cards.prototype.removePossibleCards2 = function(cardList){
+Cards.prototype.removePossibleCards = function(cardList){
 	var index = this.cards.length - 1;
 
 	for(var i=0; i<cardList.length; ++i){

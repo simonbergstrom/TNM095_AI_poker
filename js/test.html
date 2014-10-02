@@ -1,0 +1,31 @@
+<html>
+<h1>TEST </h1>
+
+<script src="Cards.js"></script>
+<script src="AI.js"></script>
+
+<script type="text/javascript">
+	
+// Simulation for the HandStrength algorithm....
+	var deck = new Cards();
+	deck.shuffle();
+	var playerCards = {card1: deck.getOneCard() , card2: deck.getOneCard()};
+	var boardCards = deck.getFlop();
+
+	deck.removePossibleCards2([playerCards.card1,playerCards.card2]);
+
+	var oppCards = [];
+
+	// Save all possible two combination of cards for the opponent player....
+	for (var i=0; i<deck.cards.length; ++i) {
+		for (var j=i+1; j<deck.cards.length; ++j){
+			//var pair = [deck.whichCard(deck.cards[i]), deck.whichCard(deck.cards[j])];
+			//console.log(pair[0].number,pair[1].number);
+			oppCards.push([deck.whichCard(deck.cards[i]), deck.whichCard(deck.cards[j])]);
+		}
+	}
+	
+
+</script>
+
+</html>
