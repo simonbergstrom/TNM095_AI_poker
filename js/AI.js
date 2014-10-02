@@ -11,14 +11,13 @@ AI.prototype.findBestMove = function(state, move){
 	return tree.simulate();
 }
 
-function BestHand(ourcards,boardcards){
+function HandStrength(ourcards,boardcards){
 	var ahead=0,tied=0,behind=0,ourrank,opprank;
 
 	ourrank = rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
-	ourrank = ourrank.primeScore + ourrank.secondaryScore; // BORDE KUNNAS GÖRAS I GAMESTATE OCKSÅ? 
+	//ourrank = ourrank.primeScore + ourrank.secondaryScore;  
 
-	// Simulate opponentscards
-
+	// Simulate opponentscards (All possible combination of two cards for the opponent)
 	var oppCards = simulateOppCards(ourcards);
 
 	for(var i in oppCards) {
@@ -35,13 +34,32 @@ function BestHand(ourcards,boardcards){
 	return handstrength;
 }
 
+function simulateOppCards(playerCards){
+
+	var oppCards = [];
+
+	var deck = new Cards();
+	deck.shuffle();
+
+	deck.removePossibleCards2([playerCards.card1,playerCards.card2]);
+
+	// Save all possible two combination of cards for the opponent player....
+	for (var i=0; i<deck.cards.length; ++i) {
+		for (var j=i+1; j<deck.cards.length; ++j){
+
+			oppCards.push([deck.whichCard(deck.cards[i]), deck.whichCard(deck.cards[j])]);
+		}
+	}
+
+	return oppCards;
+}
+
 function HandPotential(ourcards,boardcards){
 
 	var HP = [],HPTotal = [],ourrank,opprank;
 
 
 	ourrank=rankHand([ourcards.card1,ourcards.card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
-	ourrank = ourrank.primeScore + ourrank.secondaryScore;
 
 
 	var oppCards = simulateOppCards(ourcards);
