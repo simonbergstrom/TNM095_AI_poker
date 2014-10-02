@@ -76,9 +76,7 @@ function HandPotential(ourcards,boardcards){
 	//console.log("OppCards: ", oppCards);
 
 	for(var i = 0; i < oppCards.length; i++){
-		//console.log(oppCards[i].card1);
-		//console.log(oppCards[i].card2);
-		//console.log(boardcards.card1);
+	
 		console.log([oppCards[i].card1, oppCards[i].card2, boardcards.card1, boardcards.card2, boardcards.card3, boardcards.turnCard, boardcards.riverCard]);
 		opprank = rankHand([oppCards[i].card1, oppCards[i].card2, boardcards.card1, boardcards.card2, boardcards.card3, boardcards.turnCard, boardcards.riverCard]);
 		//opprank = opprank.primeScore+opprank.secondaryScore;
