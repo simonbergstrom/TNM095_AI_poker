@@ -14,7 +14,7 @@ AI.prototype.findBestMove = function(state, move){
 function HandStrength(ourcards,boardcards){
 	var ahead=0,tied=0,behind=0,ourrank,opprank;
 
-	console.log(ourcards,boardcards);
+	//console.log(ourcards,boardcards);
 
 	// Check how many cards we have on the table....
 
@@ -33,7 +33,9 @@ function HandStrength(ourcards,boardcards){
 
 
 	for(var i in oppCards) {
-		opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
+		console.log([oppCards[i],boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3,boardcards.turnCard,boardcards.riverCard]);
+
+		opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.card1,boardcards.card2,boardcards.card3,boardcards.turnCard,boardcards.riverCard]);
 
 		if(ourRank.primeScore === opprank.primeScore){
 
