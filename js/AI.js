@@ -41,6 +41,7 @@ function simulateOppCards(playerCards){
 	var deck = new Cards();
 	//deck.shuffle();
 
+	// Remove the cards that is already on table to simulate the possible cards for the opponent...
 	deck.removePossibleCards2([playerCards.card1,playerCards.card2]);
 
 	// Save all possible two combination of cards for the opponent player....
