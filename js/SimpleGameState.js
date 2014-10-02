@@ -26,6 +26,7 @@ SimpleGameState.prototype.initFromGameState = function(state, move){
 	this.availableMoves.gameEnded = false;
 	this.numberOfTimesRaised = state.numberRaised;
 }
+
 SimpleGameState.prototype.initFromSimpleState = function(state){
 	this.player = state.player === "human" ? "ai" : "human";
 	this.bigBlind = state.bigBlind;
@@ -38,29 +39,30 @@ SimpleGameState.prototype.initFromSimpleState = function(state){
 	for(var i=0; i<state.cardsOnTable.length; ++i){
 		this.cardsOnTable.push(state.cardsOnTable[i]);
 	}
-	
+
 	this.availableMoves = jQuery.extend(true, {}, state.availableMoves);
 	this.numberOfTimesRaised = state.numberOfTimesRaised;
 }
+
 SimpleGameState.prototype.makeMove = function(move){
 
 	var newState = new SimpleGameState();
 	newState.initFromSimpleState(this);
 	newState.move = move;
 	newState.resetMoves();
-	
+
 	if(move === "check"){
 		if(newState.player === this.bigBlind && this.turn === 5){
 			newState.availableMoves.gameEnded = true;
 		}
 		else{
-			if(newState.playerMoney.human > 0 && newState.playerMoney.ai > 0){  
+			if(newState.playerMoney.human > 0 && newState.playerMoney.ai > 0){
 				newState.availableMoves.bet = true;
-			} 
+			}
 	        newState.availableMoves.check = true;
-	        
+
 			if(this.move === "check" && move === "check"){
-				newState.turn++;	
+				newState.turn++;
 			}
 		}
 	}
@@ -109,11 +111,13 @@ SimpleGameState.prototype.makeMove = function(move){
 	}
 	return newState;
 }
+
 SimpleGameState.prototype.resetMoves = function(){
 	for(move in this.availableMoves){
 		this.availableMoves[move] = false;
 	}
 }
+
 SimpleGameState.prototype.getAvailableMoves = function(){
 	var tmp = [];
 	for(move in this.availableMoves){
