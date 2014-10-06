@@ -82,7 +82,7 @@ Cards.prototype.removePossibleCards = function(cardList){
 			}
 
 			this.cards[this.cards.indexOf(number)] = this.cards[index];
-			this.cards[index] = number; 
+			this.cards[index] = number;
 			this.counter++;
 			index--;
 		}
