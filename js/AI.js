@@ -220,6 +220,14 @@ function HandPotential(ourcards,boardcards){
 	var PPot = (HP[behind][ahead] + HP[behind][tied]/2 + HP[tied][ahead]/2) / (HPTotal[behind]+HPTotal[tied]/2);
 	var NPot = (HP[ahead][behind] + HP[tied][behind]/2 + HP[ahead][tied]/2) / (HPTotal[ahead]+HPTotal[tied]/2);
 
-	console.log(PPot);
-	console.log(NPot);
+	return {"PPot": PPot, "NPot":NPot};
 }
+
+function EffectiveHandStrength(ourcards,boardcards){
+
+	var HS = HandStrength(ourcards,boardcards);
+	var HP = HandPotential(ourcards,boardcards);
+
+	return HS*(1-HP.NPot)+(1-HS)*HP.PPot;
+}
+
