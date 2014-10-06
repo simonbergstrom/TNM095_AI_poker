@@ -24,6 +24,7 @@ SimpleGameState.prototype.initFromGameState = function(state, move){
 
 	this.availableMoves = jQuery.extend(true, {}, state.availableMoves);
 	this.availableMoves.gameEnded = false;
+	this.availableMoves.draw = false;
 	this.numberOfTimesRaised = state.numberRaised;
 }
 SimpleGameState.prototype.initFromSimpleState = function(state){
@@ -53,24 +54,28 @@ SimpleGameState.prototype.makeMove = function(move){
 		if(newState.player === this.bigBlind && this.turn === 5){
 			newState.availableMoves.gameEnded = true;
 		}
+		/*else if(this.move === "check"){
+			newState.availableMoves.draw = true;
+			newState.turn++;
+		}*/
 		else{
 			if(newState.playerMoney.human > 0 && newState.playerMoney.ai > 0){  
 				newState.availableMoves.bet = true;
 			} 
 	        newState.availableMoves.check = true;
 	        
-			if(this.move === "check" && move === "check"){
+			if(this.move === "check"){
 				newState.turn++;	
 			}
 		}
 	}
 	else if(move === "fold"){
-		if(newState.player === "human"){
+		/*if(newState.player === "human"){
 			newState.playerMoney.ai += newState.pot;
 		}
 		else{
 			newState.playerMoney.human += newState.pot;
-		}
+		}*/
 		newState.availableMoves.gameEnded = true;
 		newState.turn = 5;
 	}
@@ -100,6 +105,8 @@ SimpleGameState.prototype.makeMove = function(move){
 		newState.playerMoney[newState.player] -= 1;
         newState.pot += 1;
 
+        //newState.availableMoves.draw = true;
+        
         if(newState.playerMoney.human > 0 && newState.playerMoney.ai > 0){
 			newState.availableMoves.bet = true;
 		}

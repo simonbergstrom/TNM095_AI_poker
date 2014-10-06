@@ -76,7 +76,12 @@ function Node(state, type) {
 				}
 			}
     	}
+    	else{
+    		difference -= currentState.pot/2;
+    	}
+
     	difference += (currentState.playerMoney.ai - this.state.playerMoney.ai);
+
 		return difference;
     };
 }
@@ -84,24 +89,33 @@ function Node(state, type) {
 function chanceNode(state){
 	this.base = Node;
 	this.base(state, "chance");
+	this.nrDraws = 0;
 
 	this.defaultPolicy = function(){
+		this.nrDraws++;
+		var availableMoves = this.state.getAvailableMoves();
+    	var index = Math.floor(Math.random() * availableMoves.length);
+    	var move = availableMoves[index];
+
+		this.addChild(new opponentNode(jQuery.extend(true, {}, this.state)));
+
 		var deck = new Cards();
     	deck.shuffle();
     	deck.removePossibleCards2(this.state.cardOnHand.concat(this.state.cardsOnTable));
-   
-		if(this.state.turn === 2){
-			this.state.cardsOnTable[0] = deck.getOneCard();
-	    	this.state.cardsOnTable[1] = deck.getOneCard();
-	    	this.state.cardsOnTable[2] = deck.getOneCard();
+
+    	if(this.state.turn === 2){
+			this.children[this.children.length-1].state.cardsOnTable[0] = deck.getOneCard();
+	    	this.children[this.children.length-1].state.cardsOnTable[1] = deck.getOneCard();
+	    	this.children[this.children.length-1].state.cardsOnTable[2] = deck.getOneCard();
 		}
 		else if(this.state.turn === 3){
-			this.state.cardsOnTable[3] = deck.getOneCard();
+			this.children[this.children.length-1].state.cardsOnTable[3] = deck.getOneCard();
 		}
 		else if(this.state.turn === 4){
-			this.state.cardsOnTable[4] = deck.getOneCard();
+			this.children[this.children.length-1].state.cardsOnTable[4] = deck.getOneCard();
 		}
-	    return this.baseDefaultPolicy();
+   		console.log(this.nrDraws);
+	    return this.children[this.children.length-1].baseDefaultPolicy();
 	};
 }
 
@@ -116,7 +130,7 @@ function leafNode(state){
 
 function opponentNode(state){
 	this.base = Node;
-	this.base(state, "oponent");
+	this.base(state, "opponent");
 
 	this.defaultPolicy = function(){
 		return this.baseDefaultPolicy();
@@ -137,22 +151,25 @@ function aiNode(state){
 }
 
 function searchTree(state){
-	this.root = new aiNode(state);
+	this.root = new opponentNode(state);
 	this.maxTimeInMilliseconds = 1000;
 }
 
 searchTree.prototype.simulate = function(){
 	var startTime = new Date();
+	var chanseNodeBranchFactor = 20;
 	var elapsedTime;
 	
 	do{
 		currentNode = this.root;
-		while(currentNode.type !== "leaf" && currentNode.children.length === currentNode.state.getAvailableMoves().length){
+		
+		while( (currentNode.type === "chance" && currentNode.nrDraws >= chanseNodeBranchFactor) ||
+			   (currentNode.type === "opponent" && currentNode.children.length === currentNode.state.getAvailableMoves().length) ){
 			var index = {ind: 0, val: -Infinity};
 
 			for(var i=0; i<currentNode.children.length; ++i){
 				var value = currentNode.children[i].expectedValue/currentNode.children[i].nrTimesVisited + 
-							Math.sqrt(2)*Math.sqrt(2*Math.log(currentNode.nrTimesVisited)/currentNode.children[i].nrTimesVisited);
+							2*Math.sqrt(Math.log(currentNode.nrTimesVisited)/currentNode.children[i].nrTimesVisited);
 				if(value > index.val){
 					index.ind = i;
 					index.val = value;
@@ -161,21 +178,16 @@ searchTree.prototype.simulate = function(){
 
 			currentNode = currentNode.children[index.ind];
 		}
-
-		if(currentNode.type !== "leaf"){
+		//console.log(currentNode.type === "chance", currentNode.type === "chance" && currentNode.nrDraws >= chanseNodeBranchFactor);
+		//console.log(currentNode.type);
+		if(currentNode.type === "opponent"){
 			var move = currentNode.state.getAvailableMoves()[currentNode.children.length];
 			
-			if(move === "fold"){ 
-				currentNode.addChild(new leafNode(currentNode.state.makeMove("fold")));
+			if(move === "fold" || move === "gameEnded"){ 
+				currentNode.addChild(new leafNode(currentNode.state.makeMove(move)));
 			}
-			else if(move === "gameEnded"){
-				currentNode.addChild(new leafNode(currentNode.state.makeMove("gameEnded")));
-			}
-			else if(currentNode.state.move === "check" && move === "check"){ 
-				currentNode.addChild(new chanceNode(currentNode.state.makeMove("check")));
-			}
-			else if(move === "call"){
-				currentNode.addChild(new chanceNode(currentNode.state.makeMove("call")));
+			else if( (currentNode.state.move === "check" && move === "check") || move === "call"){ // call or check check
+				currentNode.addChild(new chanceNode(currentNode.state.makeMove(move))); 
 			}
 			else{ // bet, raise, check
 				currentNode.addChild(new opponentNode(currentNode.state.makeMove(move)));
@@ -183,21 +195,24 @@ searchTree.prototype.simulate = function(){
 
 			currentNode = currentNode.children[currentNode.children.length-1];
 		}
+
 		var expectedReward = currentNode.defaultPolicy(); 
 
-		// Uppdate tree with expected reward
+		/************** Update tree with the result from the simulation ***************/
 		while(currentNode.parent !== null){
 			currentNode.expectedValue += expectedReward;
 			currentNode.nrTimesVisited++;
 			currentNode = currentNode.parent;
 		}
 		elapsedTime = new Date();
-		console.log("loop");
+		//console.log("loop");
 	}while(this.maxTimeInMilliseconds > (elapsedTime - startTime) )
 
+	/************** Pick the move from the root ***************/
 	var index = {ind: 0, val: -Infinity};
 
 	for(var i=0; i<this.root.children.length; ++i){
+		console.log("value for ", this.root.children[i].state.move, " is ", this.root.children[i].expectedValue/this.root.children[i].nrTimesVisited);
 		if( (this.root.children[i].expectedValue/this.root.children[i].nrTimesVisited) > index.val){
 			index.ind = i;
 			index.val = this.root.children[i].expectedValue/this.root.children[i].nrTimesVisited;
@@ -213,7 +228,12 @@ searchTree.prototype.traverse = function(){
 };
 
 searchTree.prototype.nodeTraverse = function(node){
-	console.log(node.type, " ", node.state.move);
+	console.log(" **** ", node.type, " ", node.state.move, " **** ");
+	for(var i=0; i<node.children.length; ++i){
+		console.log(node.children[i].type, " ", node.children[i].state.move);
+	}
+	console.log("******************")
+
 	for(var i=0; i<node.children.length; ++i){
 		this.nodeTraverse(node.children[i]);
 	}
