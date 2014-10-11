@@ -117,27 +117,73 @@ To be able to test the game engine the computer was first set to do moves comple
 
 \subsection{AI - techniques}
 \subsubsection{Monte Carlo Tree Search}
-Monte Carlo Tree Search (MCTS) is just like an algorithm like minimax based on a tree structure. By simulating a number of different outcomes a search tree is built based on the outcome of the simulation. More specifically the algorithm is made in four different stages which are repeated numerous times when the algorithm is being run. 
-
-MCTS only starts with the root node of the tree and incrementally build the tree by repeating the following 4 steps. One of the pros with MCTS is that it is anytime, that is it will give a valid solution to the problem even if it is interrupted before it ends. However the quality of the solution is an estimate and is expected to be better the more time the MCTS keeps running. \\*\\*
+MCTS is a best-first search strategy. Every node in the tree contain two values, an estimate of the expected value $V(P)$ of the reward $r(P)$ and the number of times the node have been visited $n_{i}$. MCTS only starts with the root node and incrementally build the tree by repeating the following 4 steps.\\*\\*
 \textbf{Selection}
-\\*Selection is made by starting from the root node and then recursively select nodes until a leaf node is reached (this does not have to be a leaf of the game tree). To determine which node is the optimal one, the following upper bounds confidence formula is used: 
+\\*Selection is made by starting from the root node and then recursively select nodes until a leaf node is reached (this does not have to be a leaf of the game tree). To determine which node is the optimal one, the upper confidence bounds (UCB1) formula is used: 
 
 \begin{equation} \label{eq:upperconfidence}
 	v_{i} + C \cdot \sqrt{\frac{\ln N}{n_{i}}}
 \end{equation}
+The first term vi is the estimated value of the node and is responsible for exploitation of good nodes, the second term is made up by the total number of visits of the parent node $N$ and the total number of visits of the current node $n_{i}$. The constant $C$ allows tuning of the exploration-exploitation trade-off. 
+\\*\\*
+\textbf{Expansion}
+\\*If the leaf node reached is not an terminating node, which means that the game is not over at the current node. Then create one or more child nodes from the node currently at. This step is illustrated in fig(\ref{fig:expansion}).
+\begin{figure}[here]
+  \begin{center}
+    \includegraphics[scale=0.30]{img/tree1.png}
+    \caption{\label{fig:expansion} Illustration of how the green node is added to the tree.}
+  \end{center}
+\end{figure}
+\\*
+\textbf{Simulation}
+\\*The third step in MCTS is the simulation step. Here a game is simulated from the state in the new node until a result is achieved. The value of the reached result is recorded.
+\\*\\*
+\textbf{Backpropagation}
+\\*The last step is to update the expected value and the selection counter for all nodes along the explored path by backpropagating the recorded result from the simulation step. This step is illustrated in fig(\ref{fig:backprop}).
+\begin{figure}[here]
+  \begin{center}
+    \includegraphics[scale=0.30]{img/tree2.png}
+    \caption{\label{fig:backprop} Illustration of how the path to the node is updated with the score from the simulation in the whole tree.}
+  \end{center}
+\end{figure}
+When the backpropagation has been done the whole chain starts over again starting with the selection stage. [REF!] One of the pros with MCTS is that it is anytime, that is it will give a valid solution to the problem even if it is interrupted before it ends. However the quality of the solution is an estimate and is expected to be better the more time the MCTS keeps running.
+
+\subsubsection{Hand Strength}
+Since Monte Carlo is a heuristic search which simulate a set of outcomes in a game to calculate what action to make the logic so far does not consider how good  the cards on the agents hand is compared to other hands. To add this logic to the agent an algorithm could be used that would return a probability of how strong the current hand cards is with the cards on the table. This probability of the Hand Strength may, at the earliest be calculated the the flop has been shown. [REF!]
+
+The Hand Strength is calculated by comparing the cards on the hand with all possible combination of two cards that the opponent can have and sum the time the agents cards wins compared to the opponent and divide by the number of combinations that was simulated.
+
+\subsubsection{Hand Potential}
+The hand potential algorithm calculates the quality of the hand as the game goes on. The algorithm is similar to the hand strength algorithm. The difference is that the hand potential algorithm considers all possible cards that have not been revealed yet. It is also heavier to calculate since it has to go through every possible combination of cards that could possibly end up on the table. It also takes into account every possible card the opponent might have on hand.
+
+\subsubsection{Effective Hand Strength}
+By combining the hand strength with the hand potential a probability of winning can be calculated, and this is called the effective hand strength and is calculated as following:
+
+\begin{equation} \label{EHS}
+	EHS = HS \cdot (1-NPot) \cdot PPOT
+\end{equation}
+
+\subsection{Implementation}
+\subsubsection{Main Design}
+The application implemented in this study was implemented in Javascript using the library Three.js for visualization. Three.js is a webGL library which provides high level functions for creating a 3D scene.
+
+The application is implemented in an object oriented manner. The main application file is called main.js and it is here the scene is created and where all the other classes needed are initialized. The file main.js also contains all the click listeners for the buttons the human player uses to do moves. An overview over the game architecture is shown in fig(\ref{fig:arcitect}). 
+\begin{figure}[here]
+  \begin{center}
+    \includegraphics[scale=0.50]{img/arcitect.png}
+    \caption{\label{fig:arcitect} Illustration of how the path to the node is updated with the score from the simulation in the whole tree.}
+  \end{center}
+\end{figure}
+
+\subsubsection{Game}
+The main.js file is first painting the poker table and all buttons on the page, when you click the start button a GameState object and a AI will be created.
+The poker game is originated from the GameState object which only consists of a Cards object and functions for every state of the poker game Texas Hold'em. The game is created for two players where one player is an AI agent and the other player is the client controlled by a human. The Cards object consist of a full deck of cards and all methods needed for playing Texas Hold?em like shuffle the deck of cards, deliver the flop, turn card, river card and cards for the players.
 
 \section{Result}
-
+The result of this study is a Texas Hold?em game with an AI implemented using several different AI techniques and combining them together. 
 
 \section{Conclusion}
 
-\begin{figure}[here]
-  \begin{center}
-    \includegraphics[scale=0.35]{img/stream1.png}
-    \caption{\label{fig:streamexplanation}En bild for att se hur man lagger till bilder.}
-  \end{center}
-\end{figure}
 
 
 \begin{thebibliography}{9}
