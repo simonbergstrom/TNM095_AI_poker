@@ -33,7 +33,52 @@ function Node(state, type) {
     	var turnIndicator = currentState.turn;
     	while(currentState.turn < 5){
     		var availableMoves = currentState.getAvailableMoves();
-	    	var index = Math.floor(Math.random() * availableMoves.length);
+	    	var index; 
+
+	    	if(currentState.player === "ai" && currentState.turn >= 2){
+	    		var cardsontable = {};
+	    		if(currentState.cardsOnTable.length > 2){
+	    			cardsontable["flop"] = {};
+	    			cardsontable.flop.card1 = currentState.cardsOnTable[0];
+	    			cardsontable.flop.card2 = currentState.cardsOnTable[1];
+	    			cardsontable.flop.card3 = currentState.cardsOnTable[2];
+	    		}
+	    		if(currentState.cardsOnTable.length > 3){
+	    			cardsontable.turnCard = currentState.cardsOnTable[3];
+	    		}
+	    		if(currentState.cardsOnTable.length > 4){
+	    			cardsontable.riverCard = currentState.cardsOnTable[4];
+	    		}
+	  
+	    		var handStrength = HandStrength({"card1": this.state.cardOnHand[0], "card2": this.state.cardOnHand[1]}, cardsontable);
+
+		    	if(handStrength > 0.6){
+		    		if(availableMoves.indexOf("raise") !== -1){
+						index = availableMoves.indexOf("raise");
+		    		}
+		    		else if(availableMoves.indexOf("bet") !==  -1){
+		    			index = availableMoves.indexOf("bet");
+		    		}		    	}
+		    	else if(handStrength < 0.4){
+		    		if(availableMoves.indexOf("check") !== -1){
+		    			index = availableMoves.indexOf("check");
+		    		}
+		    		else{
+		    			index = availableMoves.indexOf("fold");
+		    		}
+		    	}
+		    	else{
+		    		index = Math.floor(Math.random() * availableMoves.length); 
+		    	}
+	    	}
+	    	else if(currentState.turn >= 2){
+	    		// Estimate human handstrength
+	    		index = Math.floor(Math.random() * availableMoves.length);
+	    	}
+	    	else{
+	    		index = Math.floor(Math.random() * availableMoves.length);
+	    	}
+
 	    	var nextMove = availableMoves[index];
 
 	    	currentState = currentState.makeMove(nextMove);
@@ -114,7 +159,7 @@ function chanceNode(state){
 		else if(this.state.turn === 4){
 			this.children[this.children.length-1].state.cardsOnTable[4] = deck.getOneCard();
 		}
-   		console.log(this.nrDraws);
+   		
 	    return this.children[this.children.length-1].baseDefaultPolicy();
 	};
 }
@@ -152,14 +197,14 @@ function aiNode(state){
 
 function searchTree(state){
 	this.root = new opponentNode(state);
-	this.maxTimeInMilliseconds = 1000;
+	this.maxTimeInMilliseconds = 5000;
 }
 
 searchTree.prototype.simulate = function(){
 	var startTime = new Date();
 	var chanseNodeBranchFactor = 20;
 	var elapsedTime;
-	
+	var nrTimesLooped = 0;
 	do{
 		currentNode = this.root;
 		
@@ -169,7 +214,7 @@ searchTree.prototype.simulate = function(){
 
 			for(var i=0; i<currentNode.children.length; ++i){
 				var value = currentNode.children[i].expectedValue/currentNode.children[i].nrTimesVisited + 
-							2*Math.sqrt(Math.log(currentNode.nrTimesVisited)/currentNode.children[i].nrTimesVisited);
+							6.8*Math.sqrt(Math.log(currentNode.nrTimesVisited)/currentNode.children[i].nrTimesVisited);
 				if(value > index.val){
 					index.ind = i;
 					index.val = value;
@@ -178,8 +223,7 @@ searchTree.prototype.simulate = function(){
 
 			currentNode = currentNode.children[index.ind];
 		}
-		//console.log(currentNode.type === "chance", currentNode.type === "chance" && currentNode.nrDraws >= chanseNodeBranchFactor);
-		//console.log(currentNode.type);
+
 		if(currentNode.type === "opponent"){
 			var move = currentNode.state.getAvailableMoves()[currentNode.children.length];
 			
@@ -205,14 +249,14 @@ searchTree.prototype.simulate = function(){
 			currentNode = currentNode.parent;
 		}
 		elapsedTime = new Date();
-		//console.log("loop");
+		nrTimesLooped++;
 	}while(this.maxTimeInMilliseconds > (elapsedTime - startTime) )
 
 	/************** Pick the move from the root ***************/
 	var index = {ind: 0, val: -Infinity};
 
 	for(var i=0; i<this.root.children.length; ++i){
-		console.log("value for ", this.root.children[i].state.move, " is ", this.root.children[i].expectedValue/this.root.children[i].nrTimesVisited);
+		
 		if( (this.root.children[i].expectedValue/this.root.children[i].nrTimesVisited) > index.val){
 			index.ind = i;
 			index.val = this.root.children[i].expectedValue/this.root.children[i].nrTimesVisited;
