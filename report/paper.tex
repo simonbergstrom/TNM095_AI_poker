@@ -180,7 +180,41 @@ The main.js file is first painting the poker table and all buttons on the page, 
 The poker game is originated from the GameState object which only consists of a Cards object and functions for every state of the poker game Texas Hold'em. The game is created for two players where one player is an AI agent and the other player is the client controlled by a human. The Cards object consist of a full deck of cards and all methods needed for playing Texas Hold?em like shuffle the deck of cards, deliver the flop, turn card, river card and cards for the players.
 
 \section{Result}
-The result of this study is a Texas Hold?em game with an AI implemented using several different AI techniques and combining them together. 
+\subsection{The Game}
+The result of this study is a Texas Hold'em game with an AI implemented using several different AI techniques and combining them together. The game is fully playable with an opponent that is somewhat realistic in the way it chooses what move to make. The 3D-scene is used to visualise the poker table, and it also shows the cards on hand. This is shown in fig(\ref{fig:3dscene}).
+\begin{figure}[here]
+  \begin{center}
+    \includegraphics[scale=0.30]{img/3dscene.png}
+    \caption{\label{fig:3dscene} The 3D-scene in the final version showing the player's cards on hand.}
+  \end{center}
+\end{figure}
+
+To the left of the 3D-scene there are some additional UI-elements. these are the buttons telling the player what moves he or she can make. By pressing one of these buttons the player will make a move. The coloured buttons indicate that a move is valid. The greyed out buttons indicate invalid moves. The buttons are shown in fig(\ref{fig:ui1}).
+\begin{figure}[here]
+  \begin{center}
+    \includegraphics[scale=0.50]{img/ui1.png}
+    \caption{\label{fig:ui1} The player controls, placed to the left of the 3D-scene.}
+  \end{center}
+\end{figure}
+
+To the right of the 3D-scene some information is shown. Information about money is shown in the upper box. How much money each player has, and how much money there is currently on the table. This information box is illustrated in fig(\ref{fig:ui2}).
+\begin{figure}[here]
+  \begin{center}
+    \includegraphics[scale=0.50]{img/ui2.png}
+    \caption{\label{fig:ui2} The score board giving the player information about the money currently in play.}
+  \end{center}
+\end{figure}
+
+Right below the score board, the enemy log is placed. It keeps track of what the computer does each time it makes a move. Since this is quite hard to visualise the decision was made to print the computer's move in text every time it makes a move. The enemy log is shown in fig(\ref{fig:ui3}).
+\begin{figure}[here]
+  \begin{center}
+    \includegraphics[scale=0.50]{img/ui4.png}
+    \caption{\label{fig:ui3} The enemy log, showing what the computer has done each round.}
+  \end{center}
+\end{figure}
+
+\subsection{AI}
+Since a number of algorithms were implemented in this study several results were achieved and therefore comparisons between the different approaches can be made. 
 
 \section{Conclusion}
 
