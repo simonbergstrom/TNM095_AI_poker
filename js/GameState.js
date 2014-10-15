@@ -405,8 +405,18 @@ GameState.prototype.enemyMakeRandomMove = function(){
 };
 
 GameState.prototype.enemyMakeAiMove = function(move){
-  this.doMove(this.player2, aiPlayer.findBestMove(this, move));
-  this.updateButtons();
+  var self = this;
+
+  $("#loading").show();
+
+  var wait = function(){
+    self.doMove(self.player2, aiPlayer.findBestMove(self, move));
+    self.updateButtons();
+    $("#loading").hide();
+  }
+
+  setTimeout(wait, 200);
+
 };
 
 GameState.prototype.otherPlayer = function(player){
