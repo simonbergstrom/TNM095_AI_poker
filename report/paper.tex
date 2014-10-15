@@ -146,7 +146,9 @@ The first term vi is the estimated value of the node and is responsible for expl
     \caption{\label{fig:backprop} Illustration of how the path to the node is updated with the score from the simulation in the whole tree.}
   \end{center}
 \end{figure}
-When the backpropagation has been done the whole chain starts over again starting with the selection stage. [REF!] One of the pros with MCTS is that it is anytime, that is it will give a valid solution to the problem even if it is interrupted before it ends. However the quality of the solution is an estimate and is expected to be better the more time the MCTS keeps running.
+When the back propagation step is finished the whole chain starts over again starting with the selection step. This is done until the either the game tree is fully searched or a time limit is reached. The fact that MCTS can give a result after a given time is a result of it being anytime, that is it will give a valid solution to the problem even if it is interrupted before it is finished. However the quality of the solution is an estimate and is expected to be better the more time the MCTS keeps running.
+
+One problem that is introduced with the MCTS is how to run the simulation step. Here we have to select the moves for each player until the end of the game. One solution could be to just select random moves, this can work well for simple games but for games as complex as poker this will lead to bad results. This implies that we somehow have to model the opponent to be able to determine the correct actions in the simulation.  
 
 \subsubsection{Hand Strength}
 Since Monte Carlo is a heuristic search which simulate a set of outcomes in a game to calculate what action to make the logic so far does not consider how good  the cards on the agents hand is compared to other hands. To add this logic to the agent an algorithm could be used that would return a probability of how strong the current hand cards is with the cards on the table. This probability of the Hand Strength may, at the earliest be calculated the the flop has been shown. [REF!]

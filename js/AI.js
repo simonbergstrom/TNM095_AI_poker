@@ -1,28 +1,37 @@
 // Functonality for the poker agent runned by a monte carlo search
 function AI(){
-	var humanOpponentActions = {};
+	this.humanOpponentActions = {"1": {"call": 0, "bet": 0, "check": 0, "raise": 0, "fold": 0}, 
+								 "2": {"call": 0, "bet": 0, "check": 0, "raise": 0, "fold": 0}, 
+								 "3": {"call": 0, "bet": 0, "check": 0, "raise": 0, "fold": 0}, 
+								 "4": {"call": 0, "bet": 0, "check": 0, "raise": 0, "fold": 0}};
 
-	var bucket = [[4, 4, 3, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1],
-				  [3, 4, 3, 3, 2, 2, 1, 1, 0, 0, 0, 0, 0],
-				  [3, 3, 4, 3, 2, 2, 1, 0, 0, 0, 0, 0, 0],
-				  [3, 3, 2, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0],
-				  [2, 2, 2, 2, 3, 2, 1, 0, 0, 0, 0, 0, 0],
-				  [2, 2, 1, 1, 2, 3, 2, 1, 0, 0, 0, 0, 0],
-				  [1, 1, 0, 0, 0, 1, 3, 1, 1, 0, 0, 0, 0],
-				  [1, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0],
-				  [0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0],
-				  [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-				  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-				  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-				  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]];
+	this.bucket = [[4, 4, 3, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1],
+				   [3, 4, 3, 3, 2, 2, 1, 1, 0, 0, 0, 0, 0],
+				   [3, 3, 4, 3, 2, 2, 1, 0, 0, 0, 0, 0, 0],
+				   [3, 3, 2, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0],
+				   [2, 2, 2, 2, 3, 2, 1, 0, 0, 0, 0, 0, 0],
+				   [2, 2, 1, 1, 2, 3, 2, 1, 0, 0, 0, 0, 0],
+				   [1, 1, 0, 0, 0, 1, 3, 1, 1, 0, 0, 0, 0],
+				   [1, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0],
+				   [0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0],
+				   [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+				   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+				   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+				   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]];
+}
+
+AI.prototype.storeAction = function(turn, move){
+	this.humanOpponentActions[turn][move]++;
 }
 
 AI.prototype.findBestMove = function(state, move){
 	var simpleState = new SimpleGameState();
 	simpleState.initFromGameState(state, move);
 	var tree = new searchTree(simpleState);
+	var move = tree.simulate();
 	//tree.traverse();
-	return tree.simulate();
+
+	return move;
 }
 
 function HandStrength(ourcards,boardcards){
@@ -41,7 +50,7 @@ function HandStrength(ourcards,boardcards){
 
 	var oppCards = simulateOppCards(ourcards,boardcards);
 
-	for(var i in oppCards) {
+	for(var i=0; i<oppCards.length; ++i) {
 
 		if(typeof boardcards.turnCard === 'undefined'){
 			opprank = rankHand([oppCards[i].card1,oppCards[i].card2,boardcards.flop.card1,boardcards.flop.card2,boardcards.flop.card3]);
@@ -131,7 +140,7 @@ function simulateBoards(playerCards, boardCards, oppCards, nrCardsToGet){
 }
 
 function HandPotential(ourcards,boardcards){
-	console.log("Calculating HandPotential...");
+
 	var HP = [];
 	for(var i = 0; i < 3; ++i){
 		HP[i] = [];
@@ -139,7 +148,6 @@ function HandPotential(ourcards,boardcards){
 		HP[i][1] = 0;
 		HP[i][2] = 0;
 	}
-	console.log(HP);
 
 	var HPTotal = [];
 	HPTotal[0] = 0;
@@ -195,11 +203,7 @@ function HandPotential(ourcards,boardcards){
 			index = behind;
 		}
 
-
-
-
  		// Loop through all possible board cards to come.
-		//console.log(ourcards)
 		var ourBest;
 		var oppBest;
 		var allPossibleBoards = simulateBoards(ourcards, boardcards, oppCards[i], 2);
@@ -229,7 +233,6 @@ function HandPotential(ourcards,boardcards){
 		}
 	}
 	//End outer for loop
-	console.log("HPTotal: ", HPTotal);
 
 	var PPot = (HP[behind][ahead] + HP[behind][tied]/2 + HP[tied][ahead]/2) / (HPTotal[behind]+HPTotal[tied]/2);
 	var NPot = (HP[ahead][behind] + HP[tied][behind]/2 + HP[ahead][tied]/2) / (HPTotal[ahead]+HPTotal[tied]/2);

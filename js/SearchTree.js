@@ -1,9 +1,20 @@
+/** 
+Nu har spelaren lika stor sanolikhet att ha vilken 
+möjlig poker hand i simuleringen, detta borde inte vara 
+fallet eftersom en spelare är mycket mer trolig att ha 
+en stark hand om han har bettat/callat/raisat och är med
+till showdown. Det behövs alltså en bättre sannolikhets
+function över dom händer som tilldelas motståndaren. 
+**/
+
 function Node(state, type) {
 
 	this.type = type;
 	this.nrTimesVisited = 0;
     this.state = state;
     this.expectedValue = 0;
+    // For debugging
+    //this.depth = 0;
 
     this.children = [];
     this.parent = null;
@@ -26,11 +37,13 @@ function Node(state, type) {
     };
 
     this.baseDefaultPolicy = function(){
+    	//console.log("SIMULATE")
     	var deck = new Cards();	
     	deck.shuffle();
     	deck.removePossibleCards2(this.state.cardOnHand.concat(this.state.cardsOnTable));
     	var currentState = this.state;
     	var turnIndicator = currentState.turn;
+    	
     	while(currentState.turn < 5){
     		var availableMoves = currentState.getAvailableMoves();
 	    	var index; 
@@ -49,8 +62,12 @@ function Node(state, type) {
 	    		if(currentState.cardsOnTable.length > 4){
 	    			cardsontable.riverCard = currentState.cardsOnTable[4];
 	    		}
-	  
-	    		var handStrength = HandStrength({"card1": this.state.cardOnHand[0], "card2": this.state.cardOnHand[1]}, cardsontable);
+
+	  			var handStrength = 0.5;
+
+	    		if(useHandStrength){
+	    			handStrength = HandStrength({"card1": this.state.cardOnHand[0], "card2": this.state.cardOnHand[1]}, cardsontable);
+	    		}
 
 		    	if(handStrength > 0.6){
 		    		if(availableMoves.indexOf("raise") !== -1){
@@ -121,9 +138,6 @@ function Node(state, type) {
 				}
 			}
     	}
-    	else{
-    		difference -= currentState.pot/2;
-    	}
 
     	difference += (currentState.playerMoney.ai - this.state.playerMoney.ai);
 
@@ -148,19 +162,22 @@ function chanceNode(state){
     	deck.shuffle();
     	deck.removePossibleCards2(this.state.cardOnHand.concat(this.state.cardsOnTable));
 
+    	var currentNode = this.children[this.children.length-1];
+    	//currentNode.depth = this.depth + 1;
+
     	if(this.state.turn === 2){
-			this.children[this.children.length-1].state.cardsOnTable[0] = deck.getOneCard();
-	    	this.children[this.children.length-1].state.cardsOnTable[1] = deck.getOneCard();
-	    	this.children[this.children.length-1].state.cardsOnTable[2] = deck.getOneCard();
+			currentNode.state.cardsOnTable[0] = deck.getOneCard();
+	    	currentNode.state.cardsOnTable[1] = deck.getOneCard();
+	    	currentNode.state.cardsOnTable[2] = deck.getOneCard();
 		}
 		else if(this.state.turn === 3){
-			this.children[this.children.length-1].state.cardsOnTable[3] = deck.getOneCard();
+			currentNode.state.cardsOnTable[3] = deck.getOneCard();
 		}
 		else if(this.state.turn === 4){
-			this.children[this.children.length-1].state.cardsOnTable[4] = deck.getOneCard();
+			currentNode.state.cardsOnTable[4] = deck.getOneCard();
 		}
    		
-	    return this.children[this.children.length-1].baseDefaultPolicy();
+	    return currentNode.baseDefaultPolicy();
 	};
 }
 
@@ -169,7 +186,7 @@ function leafNode(state){
 	this.base(state, "leaf");
 
 	this.defaultPolicy = function(){
-		return this.baseDefaultPolicy();
+		return -this.state.pot*0.5;
 	};
 }
 
@@ -204,17 +221,28 @@ searchTree.prototype.simulate = function(){
 	var startTime = new Date();
 	var chanseNodeBranchFactor = 20;
 	var elapsedTime;
-	var nrTimesLooped = 0;
+	//var nrTimesLooped = 0;
+	
 	do{
+		/************** TRAVERSE TREE ***************/
 		currentNode = this.root;
 		
 		while( (currentNode.type === "chance" && currentNode.nrDraws >= chanseNodeBranchFactor) ||
 			   (currentNode.type === "opponent" && currentNode.children.length === currentNode.state.getAvailableMoves().length) ){
+
+			var numerator = 0;
+
+			for(var i=0; i<currentNode.children.length; ++i){
+				numerator += currentNode.children[i].nrTimesVisited;
+			}
+
+			numerator = Math.log(numerator);
+
 			var index = {ind: 0, val: -Infinity};
 
 			for(var i=0; i<currentNode.children.length; ++i){
 				var value = currentNode.children[i].expectedValue/currentNode.children[i].nrTimesVisited + 
-							6.8*Math.sqrt(Math.log(currentNode.nrTimesVisited)/currentNode.children[i].nrTimesVisited);
+							100*Math.sqrt(numerator/currentNode.children[i].nrTimesVisited);
 				if(value > index.val){
 					index.ind = i;
 					index.val = value;
@@ -224,13 +252,17 @@ searchTree.prototype.simulate = function(){
 			currentNode = currentNode.children[index.ind];
 		}
 
+		/************** ADD NEW NODE => SIMULATE ***************/
+		//if(currentNode.type === "leaf") console.log("leaf")
 		if(currentNode.type === "opponent"){
+			//var currentDepth = currentNode.depth;
+
 			var move = currentNode.state.getAvailableMoves()[currentNode.children.length];
-			
-			if(move === "fold" || move === "gameEnded"){ 
+
+			if( move === "fold" || move === "gameEnded" ){ 
 				currentNode.addChild(new leafNode(currentNode.state.makeMove(move)));
 			}
-			else if( (currentNode.state.move === "check" && move === "check") || move === "call"){ // call or check check
+			else if( (currentNode.state.move === "check" && move === "check") || move === "call" ){ 
 				currentNode.addChild(new chanceNode(currentNode.state.makeMove(move))); 
 			}
 			else{ // bet, raise, check
@@ -238,25 +270,28 @@ searchTree.prototype.simulate = function(){
 			}
 
 			currentNode = currentNode.children[currentNode.children.length-1];
+			//currentNode.depth = currentDepth + 1;
 		}
 
 		var expectedReward = currentNode.defaultPolicy(); 
 
-		/************** Update tree with the result from the simulation ***************/
+		/************** BACKPROPAGATION ***************/
 		while(currentNode.parent !== null){
 			currentNode.expectedValue += expectedReward;
 			currentNode.nrTimesVisited++;
 			currentNode = currentNode.parent;
 		}
+
 		elapsedTime = new Date();
-		nrTimesLooped++;
+		//nrTimesLooped++;
+	//}while( nrTimesLooped < 200 )
 	}while(this.maxTimeInMilliseconds > (elapsedTime - startTime) )
 
-	/************** Pick the move from the root ***************/
+	/************** PICK BEST MOVE ***************/
 	var index = {ind: 0, val: -Infinity};
 
 	for(var i=0; i<this.root.children.length; ++i){
-		
+		//console.log(this.root.children[i].state.move, this.root.children[i].expectedValue/this.root.children[i].nrTimesVisited, this.root.children[i].nrTimesVisited);
 		if( (this.root.children[i].expectedValue/this.root.children[i].nrTimesVisited) > index.val){
 			index.ind = i;
 			index.val = this.root.children[i].expectedValue/this.root.children[i].nrTimesVisited;

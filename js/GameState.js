@@ -215,14 +215,6 @@ GameState.prototype.startNewRound = function(){
       this.updateButtons();
     }
   }
-  /*else if(this.turn === 5){
-    $("button").each(function(){
-      if($(this).attr("id") !== "startButton"){
-        $(this).addClass("button-disabled");
-        $(this).attr("disabled", true);
-      }
-    });
-  }*/
 };
 
 GameState.prototype.resetTurn = function(){

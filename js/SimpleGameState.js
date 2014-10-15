@@ -2,8 +2,8 @@ function SimpleGameState(){
 
 }
 SimpleGameState.prototype.initFromGameState = function(state, move){
-	this.bigBlind = state.bigBlind === 1 ? "human" : "ai";
 	this.move = move;
+	this.bigBlind = state.bigBlind === 1 ? "human" : "ai";	
 	this.player = "ai";
 	this.playerMoney = {"human": state.player1.money, "ai": state.player2.money};
 	this.turn = state.turn;
@@ -24,11 +24,14 @@ SimpleGameState.prototype.initFromGameState = function(state, move){
 
 	this.availableMoves = jQuery.extend(true, {}, state.availableMoves);
 	this.availableMoves.gameEnded = false;
-	this.availableMoves.draw = false;
 	this.numberOfTimesRaised = state.numberRaised;
+	
+	this.availableMovesArray = [];
+	this.AvailableMovesToArray();
 }
 
 SimpleGameState.prototype.initFromSimpleState = function(state){
+	this.move = "default";
 	this.player = state.player === "human" ? "ai" : "human";
 	this.bigBlind = state.bigBlind;
 	this.playerMoney = {"human": state.playerMoney.human, "ai": state.playerMoney.ai};
@@ -41,8 +44,19 @@ SimpleGameState.prototype.initFromSimpleState = function(state){
 		this.cardsOnTable.push(state.cardsOnTable[i]);
 	}
 
-	this.availableMoves = jQuery.extend(true, {}, state.availableMoves);
+	//this.availableMoves = jQuery.extend(true, {}, state.availableMoves);
+
+	this.availableMoves = {
+		"call": false,
+	    "bet": false,
+	    "check":false,
+	    "raise":false,
+	    "fold": false,
+	    "gameEnded": false
+	};
+
 	this.numberOfTimesRaised = state.numberOfTimesRaised;
+	this.availableMovesArray = [];
 }
 
 SimpleGameState.prototype.makeMove = function(move){
@@ -50,7 +64,7 @@ SimpleGameState.prototype.makeMove = function(move){
 	var newState = new SimpleGameState();
 	newState.initFromSimpleState(this);
 	newState.move = move;
-	newState.resetMoves();
+	//newState.resetMoves();
 
 	if(move === "check"){
 		if(newState.player === this.bigBlind && this.turn === 5){
@@ -104,6 +118,9 @@ SimpleGameState.prototype.makeMove = function(move){
 
         newState.turn++;
 	}
+
+	newState.AvailableMovesToArray();
+
 	return newState;
 }
 
@@ -121,4 +138,14 @@ SimpleGameState.prototype.getAvailableMoves = function(){
 		}
 	}
 	return tmp;
+	//return this.availableMovesArray;
 }
+
+SimpleGameState.prototype.AvailableMovesToArray = function(){
+	for(move in this.availableMoves){
+		if(this.availableMoves[move]){
+			this.availableMovesArray.push(move);
+		}
+	}
+}
+

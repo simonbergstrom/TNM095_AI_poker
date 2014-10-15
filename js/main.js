@@ -180,35 +180,35 @@ $("#resetButton").click(function(){
 });
 
 $("#callButton").click(function(){
+  aiPlayer.storeAction(gameState.turn, "call");
   gameState.doMove(humanPlayer, "call");
 });
 
 $("#betButton").click(function(){
+  aiPlayer.storeAction(gameState.turn, "bet");
   gameState.doMove(humanPlayer, "bet");
-
-  //Start the enemy move
-  //gameState.enemyMakeRandomMove();
+  
   gameState.enemyMakeAiMove("bet");
 });
 
 $("#checkButton").click(function(){
+  aiPlayer.storeAction(gameState.turn, "check");
   gameState.doMove(humanPlayer, "check");
-
+  
   //Start the enemy move
   if(gameState.bigBlind === 2){
-    //gameState.enemyMakeRandomMove();
     gameState.enemyMakeAiMove("check");
   }
 });
 
 $("#raiseButton").click(function(){
+  aiPlayer.storeAction(gameState.turn, "raise");
   gameState.doMove(humanPlayer, "raise");
-
-  //Start the enemy move
-  //gameState.enemyMakeRandomMove();
+  
   gameState.enemyMakeAiMove("raise");
 });
 
 $("#foldButton").click(function(){
+  aiPlayer.storeAction(gameState.turn, "fold");
   gameState.doMove(humanPlayer, "fold");
 });
