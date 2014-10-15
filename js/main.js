@@ -165,6 +165,7 @@ function addProperty(target, object){
 $("#startButton").click(function(){
   //Gamelogic and stuff
   console.log("Starting Game!");
+
   aiPlayer = new AI();
   gameState = new GameState();
   humanPlayer = gameState.getHumanPlayer();
