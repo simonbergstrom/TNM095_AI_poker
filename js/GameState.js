@@ -87,8 +87,8 @@ GameState.prototype.startNewRound = function(){
       drawCard("player1_card2", this.player1.cardsOnHand.card2);
 
       this.player2.cardsOnHand = this.deckOfCards.getPocket();
-      //drawCard("player2_card1", {suit: "Secret", number: ""});
-      //drawCard("player2_card2", {suit: "Secret", number: ""});
+      drawCard("player2_card1", {suit: "Secret", number: ""});
+      drawCard("player2_card2", {suit: "Secret", number: ""});
       drawCard("player2_card1", this.player2.cardsOnHand.card1);
       drawCard("player2_card2", this.player2.cardsOnHand.card2);
 
