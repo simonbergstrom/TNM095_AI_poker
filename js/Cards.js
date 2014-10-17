@@ -11,6 +11,10 @@ function Cards() {
 }
 
 Cards.prototype.whichCard = function(card){
+	// Ace  => 1, 14, 27, 40, 
+	// King => 13, 26
+	// 2    => 2, 15
+
 	var number=card%13;
 
 	if(number === 0)
@@ -91,6 +95,10 @@ Cards.prototype.removePossibleCards = function(cardList){
 
 Cards.prototype.removePossibleCards2 = function(cardList){
 
+	// Ace => 1, 14, 27, 40, 
+	// KIng => 13, 26
+	// 2 => 2, 15
+
 	for(var i=0; i<cardList.length; ++i){
 		var number = cardList[i].number;
 
@@ -119,4 +127,16 @@ Cards.prototype.testForErrors = function(){
 		}
 	}
 	return error;
+}
+
+Cards.prototype.validateCard = function(card, cards){
+	var result = true;
+
+	for(var i=0; i<cards.length; ++i){
+		if(card.number === cards[i].number && card.suit === cards[i].suit){
+			console.log(card)
+		}
+	}
+
+	return card;
 }

@@ -1,5 +1,5 @@
 <html>
-<h1>TEST </h1>
+<h1> TEST </h1>
 
 <script src="../libs/jquery-1.11.1.min.js"></script>
 <script src="../libs/FSO/fso.js"></script>
@@ -15,18 +15,19 @@
 
 <script type="text/javascript">
 
+//handStrength EHS montecarlo random
 
-// randomVSnoHandStrength.txt
+var mode1 = "EHS", mode2 = "handStrength";
 
 var fso = new FSO(1024 * 1024 * 1, true); // One mb of storage
 
 var fsq = fso.createQueue();
-fsq.write('randomVSnoHandStrength.txt', "randomVSnoHandStrength");
-
+//fsq.write('randomVSnoHandStrength.txt', "randomVSnoHandStrength");
+console.log("Simulation started")
 for(var i=0; i<1; ++i){
-	var output = randomVsAi();
+	var output = randomVsAi(mode1, mode2);
 
-	fsq.append( 'randomVSnoHandStrength.txt', JSON.stringify(output) );
+	fsq.append( mode1 + "VS" + mode2, JSON.stringify(output) );
 
 	console.log("Finished iteration ", i);
 }

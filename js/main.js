@@ -5,6 +5,9 @@ var gameState;
 var humanPlayer;
 var aiPlayer;
 
+// The ugliest solution in the world
+var useHandStrength = true;
+
 var clock = new THREE.Clock();
 
 $("button").each(function(){
@@ -181,19 +184,19 @@ $("#resetButton").click(function(){
 });
 
 $("#callButton").click(function(){
-  aiPlayer.storeAction(gameState.turn, "call");
+  //aiPlayer.storeAction(gameState.turn, "call");
   gameState.doMove(humanPlayer, "call");
 });
 
 $("#betButton").click(function(){
-  aiPlayer.storeAction(gameState.turn, "bet");
+  //aiPlayer.storeAction(gameState.turn, "bet");
   gameState.doMove(humanPlayer, "bet");
   
   gameState.enemyMakeAiMove("bet");
 });
 
 $("#checkButton").click(function(){
-  aiPlayer.storeAction(gameState.turn, "check");
+  //aiPlayer.storeAction(gameState.turn, "check");
   gameState.doMove(humanPlayer, "check");
   
   //Start the enemy move
@@ -203,13 +206,16 @@ $("#checkButton").click(function(){
 });
 
 $("#raiseButton").click(function(){
-  aiPlayer.storeAction(gameState.turn, "raise");
+  //aiPlayer.storeAction(gameState.turn, "raise");
   gameState.doMove(humanPlayer, "raise");
   
   gameState.enemyMakeAiMove("raise");
 });
 
 $("#foldButton").click(function(){
-  aiPlayer.storeAction(gameState.turn, "fold");
+  //aiPlayer.storeAction(gameState.turn, "fold");
   gameState.doMove(humanPlayer, "fold");
 });
+
+
+

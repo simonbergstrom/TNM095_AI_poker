@@ -1,12 +1,13 @@
-var useHandStrength = true;
-
-function randomVsAi(){
+function randomVsAi(mode1, mode2){
 
 	var ai = new AI();
 
-	var player1 = {"cardOnHand": [], "money": 20};
-	var player2 = {"cardOnHand": [], "money": 20};
-	var output = {"player1": 0, "player2": 0, "winner": 0};
+	var player1 = {"cardOnHand": [], "money": 100};
+	var player2 = {"cardOnHand": [], "money": 100};
+	var output = {};
+	output[mode1] = 0;
+	output[mode2] = 0;
+	output["winner"] = 0;
 
 	while(player1.money > 0 && player2.money > 0){
 		
@@ -24,7 +25,7 @@ function randomVsAi(){
 		currentState.numberOfTimesRaised = 0;
 
 		currentState.bigBlind = 1;
-		currentState.player = currentState.bigBlind === 1 ? "human" : "ai";
+		currentState.player = "ai";
 		
 		currentState.playerMoney = {"human": player1.money, "ai": player2.money};
 		
@@ -40,7 +41,6 @@ function randomVsAi(){
 		};
 
 		// Blinds
-		
 		if(currentState.bigBlind === 1){
 			if(player1.money > 1){
 			  currentState.playerMoney.human -= 2;
@@ -70,27 +70,48 @@ function randomVsAi(){
 		var turnIndicator = currentState.turn;
 		var nextMove;
 		
-
-
 		while(currentState.turn < 5){
 			
 			if(currentState.player === "ai"){
-				var tree = new searchTree(currentState);
-				useHandStrength = true;
-				nextMove = tree.simulate();
+				
+				if(mode2 === "handStrength"){
+					var tree = new searchTree(currentState);
+					useHandStrength = true;
+					nextMove = tree.simulate();
+				}
+				else if(mode2 === "EHS"){
+					nextMove = EHSagent(currentState);
+				}
+				else if(mode2 === "montecarlo"){
+					var tree = new searchTree(currentState);
+		    		useHandStrength = false;
+					nextMove = tree.simulate();
+				}
+				else{
+					var availableMoves = currentState.getAvailableMoves();
+		    		var index = Math.floor(Math.random() * availableMoves.length);
+		    		nextMove = availableMoves[index];
+				}
 			}
 			else{
-				/*
-				var availableMoves = currentState.getAvailableMoves();
-	    		var index = Math.floor(Math.random() * availableMoves.length);
-	    		nextMove = availableMoves[index];*/
-	    		/*
-	    		var tree = new searchTree(currentState);
-	    		useHandStrength = false;
-				nextMove = tree.simulate();*/
-
-				nextMove = EHSagent(currentState);
-				console.log(nextMove)
+				if(mode1 === "handStrength"){
+					var tree = new searchTree(currentState);
+					useHandStrength = true;
+					nextMove = tree.simulate();
+				}
+				else if(mode1 === "EHS"){
+					nextMove = EHSagent(currentState);
+				}
+				else if(mode1 === "montecarlo"){
+					var tree = new searchTree(currentState);
+		    		useHandStrength = false;
+					nextMove = tree.simulate();
+				}
+				else{
+					var availableMoves = currentState.getAvailableMoves();
+		    		var index = Math.floor(Math.random() * availableMoves.length);
+		    		nextMove = availableMoves[index];
+				}
 			}
 
 			if(nextMove === "fold"){
@@ -125,27 +146,27 @@ function randomVsAi(){
 
 			if(res1.primeScore === res2.primeScore){
 				if(res1.secondaryScore > res2.secondaryScore){
-				   output.player2++;
+				   output[mode2]++;
 
-				  player2.money += currentState.pot;
+				   player2.money += currentState.pot;
 				}
 				else if(res1.secondaryScore === res2.secondaryScore) {
 				  player1.money += Math.ceil(currentState.pot/2);
 				  player2.money += Math.floor(currentState.pot/2);
 				}
 				else{
-					output.player1++;
+					output[mode1]++;
 
 				    player1.money += currentState.pot;
 				}
 			}
 			else if (res1.primeScore > res2.primeScore){
-				output.player2++;
+				output[mode2]++;
 
 				player2.money += currentState.pot;
 			}
 			else{
-				output.player1++;
+				output[mode1]++;
 
 				player1.money += currentState.pot;
 			}
@@ -153,12 +174,12 @@ function randomVsAi(){
 		// Someone folded
 		else{
 			if(currentState.player === "ai"){
-				output.player1++;
+				output[mode1]++;
 
 				player1.money += currentState.pot;
 			}
 			else{
-				output.player2++;
+				output[mode2]++;
 
 				player2.money += currentState.pot;
 			}

@@ -36,11 +36,12 @@ function getPokerScore(cs) {
     return a[0]<<16|a[1]<<12|a[2]<<8|a[3]<<4|a[4];
 }    
  
+    
 function rankHand(str) {
     var index = 10, winCardIndexes, i ,e;
-    var cards = [], suits=[], suitsOrig=[];
+    var cards = [],suits=[],suitsOrig=[];
 
-    for (var obj=0; obj<str.length; ++obj){
+    for (var obj in str){
         if(str[obj].number === 1){
             cards.push(14);
         }
@@ -58,7 +59,7 @@ function rankHand(str) {
         var suits = str.match(/S|C|H|D/g);*/
     
     // Convert from letters to special chars..
-    for(var x=0; i<suits.length; ++x){
+    for(var x in suits){
       if(suits[x]=='S'){suits[x]=decodeURIComponent("%E2%99%A0");} // Spades
       else if(suits[x]=='C'){suits[x]=decodeURIComponent("%E2%99%A3");} // Clubs
       else if(suits[x]=='H'){suits[x]=decodeURIComponent("%E2%99%A5");} // Hearts
@@ -101,6 +102,10 @@ function rankHand(str) {
                 index = winIndex;
              }                     
             }  
+
+            if(wci === undefined){
+                console.log(str);
+            }
 
             //Show the best cards if cs.length is less than 7 cards.
             var cardUsed = [];

@@ -55,9 +55,10 @@ function EHSagent(state){
 		var card2number = state.cardOnHand[1].number;
 
 		card1number = card1number === 1 ? 0 : 14 - card1number;
-		card2number = card2number === 1 ? 0 : 14 - card1number;
+		card2number = card2number === 1 ? 0 : 14 - card2number;
 
 		// first rows, second columns
+		console.log(card1number, card2number, this.bucket)
 		var strength = suit ? this.bucket[Math.min(card1number, card2number)][Math.max(card1number, card2number)] : this.bucket[Math.max(card1number, card2number)][Math.min(card1number, card2number)];
 
 		switch(strength) {

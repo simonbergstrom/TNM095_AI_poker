@@ -37,7 +37,7 @@ function Node(state, type) {
     };
 
     this.baseDefaultPolicy = function(){
-    	//console.log("SIMULATE")
+
     	var deck = new Cards();	
     	deck.shuffle();
     	deck.removePossibleCards2(this.state.cardOnHand.concat(this.state.cardsOnTable));
@@ -65,7 +65,7 @@ function Node(state, type) {
 
 	  			var handStrength = 0.5;
 
-	    		if(useHandStrength){
+	    		if(true){
 	    			handStrength = HandStrength({"card1": this.state.cardOnHand[0], "card2": this.state.cardOnHand[1]}, cardsontable);
 	    		}
 
@@ -75,7 +75,11 @@ function Node(state, type) {
 		    		}
 		    		else if(availableMoves.indexOf("bet") !==  -1){
 		    			index = availableMoves.indexOf("bet");
-		    		}		    	}
+		    		}
+		    		else{
+		    			index = Math.floor(Math.random() * availableMoves.length); 
+		    		}		    	
+		    	}
 		    	else if(handStrength < 0.4){
 		    		if(availableMoves.indexOf("check") !== -1){
 		    			index = availableMoves.indexOf("check");
@@ -103,15 +107,15 @@ function Node(state, type) {
 	    	if(currentState.turn > turnIndicator){
 
 	    		if(currentState.turn === 2){
-	    			currentState.cardsOnTable[0] = deck.getOneCard();
-	    			currentState.cardsOnTable[1] = deck.getOneCard();
-	    			currentState.cardsOnTable[2] = deck.getOneCard();
+	    			currentState.cardsOnTable[0] = deck.validateCard(deck.getOneCard(), currentState.cardOnHand.concat(currentState.cardsOnTable));
+	    			currentState.cardsOnTable[1] = deck.validateCard(deck.getOneCard(), currentState.cardOnHand.concat(currentState.cardsOnTable));
+	    			currentState.cardsOnTable[2] = deck.validateCard(deck.getOneCard(), currentState.cardOnHand.concat(currentState.cardsOnTable));
 	    		}
 	    		else if(currentState.turn === 3){
-	    			currentState.cardsOnTable[3] = deck.getOneCard();
+	    			currentState.cardsOnTable[3] = deck.validateCard(deck.getOneCard(), currentState.cardOnHand.concat(currentState.cardsOnTable));
 	    		}
 	    		else if(currentState.turn === 4){
-	    			currentState.cardsOnTable[4] = deck.getOneCard();
+	    			currentState.cardsOnTable[4] = deck.validateCard(deck.getOneCard(), currentState.cardOnHand.concat(currentState.cardsOnTable));
 	    		}
 	    		turnIndicator = currentState.turn;
 	    	}
@@ -121,7 +125,7 @@ function Node(state, type) {
     	// showdown
     	if(currentState.move !== "fold"){
     		
-    		var simulatedOpponentHand = [deck.getOneCard(), deck.getOneCard()];
+    		var simulatedOpponentHand = [deck.validateCard(deck.getOneCard(), currentState.cardOnHand.concat(currentState.cardsOnTable)), deck.validateCard(deck.getOneCard(), currentState.cardOnHand.concat(currentState.cardsOnTable))];
 
 			var res1 = rankHand(currentState.cardOnHand.concat(currentState.cardsOnTable));
 			var res2 = rankHand(simulatedOpponentHand.concat(currentState.cardsOnTable));
@@ -166,15 +170,15 @@ function chanceNode(state){
     	//currentNode.depth = this.depth + 1;
 
     	if(this.state.turn === 2){
-			currentNode.state.cardsOnTable[0] = deck.getOneCard();
-	    	currentNode.state.cardsOnTable[1] = deck.getOneCard();
-	    	currentNode.state.cardsOnTable[2] = deck.getOneCard();
+			currentNode.state.cardsOnTable[0] = deck.validateCard(deck.getOneCard(), currentNode.state.cardOnHand.concat(currentNode.state.cardsOnTable));
+	    	currentNode.state.cardsOnTable[1] = deck.validateCard(deck.getOneCard(), currentNode.state.cardOnHand.concat(currentNode.state.cardsOnTable));
+	    	currentNode.state.cardsOnTable[2] = deck.validateCard(deck.getOneCard(), currentNode.state.cardOnHand.concat(currentNode.state.cardsOnTable));
 		}
 		else if(this.state.turn === 3){
-			currentNode.state.cardsOnTable[3] = deck.getOneCard();
+			currentNode.state.cardsOnTable[3] = deck.validateCard(deck.getOneCard(), currentNode.state.cardOnHand.concat(currentNode.state.cardsOnTable));
 		}
 		else if(this.state.turn === 4){
-			currentNode.state.cardsOnTable[4] = deck.getOneCard();
+			currentNode.state.cardsOnTable[4] = deck.validateCard(deck.getOneCard(), currentNode.state.cardOnHand.concat(currentNode.state.cardsOnTable));
 		}
    		
 	    return currentNode.baseDefaultPolicy();
@@ -317,3 +321,7 @@ searchTree.prototype.nodeTraverse = function(node){
 		this.nodeTraverse(node.children[i]);
 	}
 };
+
+
+
+// competence profile
