@@ -290,9 +290,9 @@ searchTree.prototype.simulate = function(){
 		}
 
 		elapsedTime = new Date();
-		//nrTimesLooped++;
-	//}while( nrTimesLooped < 200 )
-	}while(this.maxTimeInMilliseconds > (elapsedTime - startTime) )
+		nrTimesLooped++;
+	}while( nrTimesLooped < 200 )
+	//}while(this.maxTimeInMilliseconds > (elapsedTime - startTime) )
 
 	/************** PICK BEST MOVE ***************/
 	var index = {ind: 0, val: -Infinity};
