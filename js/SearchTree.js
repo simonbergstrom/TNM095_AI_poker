@@ -65,14 +65,11 @@ function Node(state, type) {
 
 	  			var handStrength = 0.5;
 
-
-	    		
-	    		handStrength = HandStrength({"card1": this.state.cardOnHand[0], "card2": this.state.cardOnHand[1]}, cardsontable);
-	    		
-
-	    		
-
-
+	  			//  Remove this if statement if you want to run the game
+	  			if(useHandStrength){
+	    			handStrength = HandStrength({"card1": this.state.cardOnHand[0], "card2": this.state.cardOnHand[1]}, cardsontable);
+	  			}
+	    	
 		    	if(handStrength > 0.6){
 		    		if(availableMoves.indexOf("raise") !== -1){
 						index = availableMoves.indexOf("raise");
@@ -231,7 +228,7 @@ searchTree.prototype.simulate = function(){
 	var startTime = new Date();
 	var chanseNodeBranchFactor = 20;
 	var elapsedTime;
-	//var nrTimesLooped = 0;
+	var nrTimesLooped = 0;
 
 	do{
 		/************** TRAVERSE TREE ***************/
