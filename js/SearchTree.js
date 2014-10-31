@@ -1,10 +1,10 @@
-/** 
-Nu har spelaren lika stor sanolikhet att ha vilken 
-möjlig poker hand i simuleringen, detta borde inte vara 
-fallet eftersom en spelare är mycket mer trolig att ha 
+/**
+Nu har spelaren lika stor sanolikhet att ha vilken
+möjlig poker hand i simuleringen, detta borde inte vara
+fallet eftersom en spelare är mycket mer trolig att ha
 en stark hand om han har bettat/callat/raisat och är med
 till showdown. Det behövs alltså en bättre sannolikhets
-function över dom händer som tilldelas motståndaren. 
+function över dom händer som tilldelas motståndaren.
 **/
 
 function Node(state, type) {
@@ -43,10 +43,10 @@ function Node(state, type) {
     	deck.removePossibleCards2(this.state.cardOnHand.concat(this.state.cardsOnTable));
     	var currentState = this.state;
     	var turnIndicator = currentState.turn;
-    	
+
     	while(currentState.turn < 5){
     		var availableMoves = currentState.getAvailableMoves();
-	    	var index; 
+	    	var index;
 
 	    	if(currentState.player === "ai" && currentState.turn >= 2){
 	    		var cardsontable = {};
@@ -65,9 +65,13 @@ function Node(state, type) {
 
 	  			var handStrength = 0.5;
 
-	    		if(true){
-	    			handStrength = HandStrength({"card1": this.state.cardOnHand[0], "card2": this.state.cardOnHand[1]}, cardsontable);
-	    		}
+
+	    		
+	    		handStrength = HandStrength({"card1": this.state.cardOnHand[0], "card2": this.state.cardOnHand[1]}, cardsontable);
+	    		
+
+	    		
+
 
 		    	if(handStrength > 0.6){
 		    		if(availableMoves.indexOf("raise") !== -1){
@@ -76,10 +80,12 @@ function Node(state, type) {
 		    		else if(availableMoves.indexOf("bet") !==  -1){
 		    			index = availableMoves.indexOf("bet");
 		    		}
+
 		    		else{
 		    			index = Math.floor(Math.random() * availableMoves.length); 
 		    		}		    	
 		    	}
+						
 		    	else if(handStrength < 0.4){
 		    		if(availableMoves.indexOf("check") !== -1){
 		    			index = availableMoves.indexOf("check");
@@ -89,7 +95,7 @@ function Node(state, type) {
 		    		}
 		    	}
 		    	else{
-		    		index = Math.floor(Math.random() * availableMoves.length); 
+		    		index = Math.floor(Math.random() * availableMoves.length);
 		    	}
 	    	}
 	    	else if(currentState.turn >= 2){
@@ -124,8 +130,8 @@ function Node(state, type) {
     	var difference = 0;
     	// showdown
     	if(currentState.move !== "fold"){
-    		
-    		var simulatedOpponentHand = [deck.validateCard(deck.getOneCard(), currentState.cardOnHand.concat(currentState.cardsOnTable)), deck.validateCard(deck.getOneCard(), currentState.cardOnHand.concat(currentState.cardsOnTable))];
+
+    		var simulatedOpponentHand = [deck.getOneCard(), deck.getOneCard()];
 
 			var res1 = rankHand(currentState.cardOnHand.concat(currentState.cardsOnTable));
 			var res2 = rankHand(simulatedOpponentHand.concat(currentState.cardsOnTable));
@@ -180,7 +186,7 @@ function chanceNode(state){
 		else if(this.state.turn === 4){
 			currentNode.state.cardsOnTable[4] = deck.validateCard(deck.getOneCard(), currentNode.state.cardOnHand.concat(currentNode.state.cardsOnTable));
 		}
-   		
+
 	    return currentNode.baseDefaultPolicy();
 	};
 }
@@ -226,11 +232,11 @@ searchTree.prototype.simulate = function(){
 	var chanseNodeBranchFactor = 20;
 	var elapsedTime;
 	//var nrTimesLooped = 0;
-	
+
 	do{
 		/************** TRAVERSE TREE ***************/
 		currentNode = this.root;
-		
+
 		while( (currentNode.type === "chance" && currentNode.nrDraws >= chanseNodeBranchFactor) ||
 			   (currentNode.type === "opponent" && currentNode.children.length === currentNode.state.getAvailableMoves().length) ){
 
@@ -245,7 +251,7 @@ searchTree.prototype.simulate = function(){
 			var index = {ind: 0, val: -Infinity};
 
 			for(var i=0; i<currentNode.children.length; ++i){
-				var value = currentNode.children[i].expectedValue/currentNode.children[i].nrTimesVisited + 
+				var value = currentNode.children[i].expectedValue/currentNode.children[i].nrTimesVisited +
 							100*Math.sqrt(numerator/currentNode.children[i].nrTimesVisited);
 				if(value > index.val){
 					index.ind = i;
@@ -263,11 +269,11 @@ searchTree.prototype.simulate = function(){
 
 			var move = currentNode.state.getAvailableMoves()[currentNode.children.length];
 
-			if( move === "fold" || move === "gameEnded" ){ 
+			if( move === "fold" || move === "gameEnded" ){
 				currentNode.addChild(new leafNode(currentNode.state.makeMove(move)));
 			}
-			else if( (currentNode.state.move === "check" && move === "check") || move === "call" ){ 
-				currentNode.addChild(new chanceNode(currentNode.state.makeMove(move))); 
+			else if( (currentNode.state.move === "check" && move === "check") || move === "call" ){
+				currentNode.addChild(new chanceNode(currentNode.state.makeMove(move)));
 			}
 			else{ // bet, raise, check
 				currentNode.addChild(new opponentNode(currentNode.state.makeMove(move)));
@@ -277,7 +283,7 @@ searchTree.prototype.simulate = function(){
 			//currentNode.depth = currentDepth + 1;
 		}
 
-		var expectedReward = currentNode.defaultPolicy(); 
+		var expectedReward = currentNode.defaultPolicy();
 
 		/************** BACKPROPAGATION ***************/
 		while(currentNode.parent !== null){
@@ -322,6 +328,3 @@ searchTree.prototype.nodeTraverse = function(node){
 	}
 };
 
-
-
-// competence profile
