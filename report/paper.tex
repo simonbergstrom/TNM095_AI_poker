@@ -25,6 +25,7 @@
 %% typefaces, ``graphicx'' for inclusion of EPS figures. and ``times''
 %% for proper handling of the times font family.
 
+\usepackage{float}
 \usepackage{mathptmx}
 \usepackage{graphicx}
 \usepackage{times}
@@ -101,10 +102,10 @@ Poker is a well known card game worldwide and has become very popular to play on
 %% the only exception to this rule is the \firstsection command
 \firstsection{Background}
 \maketitle 
-Texas Hold?em is a popular variant of poker, not just to play with friends but also online against other people for money. The challenge of creating the best poker agent has attracted a lot of people and is a popular subject in AI development.
+Texas Hold'em is a popular variant of poker, not just to play with friends but also online against other people for money. The challenge of creating the best poker agent has attracted a lot of people and is a popular subject in AI development.
 \\*\\*
 \textbf{Type of Games}\\*
-There are many different games today and the strategy to solve these games depends on the type of game. In game theory games can be classified due to the knowledge if the transition to a new state within the game depends on a stochastic process and if there is some hidden information. Poker belongs with the most difficult kind of card game to solve discretely since it is an stochastic game with imperfect information.
+There are many different games today and the strategy to solve these games depends on the type of game. In game theory games can be classified due to the knowledge if the transition to a new state within the game depends on a stochastic process and if there is some hidden information. Poker belongs with the most difficult kind of card game to solve discretely since it is an stochastic game with imperfect information\cite{Kleij}.
 \\*\\*
 \textbf{Perfect Information vs Imperfect Information}\\*
 In perfect information games both players can observe the complete state of the game at any given time, this is the case in games such as Chess and Go. Contrary to this we have imperfect information games where each player is unable to observe the complete state, one example for this is poker were neither player can see the other players pocket cards. 
@@ -113,10 +114,11 @@ In perfect information games both players can observe the complete state of the 
 In deterministic games the next state of the game is uniquely determined by an action taken at the current state. In contrast, a stochastic game is a game where the player don't have control over the transition to the next state. For example in poker where the new cards is drawn from a scrambled deck.  
 
 \begin{table}[h]
-\begin{tabular}{lll}
-              & Perfect Information  & Imperfect Information \\
-Deterministic & Chess, Go            & Battleships           \\
-Stochastic    & Backgammon, Monopoly &                      
+\begin{tabular}{|l|l|l|}
+\hline
+              & Perfect Information  & Imperfect Information \\ \hline
+Deterministic & Chess, Go            & Battleships           \\ \hline
+Stochastic    & Backgammon, Monopoly & Poker                 \\ \hline
 \end{tabular}
 \caption{\label{tab:table1} Table showing different categories of games.}
 \end{table}
@@ -125,26 +127,26 @@ The subdivision in (table \ref{tab:table1}) exhibit that games like Chess and Go
 
 \subsection{Related Work}
 \subsubsection{Game Theory}
-In 1997 Koller and Pfeffer made a program called Gala, the program uses strategies from game theory to find optimal strategies in imperfect information games. With the help of Gala they were able to solve several games but they come to the conclusion that the number of states in poker is too large to be solvable with the current hardware. However they suggested a solution that maybe it was possible to map several similar states onto one abstract state resulting in an abstract game tree much smaller than the original. 
-It was from this idea that (Billings et al 2003) successfully abstracted the game down from a search space of $O(10^{18})$ to $O(10^{7})$. They then used Linear optimization to find a Nash equilibrium solution to the game. From this they could take any action, map it to the abstract game tree, find a solution and then map it back to the real game. This resulted in a poker agent (PsOPti) that was far better than anything else at the time. 
+In 1997 Koller and Pfeffer\cite{Koller} made a program called Gala, the program uses strategies from game theory to find optimal strategies in imperfect information games. With the help of Gala they were able to solve several games but they come to the conclusion that the number of states in poker is too large to be solvable with the current hardware. However they suggested a solution that maybe it was possible to map several similar states onto one abstract state resulting in an abstract game tree much smaller than the original. 
+It was from this idea that (Billings et al 2003)\cite{billingsburch} successfully abstracted the game down from a search space of $O(10^{18})$ to $O(10^{7})$. They then used Linear optimization to find a Nash equilibrium solution to the game. From this they could take any action, map it to the abstract game tree, find a solution and then map it back to the real game. This resulted in a poker agent (PsOPti) that was far better than anything else at the time. 
 
 If PsOpti would play a real nash equilibrium strategy no human player would be able to beat it in the long run. But the problem is that it is just an approximation and there will therefore find ways to exploit it. And as PsOpti ignore any action from the human player it allows the player to systematically search for weaknesses in the without fear of being punished.
 
 \subsubsection{Expert Systems}
-Billings et al. (1998) developed an AI agent called Loki. It is an expert system that uses a set of rules and formulas based on the strength of the cards to determine the next action. It uses no opponent modeling in heads up poker. It can be challenging to define strong expert systems as it can be hard to define rules that covers all aspects of the game. There can also be problems with conflicting rules and missing rules (situations that is not covered by any rules). Another problem is that expert systems require that you have great knowledge about the game as the AI will never play better then the player defining the rules.
+Billings et al.(1998)\cite{billingspapp} developed an AI agent called Loki. It is an expert system that uses a set of rules and formulas based on the strength of the cards to determine the next action. It uses no opponent modeling in heads up poker. It can be challenging to define strong expert systems as it can be hard to define rules that covers all aspects of the game. There can also be problems with conflicting rules and missing rules (situations that is not covered by any rules). Another problem is that expert systems require that you have great knowledge about the game as the AI will never play better then the player defining the rules.
 
 \subsubsection{Opponent Modeling}
-Papp (1998) introduced the first tries to extend Loki with opponent modeling. The opponent model was a quite simple and just counted the opponents actions in the different streets (preflop, flop, turn, river), but even this simple opponent modeling increased the strength of the AI.  
+Papp (1998)\cite{papp} introduced the first tries to extend Loki with opponent modeling. The opponent model was a quite simple and just counted the opponents actions in the different streets (preflop, flop, turn, river), but even this simple opponent modeling increased the strength of the AI.  
 
-Davidson et al. (2000) tried to improve the opponent modeling in Loki with artificial neural networks (ANNs) to predict the opponent?s actions, and achieves about 85\% accuracy at predicting the moves. This is a significant improvement over the previous implementation and the new system was named Poki. The problems with ANNs is that they can be slow to train and thus they will make weak plays against players who frequently change their play style.
+Davidson et al. (2000)\cite{davidson} tried to improve the opponent modeling in Loki with artificial neural networks (ANNs) to predict the opponent?s actions, and achieves about 85\% accuracy at predicting the moves. This is a significant improvement over the previous implementation and the new system was named Poki. The problems with ANNs is that they can be slow to train and thus they will make weak plays against players who frequently change their play style.
 
 \subsubsection{Search Trees}
-Billings et al. (2004) was one of the first to use game trees search in a poker AI. Their Ai, Vexbot uses two modified versions of Expectiminimax called Miximax and Miximix that extends Expectiminimax to games with hidden information. Vexbot makes an exhaustive  depth first search of the entire search tree for two player poker. 
+Billings et al. (2004)\cite{billingsdavidson} was one of the first to use game trees search in a poker AI. Their Ai, Vexbot uses two modified versions of Expectiminimax called Miximax and Miximix that extends Expectiminimax to games with hidden information. Vexbot makes an exhaustive  depth first search of the entire search tree for two player poker. 
 
-Van den Broeck (2009) and Van den Broeck et al. (2009) were the first to apply Monte Carlo search to game trees for poker agents. They focused on 10 player no-limit poker which have enormous game trees which makes methods such as the one described in Billings et al. (2004) impossible to use. Here it is impossible to search the whole game tree which makes sampling parts of the game tree the only option. 
+Van den Broeck et al. (2009)\cite{broeck} were the first to apply Monte Carlo search to game trees for poker agents. They focused on 10 player no-limit poker which have enormous game trees which makes methods such as the one described above impossible to use. Here it is impossible to search the whole game tree which makes sampling parts of the game tree the only option. 
 
 \subsection{Monte Carlo Methods}
-Monte Carlo methods is a class of algorithms that rely on random sampling to obtain a numerical estimate of a complicated problem. The method was invented by Stanislaw Ulam while working with the nuclear weapon program at Los Alamos in the 1940s [REF!]. 
+Monte Carlo methods is a class of algorithms that rely on random sampling to obtain a numerical estimate of a complicated problem. The method was invented by Stanislaw Ulam while working with the nuclear weapon program at Los Alamos in the 1940s \cite{Metropolis}. 
 \begin{figure}[here]
   \begin{center}
     \includegraphics[scale=0.35]{img/integralexample.png}
@@ -152,7 +154,7 @@ Monte Carlo methods is a class of algorithms that rely on random sampling to obt
   \end{center}
 \end{figure}
  
-One possible use for Monte Carlo methods is to determine the value of an integral as illustrated in fig(\ref{fig:integralex}). By randomly placing dots and label them as under or over the function value we can get an estimate of the area by taking the area of the square encapsulating the function times the ratio between the number of points under the function with those above the function. The approximated value given by the Monte Carlo simulation will converge to the correct value as the number of sample points goes to infinity.
+One possible use for Monte Carlo methods is to determine the value of an integral as illustrated in fig(\ref{fig:integralex}). By randomly placing dots and label them as under or over the function value we can get an estimate of the area by taking the area of the square encapsulating the function times the ratio between the number of points under the function with the total amount of points. The approximated value given by the Monte Carlo simulation will converge to the correct value as the number of sample points goes to infinity.
 
 The insight that random sampling can be used to solve problems that is too complex to solve analytically can be used to evaluate the best action in huge game trees. For a given node $N$ we can estimate its value by running a number of simulations of how the game may end from that node. The result from those simulations can then be used to give an approximation for the value of that state and as $N$ grows it will converge to the result from a Minimax search. 
 
@@ -204,12 +206,12 @@ There are nine different types of combination of cards and here they are listed 
   \item \textit{High Card}: If the card does not match any of the types above then the card with the highest value is considered. 
 \end{itemize}
 
-These rules are the most basic rules and some special cases exists that is not described above, for a more detailed guide of the rules visit : http://www.pokerstars.se/poker/games/rules/hand-rankings/ and http://www.pokerstars.se/poker/games/rules/ 
+These rules are the most basic rules and some special cases exists that is not described above, for a more detailed guide of the rules visit : \cite{pokerstars}
 
 \subsection{Characteristics of a Poker Player}
-Like previously described poker is a stochastic game, that makes it hard to control and to define what a good poker player is. A good poker player does not always have to be the one who is playing optimally. A good poker player is hard to define but some of the main characteristics of a good player is that he can read his opponents strategy or way of playing, know when having a good hand to play with and know when to play the hand.
+Like previously described poker is a stochastic game, that makes it hard to control and to define what a good poker player is. A good poker player does not always have to be the one who is playing optimally. A good poker player is hard to define but some of the main characteristics of a good player is that he can read his opponents strategy or way of playing, know when having a good hand to play with and know when to play the hand\cite{pokerlistings}.
 
-A player who tries to maximise his winnings will have to use bluffing. This applies both to the cases when the player holds good cards, and when he holds bad cards. If a player never bluffs his or her strategy becomes predictable and it becomes obvious that the player has good cards as soon as he or she bets. This will lead to the opponent folding and the size of the winning pot being small. 
+A player who tries to maximize his winnings will have to use bluffing. This applies both to the cases when the player holds good cards, and when he holds bad cards. If a player never bluffs his or her strategy becomes predictable and it becomes obvious that the player has good cards as soon as he or she bets. This will lead to the opponent folding and the size of the winning pot being small. 
 In the second case, the player might have bad cards. If the player uses bluffing it is possible for him/her to win games where the opponent has better cards.  
 
 \subsection{Game Trees and the Motivation for Monte-Carlo Tree Search}
@@ -241,7 +243,7 @@ A couple of different AI-techniques were implemented in this study. They are des
 \subsubsection{Monte Carlo Tree Search}
 MCTS is a best-first search strategy. Every node in the tree contain two values, an estimate of the expected value $V(P)$ of the reward $r(P)$ and the number of times the node have been visited $n_{i}$. MCTS only starts with the root node and incrementally build the tree by repeating the following 4 steps.\\*\\*
 \textbf{Selection}
-\\*Selection is made by starting from the root node and then recursively select nodes until a leaf node is reached (this does not have to be a leaf of the game tree). To determine which node is the optimal one, the upper confidence bounds (UCB1) formula is used: 
+\\*Selection is made by starting from the root node and then recursively select nodes until a leaf node is reached (this does not have to be a leaf of the game tree). To determine which node is the optimal one, the upper confidence bounds (UCB1) formula is used\cite{levente}: 
 
 \begin{equation} \label{eq:upperconfidence}
 	v_{i} + C \cdot \sqrt{\frac{\ln N}{n_{i}}}
@@ -268,27 +270,27 @@ The first term vi is the estimated value of the node and is responsible for expl
     \caption{\label{fig:backprop} Illustration of how the path to the node is updated with the score from the simulation in the whole tree.}
   \end{center}
 \end{figure}
-When the backpropagation has been done the whole chain starts over again starting with the selection stage. [REF!] The use of the UTC selection method makes the game tree grow asymmetrically as it focus its search in the more promising parts of the tree.
+When the back propagation has been done the whole chain starts over again starting with the selection stage\cite{Chaslot}. The use of the UTC selection method makes the game tree grow asymmetrically as it focus its search in the more promising parts of the tree.
 
 One of the pros with MCTS is that it is anytime, that is it will give a valid solution to the problem even if it is interrupted before it is finished. However the quality of the solution is an estimate and is expected to be better the more time the MCTS keeps running. 
 
 \subsubsection{Hand Strength}
-Since Monte Carlo is a heuristic search which simulate a set of outcomes in a game to calculate what action to make the logic so far does not consider how good the cards on the agents hand is compared to other hands. To add this logic to the agent an algorithm could be used that would return a probability of how strong the current hand cards is with the cards on the table. This probability of the Hand Strength may, at the earliest be calculated the the flop has been shown. [REF!]
+Since Monte Carlo is a heuristic search which simulate a set of outcomes in a game to calculate what action to make the logic so far does not consider how good the cards on the agents hand is compared to other hands. To add this logic to the agent an algorithm could be used that would return a probability of how strong the current hand cards is with the cards on the table. This probability of the Hand Strength may, at the earliest be calculated the the flop has been shown\cite{wenkai}.
 
 The Hand Strength is calculated by comparing the cards on the hand with all possible combination of two cards that the opponent can have and sum the time the agents cards wins compared to the opponent and divide by the number of combinations that was simulated.
 
 \subsubsection{Hand Potential}
-The hand potential algorithm calculates the quality of the hand as the game goes on. The algorithm is similar to the hand strength algorithm. The difference is that the hand potential algorithm considers all possible cards that have not been revealed yet. It is also heavier to calculate since it has to go through every possible combination of cards that could possibly end up on the table. It also takes into account every possible card the opponent might have on hand.
+The hand potential algorithm calculates the quality of the hand as the game goes on. The algorithm is similar to the hand strength algorithm. The difference is that the hand potential algorithm considers all possible cards that have not been revealed yet. It is also heavier to calculate since it has to go through every possible combination of cards that could possibly end up on the table. It also takes into account every possible card the opponent might have on hand\cite{wenkai}.
 
 \subsubsection{Effective Hand Strength}
-By combining the hand strength with the hand potential a probability of winning can be calculated, and this is called the effective hand strength and is calculated as following:
+By combining the hand strength with the hand potential a probability of winning can be calculated, and this is called the effective hand strength and is calculated as following\cite{wenkai}:
 
 \begin{equation} \label{EHS}
 	EHS = HS \cdot (1-NPot) \cdot PPOT
 \end{equation}
 
 \subsubsection{Bucketing}
-Since EHS needs at least the flop in order to be used for decision making, the Bucketing algorithm was implemented  as a complement to the EHS algorithm. This algorithm is only used in in the pre-flop phase where no board cards are visible.
+Since EHS needs at least the flop in order to be used for decision making, the Bucketing algorithm was implemented  as a complement to the EHS algorithm. This algorithm is only used in in the pre-flop phase where no board cards are visible \cite{schweizer}.
 \begin{figure}[here]
   \begin{center}
     \includegraphics[scale=0.60]{img/bucketlist.png}
@@ -323,7 +325,7 @@ The AI-file contains all methods necessary for the AI to be able to make a decis
 \section{Result}
 \subsection{The Game}
 The result of this study is a Texas Hold'em game with an AI implemented using several different AI techniques and combining them together. The AI in the interactive game is using Monte Carlo Tree Search together with Hand Strength as a heuristic. The game is fully playable with an opponent that is somewhat realistic in the way it chooses what move to make. The 3D-scene is used to visualise the poker table, and it also shows the cards on hand. This is shown in fig(\ref{fig:3dscene}).
-\begin{figure}[here]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.27]{img/3dscene.png}
     \caption{\label{fig:3dscene} The 3D-scene in the final version showing the player's cards on hand.}
@@ -331,7 +333,7 @@ The result of this study is a Texas Hold'em game with an AI implemented using se
 \end{figure}
 
 To the left of the 3D-scene there are some additional UI-elements. these are the buttons telling the player what moves he or she can make. By pressing one of these buttons the player will make a move. The coloured buttons indicate that a move is valid. The greyed out buttons indicate invalid moves. The buttons are shown in fig(\ref{fig:ui1}).
-\begin{figure}[here]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.50]{img/ui1.png}
     \caption{\label{fig:ui1} The player controls, placed to the left of the 3D-scene. Greyed out buttons indicate an invalid move.}
@@ -339,7 +341,7 @@ To the left of the 3D-scene there are some additional UI-elements. these are the
 \end{figure}
 
 To the right of the 3D-scene some information is shown. Information about money is shown in the upper box. How much money each player has, and how much money there is currently on the table. This information box is illustrated in fig(\ref{fig:ui2}).
-\begin{figure}[here]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.50]{img/ui2.png}
     \caption{\label{fig:ui2} The score board giving the player information about the money currently in play.}
@@ -347,14 +349,14 @@ To the right of the 3D-scene some information is shown. Information about money 
 \end{figure}
 
 Right below the score board, the enemy log is placed. It keeps track of what the computer does each time it makes a move. Since this is quite hard to visualise the decision was made to print the computer's move in text every time it makes a move. The enemy log is shown in fig(\ref{fig:ui3}).
-\begin{figure}[here]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.50]{img/ui4.png}
     \caption{\label{fig:ui3} The enemy log, showing what the computer has done each round.}
   \end{center}
 \end{figure}
 
-\subsection{AI}
+\subsection{Test results}
 Since a number of algorithms were implemented in this study several results were achieved and therefore comparisons between the different approaches can be made. During this study, the different AI were put against each other playing several games. We have two different kinds of diagrams, one show the percentage of won games and one show the percentage of won hands. The following setups were made: 
 \begin{itemize}
 \item \textit{Monte Carlo + Hand Strength} vs \textit{Random Agent}
@@ -363,35 +365,35 @@ Since a number of algorithms were implemented in this study several results were
 \item \textit{Monte Carlo + Hand Strength} vs \textit{Human Player}
 \end{itemize}
 
-\begin{figure}[here]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.40]{img/randomvsmontehs2.png}
     \caption{\label{fig:randomvsmontehs} Result from Random vs Monte Carlo + Hand Strength.}
   \end{center}
 \end{figure}
 
-\begin{figure}[here]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.40]{img/montehsvsehs.png}
     \caption{\label{fig:montehsvsehs} Result from Monte Carlo + Hand Strength vs EHS.}
   \end{center}
 \end{figure}
 
-\begin{figure}[here]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.40]{img/montevsmontehsfixed.png}
     \caption{\label{fig:montevsmontehsfixed} Result from Monte Carlo vs Monte Carlo + HS (fixed number of simulations).}
   \end{center}
 \end{figure}
 
-\begin{figure}[here]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.40]{img/montevsmontehs5sec.png}
     \caption{\label{fig:montevsmontehs5sec} Result from Monte Carlo vs Monte Carlo + HS (5sec time limit).}
   \end{center}
 \end{figure}
 
-\begin{figure}[here]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.40]{img/montevsehs5sec.png}
     \caption{\label{fig:montevsehs5sec} Result from Monte Carlo vs EHS (5sec time limit).}
@@ -417,7 +419,7 @@ The quality of the solution given a certain number of iterations depends greatly
 
 One simple approach is to model each opponent as a straight forward player, that means that we assume that an aggressive move (raise, bet) indicates a strong hand, and a passive move (check, call) indicates a weak hand. This can be  implemented by holding a histogram with all streets (pre-flop, flop, turn, river) and all the actions taken by the player in those states (fold, bet, call, raise, check). A raise in a game state indicates that a player have a strong hand if he usually does not raise in that state and vice versa. If the game goes to showdown it is possible to calculate the hand strength of the opponents cards on hand and thus make it possible to associate a hand strength with the actions taken that round.
 
-\subsubsection{Speed}
+\subsubsection{Performance}
 The quality of the MCTS solution depends on the amount of simulations it can make, the code in the project is far from optimized and it is probably easy to increase the number of simulations per round by refactoring and optimizing parts of the code. 
 
 \subsubsection{Evaluation Against Human Player}
@@ -428,17 +430,26 @@ During the research phase of this project, many different algorithms to calculat
 
 \begin{thebibliography}{9}
 
+\bibitem{Koller}
+Daphne Koller and Avi Pfeffer. 1997. Representations and solutions for game-theoretic problems.Artif. Intell. 94, 1-2 (July 1997), 167-215. DOI=10.1016/S0004-3702(97)00023-4 
+
+\bibitem{Metropolis}
+Metropolis, N. (1987). The beginning of the Monte Carlo method. Los Alamos Science (1987 Special Issue dedicated to Stanislaw Ulam): 125–130.
+
 \bibitem{levente}
-  Levente Kocsis and Csaba Szepesvári. 2006. Bandit based monte-carlo planning. In Proceedings of the 17th European conference on Machine Learning (ECML'06), Johannes Fürnkranz, Tobias Scheffer, and Myra Spiliopoulou (Eds.). Springer-Verlag, Berlin, Heidelberg, 282-293. DOI=10.1007/11871842\_29 
+Levente Kocsis and Csaba Szepesvári. 2006. Bandit based monte-carlo planning. In Proceedings of the 17th European conference on Machine Learning (ECML'06), Johannes Fürnkranz, Tobias Scheffer, and Myra Spiliopoulou (Eds.). Springer-Verlag, Berlin, Heidelberg, 282-293. DOI=10.1007/11871842\_29 
     
 \bibitem{grze}
-Grzegorz Fedczyszyn, Leszek Koszalka, and Iwona Pozniak-Koszalka. 2012. Opponent modeling in texas hold'em poker. In Proceedings of the 4th international conference on Computational Collective Intelligence: technologies and applications - Volume Part II (ICCCI'12), Ngoc-Thanh Nguyen, Kiem Hoang, and Piotr J?drzejowicz (Eds.), Vol. Part II. Springer-Verlag, Berlin, Heidelberg, 182-191. DOI=10.1007/978-3-642-34707-8\_19
+Grzegorz Fedczyszyn, Leszek Koszalka, and Iwona Pozniak-Koszalka. 2012. Opponent modeling in texas hold'em poker. In Proceedings of the 4th international conference on Computational Collective Intelligence: technologies and applications - Volume Part II (ICCCI'12), Ngoc-Thanh Nguyen, Kiem Hoang, and Piotr Jedrzejowicz (Eds.), Vol. Part II. Springer-Verlag, Berlin, Heidelberg, 182-191. DOI=10.1007/978-3-642-34707-8\_19
 
 \bibitem{billingsburch}
  D. Billings, N. Burch, A. Davidson, R. Holte, J. Schaeffer, T. Schauenberg, and D. Szafron. 2003. Approximating game-theoretic optimal strategies for full-scale poker. In Proceedings of the 18th international joint conference on Artificial intelligence (IJCAI'03). Morgan Kaufmann Publishers Inc., San Francisco, CA, USA, 661-668.
  
 \bibitem{billingspapp}
 D. Billings, D. Papp, J. Schaeffer, and D. Szafron. Poker as a testbed for machine intelligence research. In Proceedings of Advances in Artificial Intelligence Research, pages 1-15, 1998b.
+
+\bibitem{Chaslot} 
+G.M.J.B. Chaslot, M.H.M. Winands, J.W.H.M. Uiterwijk, H.J. van den Herik, B. Bouzy (2008). Progressive Strategies for Monte-Carlo Tree Search. New Mathematics and Natural Computation 4 (3): 343–359.
 
 \bibitem{papp}
 Denis Richard Papp. 1998. Dealing with Imperfect Information in Poker. MS Thesis. University of Alberta, Edmonton, Alta., Canada. UML Order No. GAXMQ--34401.
@@ -454,6 +465,9 @@ Darse Billings, Aaron Davidson, Terence Schauenberg, Neil Burch, Michael Bowling
 
 \bibitem{schweizer}
 Immanuel Schweizer, Kamill Panitzek, Sang-Hyeun Park, and Johannes Fürnkranz. 2009. An exploitative Monte-Carlo poker agent. In Proceedings of the 32nd annual German conference on Advances in artificial intelligence (KI'09), Bärbel Mertsching, Marcus Hund, and Zaheer Aziz (Eds.). Springer-Verlag, Berlin, Heidelberg, 65-72.
+
+\bibitem{Kleij}
+Van der Kleij, A. A. J.: Monte Carlo Tree Search and Opponent Modeling through Player Clustering in no-limit Texas Hold'em Poker. University of Groningen, The Netherlands (2010)
 
 \bibitem{wenkai}
 Wenkai Li and Lin Shang, "Estimating Winning Probability for Texas Hold'em Poker," International Journal of Machine Learning and Computing vol. 3, no. 1, pp. 70-74, 2013

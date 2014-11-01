@@ -26,12 +26,12 @@
 \BOOKMARK [2][-]{subsection.3.4}{AI}{section.3}% 26
 \BOOKMARK [1][-]{section.4}{Result}{}% 27
 \BOOKMARK [2][-]{subsection.4.1}{The Game}{section.4}% 28
-\BOOKMARK [2][-]{subsection.4.2}{AI}{section.4}% 29
+\BOOKMARK [2][-]{subsection.4.2}{Test results}{section.4}% 29
 \BOOKMARK [3][-]{subsubsection.4.2.1}{Monte Carlo + Hand Strength vs Human Player}{subsection.4.2}% 30
 \BOOKMARK [1][-]{section.5}{Conclusion}{}% 31
 \BOOKMARK [2][-]{subsection.5.1}{Evaluation of the Result}{section.5}% 32
 \BOOKMARK [2][-]{subsection.5.2}{Future Work}{section.5}% 33
 \BOOKMARK [3][-]{subsubsection.5.2.1}{Opponent Modeling}{subsection.5.2}% 34
-\BOOKMARK [3][-]{subsubsection.5.2.2}{Speed}{subsection.5.2}% 35
+\BOOKMARK [3][-]{subsubsection.5.2.2}{Performance}{subsection.5.2}% 35
 \BOOKMARK [3][-]{subsubsection.5.2.3}{Evaluation Against Human Player}{subsection.5.2}% 36
 \BOOKMARK [3][-]{subsubsection.5.2.4}{Add More Parameters in Move Decision}{subsection.5.2}% 37
