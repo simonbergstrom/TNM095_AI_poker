@@ -68,6 +68,8 @@
 
 %% Paper title.
 
+
+
 \title{AiPoker - Implementation of a Poker Agent}
 
 %% This is how authors are specified in the journal style
@@ -94,8 +96,9 @@ Poker is a well known card game worldwide and has become very popular to play on
 %%%%%%%%%%%%%%%%%%%%%% START OF THE PAPER %%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{document}
 
+\begin{document}
+\pagenumbering{roman}
 %% The ``\maketitle'' command must be the first command after the
 %% ``\begin{document}'' command. It prepares and prints the title block.
 
@@ -228,7 +231,7 @@ The size for a game tree grows very fast when the possible actions that can be t
 
 With the help of game trees computers can reason about the consequences of their actions and many of the most used AI algorithms are based on them. One of the most used tree search algorithms is the Minimax algorithm. Minimax assumes that both players play an optimal strategy. This means that the player who tries to find the best move always selects the actions that will give that player the highest reward thus these nodes are call MAX-nodes. On the other hand the opponent will always select the actions that will give the player the lowest reward and these nodes are called MIN-nodes. The value for each leaf node is determined by a heuristic and the value is back propagated up the tree depending on the parent node. Minimax will search the game tree depth first and the result will be the action which gives the highest reward. 
 
-Expectiminimax is the continuation of the Minimax algorithm that allows for stochastic events in the game tree such as drawing cards in a game of poker. Expectiminimax trees add an additional type of nodes, chance nodes. At chance nodes a child $c$ is chosen with some probability $P(c)$. This means that a chance node for drawing a card from a full deck has $52$ children with a uniform probability distribution of $1/52$. The value for a chance node is the weighted average of all its children. 
+Expectiminimax is the continuation of the Minimax algorithm that allows for stochastic events in the game tree such as drawing cards in a game of poker. Expectiminimax trees add an additional type of nodes, chance nodes. At chance nodes a child $c$ is chosen with some probability $P(c)$. This means that a chance node for drawing a card from a deck of cards has $52$ children with a uniform probability distribution of $1/52$. The value for a chance node is the weighted average of all its children. [REF!]
 
 The problem with Minimax and Expectiminimax is that they use depth first search, this poses a problem for games such as poker which have such a big game tree that it can not be fully searched in a reasonable amount of time.
 
@@ -242,7 +245,7 @@ In order to even begin implementing an AI, the core poker game had to be impleme
 A couple of different AI-techniques were implemented in this study. They are described in this section. Also some tests where the different AIs compete against each other were made. The results from these tests are presented in the Results section.
 
 \subsubsection{Monte Carlo Tree Search}
-MCTS is a best-first search strategy. Every node in the tree contain two values, an estimate of the expected value $V(P)$ of the reward $r(P)$ and the number of times the node has been visited $n_{i}$. MCTS only starts with the root node and incrementally builds the tree by repeating the following 4 steps:\\*\\*
+MCTS is a best-first search strategy. Every node $(N)$ in the tree contains two values, an estimate of the expected value $V(r(N))$ of the reward $r(N)$ and the number of times the node has been visited $n_{i}$. MCTS only starts with the root node and incrementally builds the tree by repeating the following 4 steps:\\*\\*
 \textbf{Selection}
 \\*Selection is made by starting from the root node and then recursively select nodes until a leaf node is reached (this does not have to be a leaf of the game tree). To determine which node is the optimal one, the upper confidence bounds formula (eq(\ref{eq:upperconfidence})) is used. \cite{levente}: 
 
@@ -261,7 +264,7 @@ The first term $v_{i}$ is the estimated value of the node and is responsible for
 \end{figure}
 \\*\\*
 \textbf{Simulation}
-\\*The third step in MCTS is the simulation step. Here a game is simulated from the state in the new node until a result is achieved. The value of the reached result is recorded.
+\\*The third step in MCTS is the simulation step. Here a game is simulated from the state in the new node the game has ended. The value of the reached result (won amount of money) is recorded.
 \\*\\*
 \textbf{Backpropagation}
 \\*The last step is to update the expected value and the selection counter for all nodes along the explored path by backpropagating the recorded result from the simulation step. This step is illustrated in fig(\ref{fig:backprop}).
@@ -302,7 +305,7 @@ Since effective hand strength (EHS) needs at least the flop to be revealed in or
 \\*The table in fig(\ref{fig:bucketlist}) gives every two card combination a value between 0 and 4 where 4 is a good combination and 0 is a bad combination. This list is the source of decision making in the pre-flop phase when using the EHS-algorithm as logic in the poker agent.
 
 \subsubsection{Randomness}
-All previously mentioned algorithms take cards as input and gives the probability of the cards in different ways to make the best decision with the current cards on hand. Since a good poker player needs to be able to bluff, a random function has been implemented in order to give the agent a certain level of unpredictability. The agent will make a random move approximately 5\% of the time. 
+All previously mentioned algorithms take cards as input and gives the probability of winning with the cards on hand. Since a good poker player needs to be able to bluff, a random function has been implemented in order to give the agent a certain level of unpredictability. The agent will make a random move approximately 5\% of the time. 
 
 \subsection{Implementation}
 \subsubsection{Main Design}
@@ -320,8 +323,8 @@ The application is implemented in an object oriented manner. The main applicatio
 The main.js file is first painting the poker table and all buttons on the page, when the start button is clicked a GameState object and an AI object will be created.
 The poker game is originated from the GameState object which only consists of a Cards object and functions for every state of the poker game. The game is created for two players where one player is an AI agent and the other player is the human player. The Cards object consist of a full deck of cards and all methods needed for playing Texas Hold'em like shuffle the deck of cards, deliver the flop, turn card, river card and cards for the players.
 
-\subsection{AI}
-The AI-file contains all methods necessary for the AI to be able to make a decision about what move to make. The heart of the AI is the method: findBestMove() which initializes a new instance of the SearchTree class and then runs a simulation from the current game state. The AI-file also contains methods for Hand Strength, Hand Potential and Effective Hand Strength. Bucketing, which has been mentioned earlier is also present and is used as a heuristic in the first round before the flop has been presented on the table.
+\subsubsection{AI}
+The AI-file contains all methods necessary for the AI to be able to make a decision about what move to make. The heart of the AI is the method: findBestMove() which initializes a new instance of the SearchTree class and then runs the whole MCTS algorithm. The AI-file also contains methods for Hand Strength, Hand Potential and Effective Hand Strength. Bucketing, which has been mentioned earlier is also present and is used as a heuristic in the first round before the flop has been presented on the table.
 
 \section{Result}
 \subsection{The Game}
