@@ -25,6 +25,7 @@
 %% typefaces, ``graphicx'' for inclusion of EPS figures. and ``times''
 %% for proper handling of the times font family.
 
+\usepackage{fancyhdr}
 \usepackage{float}
 \usepackage{mathptmx}
 \usepackage{graphicx}
@@ -51,6 +52,8 @@
   plainpages = false,
   linktocpage
 }
+
+\pagestyle{fancy}
 
 %% If you are submitting a paper to a conference for review with a double
 %% blind reviewing process, please replace the value ``0'' below with your
@@ -157,7 +160,7 @@ Monte Carlo methods is a class of algorithms that rely on random sampling to obt
   \end{center}
 \end{figure}
  
-One possible use for Monte Carlo methods is to determine the value of an integral as illustrated in fig(\ref{fig:integralex}). By randomly placing dots and label them as either under or over the function value an estimate of the area can be achieved. By taking the area of the square encapsulating the function times the ratio between the number of points under the function and the total amount of points. The approximated value given by a Monte Carlo method will converge to the correct value as the number of sample points goes to infinity. [REF!]
+One possible use for Monte Carlo methods is to determine the value of an integral as illustrated in fig(\ref{fig:integralex}). By randomly placing dots and label them as either under or over the function value an estimate of the area can be achieved. By taking the area of the square encapsulating the function times the ratio between the number of points under the function and the total amount of points. The approximated value given by a Monte Carlo method will converge to the correct value as the number of sample points goes to infinity\cite{Kleij}.
 
 The insight that random sampling can be used to solve problems that are too complex to solve analytically, can be used to evaluate the best action in huge game trees. For a given node $N$, the value can be estimated by running a number of simulations of how the game may end from that node. The result from those simulations can then be used to give an approximation for the value of that node. As $N$ grows it will converge to the result from a Minimax search. 
 
@@ -184,7 +187,7 @@ The stages are called:  pre-flop, flop, turn, river and showdown.
 In this stage the players get two cards each from the dealer. These cards are called the pocket cards and after the cards have been dealt, the first betting round begins. If a player bets or raises all other players get the opportunity to either call, raise or fold max three times, after that the players who have not folded move on to the flop.
 \\*\\*
 \textbf{Flop}\\*
-The flop is when the dealer deals the three first cards on the table. These cards are visible to all players. The pocket cards can now be combined with the flop cards in order to create a full hand. The players will make moves in the same procedure as in the pre flop stage.
+The flop is when the dealer deals the three first cards on the table. These cards are visible to all players. The pocket cards can now be combined with the flop cards in order to create a full hand. The players will make moves in the same procedure as in the pre-flop stage.
 \\*\\*
 \textbf{Turn}\\*
 Now the dealer adds a fourth card to the table. The players will now bet again.
@@ -227,11 +230,11 @@ A game tree is a tree structure that from a given state in the game describes al
 \end{figure}
 
 The above example shows a part of a tic-tac-toe game tree. Every node represents a possible state in the game with the root node being the current state and every edge is the action leading to that state. 
-The size for a game tree grows very fast when the possible actions that can be taken in each state increase. For example the game tree for an empty tic-tac-toe board has $255168$ leaf nodes. Two player Texas Hold'em has a search space size of $O(10^{18})$. [REF!]
+The size for a game tree grows very fast when the possible actions that can be taken in each state increase. For example the game tree for an empty tic-tac-toe board has $255168$ leaf nodes. Two player Texas Hold'em has a search space size of $O(10^{18})$\cite{billingsdavidson}.
 
 With the help of game trees computers can reason about the consequences of their actions and many of the most used AI algorithms are based on them. One of the most used tree search algorithms is the Minimax algorithm. Minimax assumes that both players play an optimal strategy. This means that the player who tries to find the best move always selects the actions that will give that player the highest reward thus these nodes are call MAX-nodes. On the other hand the opponent will always select the actions that will give the player the lowest reward and these nodes are called MIN-nodes. The value for each leaf node is determined by a heuristic and the value is back propagated up the tree depending on the parent node. Minimax will search the game tree depth first and the result will be the action which gives the highest reward. 
 
-Expectiminimax is the continuation of the Minimax algorithm that allows for stochastic events in the game tree such as drawing cards in a game of poker. Expectiminimax trees add an additional type of nodes, chance nodes. At chance nodes a child $c$ is chosen with some probability $P(c)$. This means that a chance node for drawing a card from a deck of cards has $52$ children with a uniform probability distribution of $1/52$. The value for a chance node is the weighted average of all its children. [REF!]
+Expectiminimax is the continuation of the Minimax algorithm that allows for stochastic events in the game tree such as drawing cards in a game of poker. Expectiminimax trees add an additional type of nodes, chance nodes. At chance nodes a child $c$ is chosen with some probability $P(c)$. This means that a chance node for drawing a card from a deck of cards has $52$ children with a uniform probability distribution of $1/52$. The value for a chance node is the weighted average of all its children\cite{Kleij}.
 
 The problem with Minimax and Expectiminimax is that they use depth first search, this poses a problem for games such as poker which have such a big game tree that it can not be fully searched in a reasonable amount of time.
 
@@ -421,7 +424,7 @@ On the other hand if we let both agents run a fixed amount of iterations, a 100\
 \subsubsection{Opponent Modeling}
 The quality of the solution given a certain number of iterations depends greatly on how good the simulation step can model the reality. For simple games it may be enough to simply use random moves, but for games as complicated as poker this will lead to a weak agent. The reason for this is that a player's actions is highly dependent on what cards he/she holds. Note that we are not interested in finding the most probable move of the opponent but the probability distribution over the available moves. The reason for this is that if we only get the most probable move then each simulation will result in the same sequence of actions. 
 
-One simple approach is to model each opponent as a straight forward player, that means that we assume that an aggressive move (raise, bet) indicates a strong hand, and a passive move (check, call) indicates a weak hand. This can be implemented by holding a histogram with all stages (pre-flop, flop, turn, river) and all the actions taken by the player in those stages (fold, bet, call, raise, check). A raise in a game state indicates that a player has a strong hand if he usually does not raise in that state and vice versa. If the game goes to showdown it is possible to calculate the hand strength of the opponents cards on hand and thus making it possible to associate a hand strength with the actions taken that round. [REF!]
+One simple approach is to model each opponent as a straight forward player, that means that we assume that an aggressive move (raise, bet) indicates a strong hand, and a passive move (check, call) indicates a weak hand. This can be implemented by holding a histogram with all stages (pre-flop, flop, turn, river) and all the actions taken by the player in those stages (fold, bet, call, raise, check). A raise in a game state indicates that a player has a strong hand if he usually does not raise in that state and vice versa. If the game goes to showdown it is possible to calculate the hand strength of the opponents cards on hand and thus making it possible to associate a hand strength with the actions taken that round\cite{schweizer}.
 
 \subsubsection{Performance}
 The quality of the MCTS solution depends on the amount of simulations it can make, the code in the project is far from optimized and it is probably easy to increase the number of simulations per round by refactoring and optimizing parts of the code. 
