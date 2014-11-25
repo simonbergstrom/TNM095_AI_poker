@@ -25,12 +25,14 @@
 %% typefaces, ``graphicx'' for inclusion of EPS figures. and ``times''
 %% for proper handling of the times font family.
 
+\usepackage{fancyhdr}
 \usepackage{float}
 \usepackage{mathptmx}
 \usepackage{graphicx}
 \usepackage{times}
 \usepackage{balance}
 \usepackage[nooneline,hang,it,IT]{subfigure}
+\usepackage{lastpage}
 
 %% We encourage the use of mathptmx for consistent usage of times font
 %% throughout the proceedings. However, if you encounter conflicts
@@ -68,9 +70,7 @@
 
 %% Paper title.
 
-
-
-\title{AiPoker - Implementation of a Poker Agent}
+\title{AiPoker - An Implementation of a Poker Agent}
 
 %% This is how authors are specified in the journal style
 
@@ -79,7 +79,11 @@
 \authorfooter{
 %% insert punctuation at end of each item
 \item
- John Holl\'en, Robin Berntsson, Simon Bergstr\"om
+ Simon Bergstr\"om, Media Technology student at Link\"oping University, Sweden, e-mail: simbe109@student.liu.se.
+\item
+  Robin Berntsson, Media Technology student at Link\"oping University, Sweden, e-mail: robbe482@student.liu.se.
+\item
+  John Holl\'en, Media Technology student at Link\"oping University, Sweden, e-mail: johho982@student.liu.se.
 }
 
 %% Abstract section.
@@ -97,8 +101,20 @@ Poker is a well known card game worldwide and has become very popular to play on
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
-\pagestyle{plain}
-\pagenumbering{num_style}
+
+\fancypagestyle{empty}{
+ \fancyhf{}
+ \fancyhead[R]{TNM095 \\* HT1 2014}
+ \fancyhead[C]{Artificial Intelligence for Interactive Media}
+}
+
+\pagestyle{fancy}
+\rhead{TNM095 \\* HT1 2014}
+\chead{Artificial Intelligence for Interactive Media}
+\lhead{\empty}
+\cfoot{\empty}
+\rfoot{Page \ \thepage \ of \ \pageref{LastPage}}
+\pagenumbering{arabic}
 %% The ``\maketitle'' command must be the first command after the
 %% ``\begin{document}'' command. It prepares and prints the title block.
 
@@ -126,7 +142,7 @@ Stochastic    & Backgammon, Monopoly & Poker                 \\ \hline
 \caption{\label{tab:table1} Table showing different categories of games.}
 \end{table}
 
-The classification in (table \ref{tab:table1}) shows that games like Chess and Go belong to the category of games that are less complex to solve with an AI agent. Poker belongs to one of the most complex games to solve, since it is both stochastic and contains imperfect information.
+The classification in Table.\ref{tab:table1} shows that games like Chess and Go belong to the category of games that are less complex to solve with an AI agent. Poker belongs to one of the most complex games to solve, since it is both stochastic and has imperfect information.
 
 \subsection{Related Work}
 \subsubsection{Game Theory}
@@ -136,7 +152,7 @@ It was from this idea that (Billings et al 2003)\cite{billingsburch} successfull
 If PsOpti would play a real Nash equilibrium strategy no human player would be able to beat it in the long run. But the problem is that it is just an approximation and there will therefore be ways to exploit it. As PsOpti ignore any action from the human player it allows the player to systematically search for weaknesses without fear of being punished.
 
 \subsubsection{Expert Systems}
-Billings et al.(1998)\cite{billingspapp} developed an AI agent called Loki. It is an expert system that uses a set of rules and formulas based on the strength of the cards to determine the next action. It uses no opponent modeling in heads up poker. It can be challenging to define strong expert systems as it can be hard to define rules that cover all aspects of the game. There can also be problems with conflicting rules and missing rules (situations that are not covered by any rules). Another problem is that expert systems require that you have great knowledge about the game as the AI will never play better than the defined the rules.
+Billings et al.(1998)\cite{billingspapp} developed an AI agent called Loki. It is an expert system that uses a set of rules and formulas based on the strength of the cards to determine the next action. It uses no opponent modeling in two player poker. It can be challenging to define strong expert systems as it can be hard to define rules that cover all aspects of the game. There can also be problems with conflicting rules and missing rules (situations that are not covered by any rules). Another problem is that expert systems require that you have great knowledge about the game as the AI will never play better than the defined the rules.
 
 \subsubsection{Opponent Modeling}
 Papp (1998)\cite{papp} was the first to try to extend Loki with opponent modeling. The opponent model was quite simple and just counted the opponents actions in the different game stages (preflop, flop, turn, river). This simple model increased the strength of the AI.  
@@ -149,7 +165,7 @@ Billings et al. (2004)\cite{billingsdavidson} were some of the first to use game
 Van den Broeck et al. (2009)\cite{broeck} were the first to apply Monte Carlo tree search for poker agents. They focused on 10 player no-limit poker. 10 player no-limit poker has enormous game trees which make methods such as Miximax and Miximix impossible to use. Since it is impossible to search the whole game tree, sampling parts of the game tree is the only option. 
 
 \subsection{Monte Carlo Methods}
-Monte Carlo methods is a class of algorithms that rely on random sampling to obtain a numerical estimate of a complicated problem. The method was invented by Stanislaw Ulam while working with the nuclear weapon program at Los Alamos in the 1940s \cite{Metropolis}. 
+Monte Carlo methods is a class of algorithms that rely on random sampling to obtain a numerical estimate of a complex problem. The method was invented by Stanislaw Ulam while working with the nuclear weapon program at Los Alamos in the 1940s \cite{Metropolis}. 
 \begin{figure}[here]
   \begin{center}
     \includegraphics[scale=0.35]{img/integralexample.png}
@@ -157,15 +173,15 @@ Monte Carlo methods is a class of algorithms that rely on random sampling to obt
   \end{center}
 \end{figure}
  
-One possible use for Monte Carlo methods is to determine the value of an integral as illustrated in fig(\ref{fig:integralex}). By randomly placing dots and label them as either under or over the function value an estimate of the area can be achieved. By taking the area of the square encapsulating the function times the ratio between the number of points under the function and the total amount of points. The approximated value given by a Monte Carlo method will converge to the correct value as the number of sample points goes to infinity. [REF!]
+One possible use for Monte Carlo methods is to determine the value of an integral as illustrated in Fig.\ref{fig:integralex}. By randomly placing dots and labelling them as either under or over the function value an estimate of the area can be achieved. By taking the area of the square encapsulating the function times the ratio between the number of points under the function and the total amount of points. The approximated value given by a Monte Carlo method will converge to the correct value as the number of sample points goes to infinity\cite{Kleij}.
 
-The insight that random sampling can be used to solve problems that are too complex to solve analytically, can be used to evaluate the best action in huge game trees. For a given node $N$, the value can be estimated by running a number of simulations of how the game may end from that node. The result from those simulations can then be used to give an approximation for the value of that node. As $N$ grows it will converge to the result from a Minimax search. 
+The insight that random sampling can be used to solve problems that are too complex to solve analytically can be used to evaluate the best action in huge game trees. For a given node $N$, the value can be estimated by running a number of simulations of how the game may end from that node. The result from those simulations can then be used to give an approximation for the value of that node. As the number of nodes grows it will converge to the result from a Minimax search. 
 
-Monte Carlo tree search has made huge improvements for games that were previously very hard for AIs. One example is Go in which agents powered by MCTS now can compete with the best players in the world.
+Monte Carlo tree search (MCTS) has made huge improvements for games that were previously very hard for AIs. One example is Go in which agents powered by MCTS now can compete with the best players in the world.
 
 \section{Theory}
-\subsection{Texas Hold'em no Limit}
 \textit{(If you already are familiar with the game of Texas Hold'em, you can skip to section 2.2).}
+\subsection{Texas Hold'em no Limit}
 There are many forms of poker, the most popular being Texas Hold'em. Texas Hold'em can be played in two different ways, limited and no-limit. In limited poker the bet and raise amount are fixed, there is also an upper limit of how many times the players raise. However in no-limit poker there is no limit for how much the players can bet, and there is also no limit for how many times the payers can raise.
 \subsubsection{Main Concept}
 The aim of the game is to win as much money as possible. When a player is out of money, that player has lost. When everyone except one player has run out of money the game is over and a winner is designated.
@@ -184,7 +200,7 @@ The stages are called:  pre-flop, flop, turn, river and showdown.
 In this stage the players get two cards each from the dealer. These cards are called the pocket cards and after the cards have been dealt, the first betting round begins. If a player bets or raises all other players get the opportunity to either call, raise or fold max three times, after that the players who have not folded move on to the flop.
 \\*\\*
 \textbf{Flop}\\*
-The flop is when the dealer deals the three first cards on the table. These cards are visible to all players. The pocket cards can now be combined with the flop cards in order to create a full hand. The players will make moves in the same procedure as in the pre flop stage.
+The flop is when the dealer deals the three first cards on the table. These cards are visible to all players. The pocket cards can now be combined with the flop cards in order to create a full hand. The players will make moves in the same procedure as in the pre-flop stage.
 \\*\\*
 \textbf{Turn}\\*
 Now the dealer adds a fourth card to the table. The players will now bet again.
@@ -227,11 +243,11 @@ A game tree is a tree structure that from a given state in the game describes al
 \end{figure}
 
 The above example shows a part of a tic-tac-toe game tree. Every node represents a possible state in the game with the root node being the current state and every edge is the action leading to that state. 
-The size for a game tree grows very fast when the possible actions that can be taken in each state increase. For example the game tree for an empty tic-tac-toe board has $255168$ leaf nodes. Two player Texas Hold'em has a search space size of $O(10^{18})$. [REF!]
+The size for a game tree grows very fast when the possible actions that can be taken in each state increase. For example the game tree for an empty tic-tac-toe board has $255168$ leaf nodes. Two player Texas Hold'em has a search space size of $O(10^{18})$\cite{billingsdavidson}.
 
 With the help of game trees computers can reason about the consequences of their actions and many of the most used AI algorithms are based on them. One of the most used tree search algorithms is the Minimax algorithm. Minimax assumes that both players play an optimal strategy. This means that the player who tries to find the best move always selects the actions that will give that player the highest reward thus these nodes are call MAX-nodes. On the other hand the opponent will always select the actions that will give the player the lowest reward and these nodes are called MIN-nodes. The value for each leaf node is determined by a heuristic and the value is back propagated up the tree depending on the parent node. Minimax will search the game tree depth first and the result will be the action which gives the highest reward. 
 
-Expectiminimax is the continuation of the Minimax algorithm that allows for stochastic events in the game tree such as drawing cards in a game of poker. Expectiminimax trees add an additional type of nodes, chance nodes. At chance nodes a child $c$ is chosen with some probability $P(c)$. This means that a chance node for drawing a card from a deck of cards has $52$ children with a uniform probability distribution of $1/52$. The value for a chance node is the weighted average of all its children. [REF!]
+Expectiminimax is the continuation of the Minimax algorithm that allows for stochastic events in the game tree such as drawing cards in a game of poker. Expectiminimax trees add an additional type of nodes, chance nodes. At chance nodes a child $c$ is chosen with some probability $P(c)$. This means that a chance node for drawing a card from a deck of cards has $52$ children with a uniform probability distribution of $1/52$. The value for a chance node is the weighted average of all its children\cite{Kleij}.
 
 The problem with Minimax and Expectiminimax is that they use depth first search, this poses a problem for games such as poker which have such a big game tree that it can not be fully searched in a reasonable amount of time.
 
@@ -242,20 +258,20 @@ It was this problem that led to the development of Monte Carlo tree search (MCTS
 In order to even begin implementing an AI, the core poker game had to be implemented first. This was made by first implementing an agent that played at random. For simplicity the game implemented in this study is a two player game with the limited edition of Texas Hold'em where a human player faces a computer AI. 
 
 \subsection{AI-techniques}
-A couple of different AI-techniques were implemented in this study. They are described in this section. Also some tests where the different AIs compete against each other were made. The results from these tests are presented in the Results section.
+A couple of different AI-techniques were implemented in this study. They are described in this section. Also some tests where the different AIs compete against each other were made. The results from these tests are presented in the Result section.
 
 \subsubsection{Monte Carlo Tree Search}
-MCTS is a best-first search strategy. Every node $(N)$ in the tree contains two values, an estimate of the expected value $V(r(N))$ of the reward $r(N)$ and the number of times the node has been visited $n_{i}$. MCTS only starts with the root node and incrementally builds the tree by repeating the following 4 steps:\\*\\*
+MCTS is a best-first search strategy. Every node $N$ in the tree contains two values, an estimate of the expected reward $v_{i}$ and the number of times the node has been visited $n_{i}$. MCTS only starts with the root node and incrementally builds the tree by repeating the following 4 steps:\\*\\*
 \textbf{Selection}
-\\*Selection is made by starting from the root node and then recursively select nodes until a leaf node is reached (this does not have to be a leaf of the game tree). To determine which node is the optimal one, the upper confidence bounds formula (eq(\ref{eq:upperconfidence})) is used. \cite{levente}: 
+\\*Selection is made by starting from the root node and then recursively select nodes until a leaf node is reached (this does not have to be a leaf of the game tree). To determine which node is the optimal one, the upper confidence bounds formula Eq.\ref{eq:upperconfidence} is used \cite{levente}. 
 
 \begin{equation} \label{eq:upperconfidence}
-	v_{i} + C \cdot \sqrt{\frac{\ln N}{n_{i}}}
+	v_{i} + C \cdot \sqrt{\frac{\ln (N)}{n_{i}}}
 \end{equation}
-The first term $v_{i}$ is the estimated value of the node and is responsible for exploitation of good nodes, the second term is made up by the total number of visits of the parent node $N$ and the total number of visits of the current node $n_{i}$. The constant $C$ allows tuning of the exploration-exploitation trade-off. 
+The first term $v_{i}$ is the estimated reward of the node and is responsible for exploitation of good nodes, the second term is made up by the total number of visits of the parent node $N$ and the total number of visits of the current node $n_{i}$. The constant $C$ allows tuning of the exploration-exploitation trade-off. 
 \\*\\*
 \textbf{Expansion}
-\\*If the leaf node reached is not a terminating node, which means that the game is not over at the current node. Then create one or more child nodes from the node currently at. This step is illustrated in fig(\ref{fig:expansion}).
+\\*If the leaf node reached is not a terminating node, which means that the game is not over at the current node. Then create one or more child nodes from the node currently at. This step is illustrated in Fig.\ref{fig:expansion}.
 \begin{figure}[here]
   \begin{center}
     \includegraphics[scale=0.28]{img/tree1.png}
@@ -264,17 +280,17 @@ The first term $v_{i}$ is the estimated value of the node and is responsible for
 \end{figure}
 \\*\\*
 \textbf{Simulation}
-\\*The third step in MCTS is the simulation step. Here a game is simulated from the state in the new node the game has ended. The value of the reached result (won amount of money) is recorded.
+\\*The third step in MCTS is the simulation step. Here a game is simulated from the state in the new node until the game has ended. The value of the reached result (won amount of money) is recorded.
 \\*\\*
 \textbf{Backpropagation}
-\\*The last step is to update the expected value and the selection counter for all nodes along the explored path by backpropagating the recorded result from the simulation step. This step is illustrated in fig(\ref{fig:backprop}).
+\\*The last step is to update the expected value and the number of times visited for all nodes along the explored path by backpropagating the recorded result from the simulation step. This step is illustrated in Fig.\ref{fig:backprop}.
 \begin{figure}[here]
   \begin{center}
     \includegraphics[scale=0.28]{img/tree2.png}
     \caption{\label{fig:backprop} Illustration of how the path to the node is updated with the score from the simulation in the whole tree.}
   \end{center}
 \end{figure}
-When the back propagation has been done the whole chain starts over again starting with the selection stage\cite{Chaslot}. The use of the upper bounds confidence selection method makes the game tree grow asymmetrically as it focus its search in the more promising parts of the tree.
+When the back propagation has been done the whole chain starts over again starting with the selection stage\cite{Chaslot}. The use of the upper bounds confidence selection method makes the game tree grow asymmetrically as it focuses its search in the more promising parts of the tree.
 
 One of the advantages of MCTS is that it can be interrupted at any time but still give a valid result. However the quality of the result will increase the longer time MCTS keeps running.
 
@@ -302,7 +318,7 @@ Since effective hand strength (EHS) needs at least the flop to be revealed in or
     \caption{\label{fig:bucketlist} The bucket list.}
   \end{center}
 \end{figure}
-\\*The table in fig(\ref{fig:bucketlist}) gives every two card combination a value between 0 and 4 where 4 is a good combination and 0 is a bad combination. This list is the source of decision making in the pre-flop phase when using the EHS-algorithm as logic in the poker agent.
+\\*The table in Fig.\ref{fig:bucketlist} gives every two card combination a value between 0 and 4 where 4 is a good combination and 0 is a bad combination. This list is the source of decision making in the pre-flop phase when using the EHS-algorithm as logic in the poker agent.
 
 \subsubsection{Randomness}
 All previously mentioned algorithms take cards as input and gives the probability of winning with the cards on hand. Since a good poker player needs to be able to bluff, a random function has been implemented in order to give the agent a certain level of unpredictability. The agent will make a random move approximately 5\% of the time. 
@@ -311,7 +327,7 @@ All previously mentioned algorithms take cards as input and gives the probabilit
 \subsubsection{Main Design}
 The application was implemented in Javascript using the library Three.js for visualizing the poker game. Three.js is a webGL library which provides high level functions for creating a 3D scene.
 
-The application is implemented in an object oriented manner. The main application file is called main.js and it is here the scene is created and where all the other classes needed are initialized. The file main.js also contains all the click listeners for the buttons the human player uses to do moves. An overview over the game architecture is shown in fig(\ref{fig:arcitect}). 
+The application is implemented in an object oriented manner. The main application file is called main.js and it is here the scene is created and where all the other classes needed are initialized. The file main.js also contains all the click listeners for the buttons the human player uses to do moves. An overview over the game architecture is shown in Fig.\ref{fig:arcitect}. 
 \begin{figure}[here]
   \begin{center}
     \includegraphics[scale=0.50]{img/arcitect.png}
@@ -328,7 +344,7 @@ The AI-file contains all methods necessary for the AI to be able to make a decis
 
 \section{Result}
 \subsection{The Game}
-The result of this study is a Texas Hold'em game with an AI implemented using several different AI techniques combined together. The AI in the interactive game is using Monte Carlo Tree Search together with Hand Strength as a heuristic. The game is fully playable with an opponent that is realistic in the way it chooses what move to make. The 3D-scene is used to visualize the poker table, and it also shows the cards on hand. This is shown in fig(\ref{fig:3dscene}).
+The result of this study is a Texas Hold'em game with an AI implemented using several different AI techniques combined together. The AI in the interactive game is using Monte Carlo Tree Search together with Hand Strength as a heuristic. The game is fully playable with an opponent that is realistic in the way it chooses which move to make. The 3D-scene is used to visualize the poker table, and it also shows the cards on hand. This is shown in Fig.\ref{fig:3dscene}.
 \begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.27]{img/3dscene.png}
@@ -336,7 +352,7 @@ The result of this study is a Texas Hold'em game with an AI implemented using se
   \end{center}
 \end{figure}
 
-To the left of the 3D-scene there are some additional UI-elements. these are the buttons telling the player what moves he or she can make. By pressing one of these buttons the player will make a move. The coloured buttons indicate that a move is valid. The greyed out buttons indicate invalid moves. The buttons are shown in fig(\ref{fig:ui1}).
+To the left of the 3D-scene there are some additional UI-elements. these are the buttons telling the player what moves he or she can make. By pressing one of these buttons the player will make a move. The coloured buttons indicate that a move is valid. The greyed out buttons indicate invalid moves. The buttons are shown in Fig.\ref{fig:ui1}.
 \begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.50]{img/ui1.png}
@@ -344,7 +360,7 @@ To the left of the 3D-scene there are some additional UI-elements. these are the
   \end{center}
 \end{figure}
 
-To the right of the 3D-scene some information is shown. Information about money is visible in the upper box. How much money each player has, and how much money there is currently on the table. This information box is illustrated in fig(\ref{fig:ui2}).
+To the right of the 3D-scene some information is shown. Information about money is visible in the upper box. How much money each player has, and how much money there is currently on the table. This information box is illustrated in Fig.\ref{fig:ui2}.
 \begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.50]{img/ui2.png}
@@ -421,7 +437,7 @@ On the other hand if we let both agents run a fixed amount of iterations, a 100\
 \subsubsection{Opponent Modeling}
 The quality of the solution given a certain number of iterations depends greatly on how good the simulation step can model the reality. For simple games it may be enough to simply use random moves, but for games as complicated as poker this will lead to a weak agent. The reason for this is that a player's actions is highly dependent on what cards he/she holds. Note that we are not interested in finding the most probable move of the opponent but the probability distribution over the available moves. The reason for this is that if we only get the most probable move then each simulation will result in the same sequence of actions. 
 
-One simple approach is to model each opponent as a straight forward player, that means that we assume that an aggressive move (raise, bet) indicates a strong hand, and a passive move (check, call) indicates a weak hand. This can be implemented by holding a histogram with all stages (pre-flop, flop, turn, river) and all the actions taken by the player in those stages (fold, bet, call, raise, check). A raise in a game state indicates that a player has a strong hand if he usually does not raise in that state and vice versa. If the game goes to showdown it is possible to calculate the hand strength of the opponents cards on hand and thus making it possible to associate a hand strength with the actions taken that round. [REF!]
+One simple approach is to model each opponent as a straight forward player, that means that we assume that an aggressive move (raise, bet) indicates a strong hand, and a passive move (check, call) indicates a weak hand. This can be implemented by holding a histogram with all stages (pre-flop, flop, turn, river) and all the actions taken by the player in those stages (fold, bet, call, raise, check). A raise in a game state indicates that a player has a strong hand if he usually does not raise in that state and vice versa. If the game goes to showdown it is possible to calculate the hand strength of the opponents cards on hand and thus making it possible to associate a hand strength with the actions taken that round\cite{schweizer}.
 
 \subsubsection{Performance}
 The quality of the MCTS solution depends on the amount of simulations it can make, the code in the project is far from optimized and it is probably easy to increase the number of simulations per round by refactoring and optimizing parts of the code. 
