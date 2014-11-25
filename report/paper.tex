@@ -32,6 +32,7 @@
 \usepackage{times}
 \usepackage{balance}
 \usepackage[nooneline,hang,it,IT]{subfigure}
+\usepackage{lastpage}
 
 %% We encourage the use of mathptmx for consistent usage of times font
 %% throughout the proceedings. However, if you encounter conflicts
@@ -53,8 +54,6 @@
   linktocpage
 }
 
-\pagestyle{fancy}
-
 %% If you are submitting a paper to a conference for review with a double
 %% blind reviewing process, please replace the value ``0'' below with your
 %% OnlineID. Otherwise, you may safely leave it at ``0''.
@@ -70,8 +69,6 @@
 %\preprinttext{To appear in an IEEE VGTC sponsored conference.}
 
 %% Paper title.
-
-
 
 \title{AiPoker - Implementation of a Poker Agent}
 
@@ -101,7 +98,12 @@ Poker is a well known card game worldwide and has become very popular to play on
 
 
 \begin{document}
-\pagenumbering{roman}
+\pagestyle{fancy}
+\rhead{TNM095}
+\lhead{\empty}
+\cfoot{\empty}
+\rfoot{Page \ \thepage \ of \ \pageref{LastPage}}
+\pagenumbering{arabic}
 %% The ``\maketitle'' command must be the first command after the
 %% ``\begin{document}'' command. It prepares and prints the title block.
 
